@@ -12,7 +12,7 @@ The project currently ships as [`MindLite.html`](./MindLite.html) with no build 
 - Exports read-only shareable HTML and landscape PDF output
 - Lets you pin hidden references and jump back to them from the toolbar
 - Supports pasting screenshots or images directly onto the canvas
-- Supports attaching PDF and Office documents to nodes
+- Supports attaching PDF, Word, PowerPoint, Markdown, Quarto, and RTF documents to nodes
 - Renders inline LaTeX with the bundled KaTeX runtime
 
 ## Project Layout

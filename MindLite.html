@@ -2294,7 +2294,7 @@
         type="file"
         multiple
         hidden
-        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        accept=".pdf,.md,.rmd,.qmd,.rtf,.doc,.docx,.ppt,.pptx,application/pdf,text/markdown,application/rtf,text/rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
       >
       <div id="image-lightbox" class="image-lightbox" hidden>
         <div class="image-lightbox-inner">
@@ -2396,7 +2396,7 @@
           <section class="help-panel-section">
             <h3>Attach Files</h3>
             <p>
-              Drag a PDF or Office file onto a node, or click
+              Drag a PDF, Word, PowerPoint, Markdown, Quarto, or RTF document onto a node, or click
               <span class="help-inline-node-button help-inline-node-attachment" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path d="M14.2 4.9 L18.6 5.8 C19.45 5.98 19.98 6.8 19.82 7.65 L18.04 17.46 C17.88 18.31 17.07 18.88 16.22 18.72 L12.58 18.06"></path>
@@ -2465,6 +2465,37 @@
       const MAX_TEXT_SIZE = 48;
       const MIN_SCALE = 0.45;
       const MAX_SCALE = 2.4;
+      const ATTACHMENT_ACCEPT_ATTRIBUTE = [
+        ".pdf",
+        ".md",
+        ".rmd",
+        ".qmd",
+        ".rtf",
+        ".doc",
+        ".docx",
+        ".ppt",
+        ".pptx",
+        "application/pdf",
+        "text/markdown",
+        "application/rtf",
+        "text/rtf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      ].join(",");
+      const ATTACHMENT_ALLOWED_EXTENSIONS = new Set(["pdf", "md", "rmd", "qmd", "rtf", "doc", "docx", "ppt", "pptx"]);
+      const ATTACHMENT_ALLOWED_MIME_TYPES = new Set([
+        "application/pdf",
+        "text/markdown",
+        "application/rtf",
+        "text/rtf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      ]);
+      const ATTACHMENT_RESTRICTION_MESSAGE = "Supported document attachments: PDF, MD, Rmd, Qmd, RTF, DOC, DOCX, PPT, and PPTX.";
       const MENU_ZOOM_STEP = 0.01;
       const WHEEL_ZOOM_STEP = 0.12;
       const ALLOWED_FONT_FAMILIES = new Set([
@@ -2528,6 +2559,10 @@
       const imageLightbox = document.getElementById("image-lightbox");
       const imageLightboxImage = document.getElementById("image-lightbox-image");
       const imageLightboxCloseButton = document.getElementById("image-lightbox-close");
+
+      if (attachmentFileInput) {
+        attachmentFileInput.setAttribute("accept", ATTACHMENT_ACCEPT_ATTRIBUTE);
+      }
 
       const state = parseInitialState();
       let selectionId = null;
@@ -4745,6 +4780,40 @@
         return match ? match[1].toUpperCase() : "";
       }
 
+      function getFileNameExtension(fileName) {
+        const name = String(fileName || "");
+        const match = name.match(/\.([a-z0-9]+)$/i);
+        return match ? match[1].toLowerCase() : "";
+      }
+
+      function isAllowedAttachmentFile(file) {
+        if (!file) {
+          return false;
+        }
+
+        const type = String(file.type || "").toLowerCase();
+        if (type.startsWith("audio/") || type.startsWith("video/")) {
+          return false;
+        }
+
+        return ATTACHMENT_ALLOWED_MIME_TYPES.has(type) || ATTACHMENT_ALLOWED_EXTENSIONS.has(getFileNameExtension(file.name));
+      }
+
+      function splitAttachmentFiles(fileList) {
+        const accepted = [];
+        const rejected = [];
+
+        Array.from(fileList || []).forEach((file) => {
+          if (isAllowedAttachmentFile(file)) {
+            accepted.push(file);
+          } else {
+            rejected.push(file);
+          }
+        });
+
+        return { accepted: accepted, rejected: rejected };
+      }
+
       function getAttachmentTypeLabel(attachment) {
         const type = String(attachment.type || "").toLowerCase();
         if (type === "application/pdf") {
@@ -4973,13 +5042,20 @@
 
       function handleAttachmentFiles(nodeId, fileList) {
         const node = findNode(nodeId);
-        const files = Array.from(fileList || []);
-        if (!node || !files.length) {
+        const files = splitAttachmentFiles(fileList);
+        if (!node || !files.accepted.length) {
+          if (files.rejected.length) {
+            window.alert(ATTACHMENT_RESTRICTION_MESSAGE);
+          }
           return;
         }
 
+        if (files.rejected.length) {
+          window.alert(ATTACHMENT_RESTRICTION_MESSAGE);
+        }
+
         Promise.all(
-          files.map((file) =>
+          files.accepted.map((file) =>
             readFileAsDataUrl(file).then((dataUrl) => ({
               id: "attachment-" + attachmentCounter++,
               name: file.name || "Attachment",
