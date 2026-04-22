@@ -248,11 +248,123 @@
       cursor: pointer;
     }
 
+    .toolbar-font-format {
+      width: 100px;
+      min-width: 100px;
+      max-width: 100px;
+    }
+
     .toolbar-format-group {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
+    }
+
+    .toolbar-style-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      border: 1px solid rgba(58, 50, 43, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      overflow: hidden;
+    }
+
+    .toolbar-style-pill:focus-within {
+      border-color: rgba(58, 50, 43, 0.32);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .toolbar-style-segment {
+      appearance: none;
+      -webkit-appearance: none;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    .toolbar-style-segment + .toolbar-style-segment {
+      border-left: 1px solid rgba(58, 50, 43, 0.14);
+    }
+
+    .toolbar-style-segment:hover:not(:disabled):not(.is-disabled),
+    .toolbar-style-segment:focus-visible:not(:disabled) {
+      background: rgba(58, 50, 43, 0.08);
+      outline: none;
+    }
+
+    .toolbar-style-segment:disabled,
+    .toolbar-style-segment.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .toolbar-style-picker {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      clip-path: inset(100%);
+      white-space: nowrap;
+    }
+
+    .toolbar-style-segment-glyph {
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .toolbar-style-segment.is-active {
+      background: color-mix(in srgb, var(--paper) 82%, rgba(22, 163, 74, 0.18));
+      box-shadow: inset 0 0 0 1px rgba(22, 163, 74, 0.14);
+    }
+
+    .toolbar-style-toggle-bold {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .toolbar-style-toggle-size {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0;
+      font-weight: 600;
+      letter-spacing: -0.06em;
+      color: rgba(31, 26, 21, 0.82);
+    }
+
+    .toolbar-style-toggle-size-large {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    .toolbar-style-toggle-size-small {
+      font-size: 0.72rem;
+      line-height: 1;
+      transform: translateY(0.06rem);
+    }
+
+    .toolbar-style-toggle-italic {
+      font-size: 1rem;
+      font-style: italic;
     }
 
     .toolbar-color-wrap {
@@ -880,10 +992,10 @@
 
     .node {
       --branch-color: var(--branch-neutral);
-      --node-pad-top: 10px;
-      --node-pad-right: 13px;
-      --node-pad-bottom: 11px;
-      --node-pad-left: 12px;
+      --node-pad-top: 0px;
+      --node-pad-right: 5px;
+      --node-pad-bottom: 0px;
+      --node-pad-left: 10px;
       position: absolute;
       display: flex;
       flex-direction: column;
@@ -893,7 +1005,7 @@
       min-height: 72px;
       border: 2px solid color-mix(in srgb, var(--branch-color) 38%, rgba(58, 50, 43, 0.18));
       border-radius: 22px;
-      background: color-mix(in srgb, var(--branch-color) 6%, rgba(255, 255, 255, 0.94));
+      background: transparent;
       box-shadow: var(--shadow);
       cursor: grab;
       pointer-events: auto;
@@ -921,7 +1033,7 @@
     }
 
     .node.root {
-      background: color-mix(in srgb, var(--branch-color) 14%, rgba(255, 255, 255, 0.98));
+      background: transparent;
       border-color: color-mix(in srgb, var(--branch-color) 52%, rgba(58, 50, 43, 0.18));
       box-shadow: var(--shadow);
     }
@@ -956,7 +1068,7 @@
       flex-direction: column;
       align-items: stretch;
       justify-content: flex-start;
-      padding: 0 12px 4px 0;
+      padding: 0;
       min-width: 0;
       min-height: 0;
       overflow: hidden;
@@ -968,7 +1080,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 6px;
+      padding: 0;
       font-size: 1.1rem;
       font-weight: 700;
       line-height: 1.28;
@@ -996,7 +1108,8 @@
       padding: 0;
       font-size: 1rem;
       line-height: 1.2;
-      font-weight: 600;
+      font-weight: 400;
+      font-style: normal;
       letter-spacing: -0.02em;
       word-spacing: -0.12em;
       color: var(--ink);
@@ -1202,7 +1315,8 @@
       resize: none;
       font-size: 1rem;
       line-height: 1.2;
-      font-weight: 600;
+      font-weight: 400;
+      font-style: normal;
       letter-spacing: -0.02em;
       word-spacing: -0.12em;
       color: var(--ink);
@@ -1308,7 +1422,7 @@
 
     .toolbar-help-glyph {
       display: inline-block;
-      font-size: 1.44rem;
+      font-size: 1.34rem;
       font-weight: 600;
       line-height: 1;
       transform: translateY(-0.04rem);
@@ -2106,39 +2220,49 @@
             <path d="M8.5 14 H 15.5"></path>
           </svg>
           <select id="font-family-select" aria-label="Font">
-            <option value="">Sans</option>
-            <option value="&quot;Segoe UI&quot;, Arial, sans-serif">Segoe</option>
-            <option value="Arial, sans-serif">Arial</option>
-            <option value="Verdana, sans-serif">Verdana</option>
-            <option value="Tahoma, sans-serif">Tahoma</option>
-            <option value="Georgia, &quot;Times New Roman&quot;, serif">Serif</option>
-            <option value="&quot;Times New Roman&quot;, serif">Times</option>
-            <option value="&quot;Gill Sans&quot;, &quot;Trebuchet MS&quot;, sans-serif">Human</option>
-            <option value="&quot;Palatino Linotype&quot;, &quot;Book Antiqua&quot;, Palatino, serif">Classic</option>
-            <option value="&quot;Courier New&quot;, Courier, monospace">Mono</option>
+                      <option value="Optima, Candara, sans-serif">Optima</option>
+                      <option value="system-ui, sans-serif">System UI</option>
+                      <option value="ui-rounded, &quot;SF Pro Rounded&quot;, &quot;Arial Rounded MT Bold&quot;, sans-serif">SF Pro Rounded</option>
+                      <option value="&quot;Avenir Next&quot;, Avenir, sans-serif">Avenir Next</option>
+                      <option value="&quot;Helvetica Neue&quot;, Helvetica, sans-serif">Helvetica Neue</option>
+                      <option value="&quot;Gill Sans&quot;, &quot;Trebuchet MS&quot;, sans-serif">Gill Sans</option>
+            <option value="&quot;Trebuchet MS&quot;, sans-serif">Trebuchet MS</option>
+            <option value="&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, sans-serif">Lucida Grande</option>
+            <option value="Futura, &quot;Avenir Next&quot;, sans-serif">Futura</option>
+            <option value="Georgia, &quot;Times New Roman&quot;, serif">Georgia</option>
+            <option value="&quot;Times New Roman&quot;, serif">Times New Roman</option>
+            <option value="Baskerville, Georgia, serif">Baskerville</option>
+            <option value="&quot;Palatino Linotype&quot;, &quot;Book Antiqua&quot;, Palatino, serif">Palatino Linotype</option>
+            <option value="Menlo, Monaco, Consolas, monospace">Menlo / Consolas</option>
+            <option value="&quot;Courier New&quot;, Courier, monospace">Courier New</option>
           </select>
         </label>
-        <label class="toolbar-format" for="font-size-select" title="Size">
-          <svg class="toolbar-format-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 7 H 13"></path>
-            <path d="M9 7 V 19"></path>
-            <path d="M14.5 10 H 20"></path>
-            <path d="M17.25 10 V 19"></path>
-          </svg>
-          <select id="font-size-select" aria-label="Text size">
-            <option value="12">12 pt</option>
-            <option value="14">14 pt</option>
-            <option value="16">16 pt</option>
-            <option value="18">18 pt</option>
-            <option value="20">20 pt</option>
-            <option value="22">22 pt</option>
-            <option value="24">24 pt</option>
-            <option value="28">28 pt</option>
-            <option value="32">32 pt</option>
-            <option value="40">40 pt</option>
-            <option value="48">48 pt</option>
-          </select>
-        </label>
+        <div class="toolbar-style-pill" aria-label="Text style controls">
+          <button id="font-size-trigger" class="toolbar-style-segment" type="button" aria-label="Text size" title="Size" aria-pressed="false">
+            <span class="toolbar-style-segment-glyph toolbar-style-toggle-size" aria-hidden="true">
+              <span class="toolbar-style-toggle-size-large">T</span><span class="toolbar-style-toggle-size-small">T</span>
+            </span>
+          </button>
+          <button id="text-bold-button" class="toolbar-style-segment" type="button" aria-label="Bold" title="Bold" aria-pressed="false">
+            <span class="toolbar-style-segment-glyph toolbar-style-toggle-bold" aria-hidden="true">B</span>
+          </button>
+          <button id="text-italic-button" class="toolbar-style-segment" type="button" aria-label="Italic" title="Italic" aria-pressed="false">
+            <span class="toolbar-style-segment-glyph toolbar-style-toggle-italic" aria-hidden="true">I</span>
+          </button>
+        </div>
+        <select id="font-size-select" class="toolbar-style-picker" aria-label="Text size">
+          <option value="12">12 pt</option>
+          <option value="14">14 pt</option>
+          <option value="16">16 pt</option>
+          <option value="18">18 pt</option>
+          <option value="20">20 pt</option>
+          <option value="22">22 pt</option>
+          <option value="24">24 pt</option>
+          <option value="28">28 pt</option>
+          <option value="32">32 pt</option>
+          <option value="40">40 pt</option>
+          <option value="48">48 pt</option>
+        </select>
         <div class="toolbar-color-wrap">
           <button id="text-color-button" class="toolbar-color-button" type="button" aria-label="Color" title="Color">
             <svg class="toolbar-format-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -2440,7 +2564,7 @@
     (() => {
       "use strict";
 
-      const APP_VERSION = "0.1.0";
+      const APP_VERSION = "0.1.1";
       const MIN_NODE_WIDTH = 150;
       const MIN_NODE_HEIGHT = 72;
       const MAX_NODE_WIDTH = 420;
@@ -2455,7 +2579,9 @@
       const ROOT_COLOR = "#16a34a";
       const BRANCH_COLORS = ["#e74c3c", "#f39c12", "#16a34a", "#2563eb", "#8b5cf6", "#ec4899"];
       const HUMAN_FONT_FAMILY = "\"Gill Sans\", \"Trebuchet MS\", sans-serif";
-      const DEFAULT_TEXT_FONT_FAMILY = "";
+const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
+      const DEFAULT_TEXT_FONT_WEIGHT = "normal";
+      const DEFAULT_TEXT_FONT_STYLE = "normal";
       const DEFAULT_TEXT_COLOR = "#1f1a15";
       const DEFAULT_TEXT_ALIGN = "left";
       const DEFAULT_TEXT_V_ALIGN = "top";
@@ -2500,14 +2626,20 @@
       const WHEEL_ZOOM_STEP = 0.12;
       const ALLOWED_FONT_FAMILIES = new Set([
         DEFAULT_TEXT_FONT_FAMILY,
-        "\"Segoe UI\", Arial, sans-serif",
-        "Arial, sans-serif",
-        "Verdana, sans-serif",
-        "Tahoma, sans-serif",
+        "system-ui, sans-serif",
+        "ui-rounded, \"SF Pro Rounded\", \"Arial Rounded MT Bold\", sans-serif",
+        "\"Avenir Next\", Avenir, sans-serif",
+        "\"Helvetica Neue\", Helvetica, sans-serif",
+        "Optima, Candara, sans-serif",
+        HUMAN_FONT_FAMILY,
+        "\"Trebuchet MS\", sans-serif",
+        "\"Lucida Grande\", \"Lucida Sans Unicode\", sans-serif",
+        "Futura, \"Avenir Next\", sans-serif",
         "Georgia, \"Times New Roman\", serif",
         "\"Times New Roman\", serif",
-        HUMAN_FONT_FAMILY,
+        "Baskerville, Georgia, serif",
         "\"Palatino Linotype\", \"Book Antiqua\", Palatino, serif",
+        "Menlo, Monaco, Consolas, monospace",
         "\"Courier New\", Courier, monospace"
       ]);
       const SCRIPT_ESCAPE_PATTERN = new RegExp("</" + "script", "gi");
@@ -2538,6 +2670,9 @@
       const zoomInButton = document.getElementById("zoom-in-button");
       const fontFamilySelect = document.getElementById("font-family-select");
       const fontSizeSelect = document.getElementById("font-size-select");
+      const fontSizeTrigger = document.getElementById("font-size-trigger");
+      const textBoldButton = document.getElementById("text-bold-button");
+      const textItalicButton = document.getElementById("text-italic-button");
       const textColorButton = document.getElementById("text-color-button");
       const textColorChip = document.getElementById("text-color-chip");
       const textColorMenu = document.getElementById("text-color-menu");
@@ -2577,6 +2712,7 @@
       let attachTargetId = null;
       let attachmentDropTargetId = null;
       let editingNodeId = null;
+      let lastTextControlsNodeId = null;
       let lastWorkspacePointer = null;
       let clipboardReadFallbackTimer = 0;
       let textRelayoutFrame = 0;
@@ -2748,6 +2884,54 @@
         fontSizeSelect.addEventListener("change", () => {
           updateSelectedNodeTextStyle({
             fontSize: normalizeFontSize(fontSizeSelect.value, Boolean(getSelectedNode() && getSelectedNode().parentId === null))
+          });
+        });
+      }
+
+      if (fontSizeTrigger && fontSizeSelect) {
+        fontSizeTrigger.addEventListener("click", () => {
+          if (fontSizeTrigger.disabled || fontSizeSelect.disabled) {
+            return;
+          }
+
+          if (typeof fontSizeSelect.showPicker === "function") {
+            try {
+              fontSizeSelect.showPicker();
+              return;
+            } catch (error) {
+              void error;
+            }
+          }
+
+          fontSizeSelect.focus({ preventScroll: true });
+          if (typeof fontSizeSelect.click === "function") {
+            fontSizeSelect.click();
+          }
+        });
+      }
+
+      if (textBoldButton) {
+        textBoldButton.addEventListener("click", () => {
+          const node = getSelectedNode();
+          if (!node || node.type === "image" || textBoldButton.disabled) {
+            return;
+          }
+
+          updateSelectedNodeTextStyle({
+            fontWeight: normalizeFontWeight(node.fontWeight) === "bold" ? "normal" : "bold"
+          });
+        });
+      }
+
+      if (textItalicButton) {
+        textItalicButton.addEventListener("click", () => {
+          const node = getSelectedNode();
+          if (!node || node.type === "image" || textItalicButton.disabled) {
+            return;
+          }
+
+          updateSelectedNodeTextStyle({
+            fontStyle: normalizeFontStyle(node.fontStyle) === "italic" ? "normal" : "italic"
           });
         });
       }
@@ -3297,7 +3481,7 @@
         const nodeType = normalizeNodeType(node.type, node.imageData);
         const isRoot = typeof node.parentId !== "string";
         const fallbackWidth = nodeType === "image" ? 240 : index === 0 ? 240 : 180;
-        const fallbackHeight = nodeType === "image" ? 160 : index === 0 ? 96 : 84;
+        const fallbackHeight = nodeType === "image" ? 160 : MIN_NODE_HEIGHT;
         const sizeLimits = getNodeSizeLimits(nodeType);
         return {
           id: typeof node.id === "string" ? node.id : "node-" + (index + 1),
@@ -3309,6 +3493,8 @@
           width: clamp(Number(node.width) || fallbackWidth, sizeLimits.minWidth, sizeLimits.maxWidth),
           height: clamp(Number(node.height) || fallbackHeight, sizeLimits.minHeight, sizeLimits.maxHeight),
           fontFamily: normalizeFontFamily(node.fontFamily),
+          fontWeight: normalizeFontWeight(node.fontWeight),
+          fontStyle: normalizeFontStyle(node.fontStyle),
           fontSize: normalizeFontSize(node.fontSize, isRoot),
           textColor: normalizeTextColor(node.textColor),
           textAlign: normalizeTextAlign(node.textAlign),
@@ -3477,6 +3663,7 @@
 
         const scale = normalizeScale(state.viewport.scale);
         const rootIndex = getRootNodes().length;
+        const initialHeight = MIN_NODE_HEIGHT;
         const node = {
           id: "node-" + nodeCounter++,
           type: "text",
@@ -3485,8 +3672,10 @@
           text: "",
           imageData: "",
           width: 240,
-          height: 96,
+          height: initialHeight,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
+          fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_ROOT_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
           textAlign: DEFAULT_TEXT_ALIGN,
@@ -3497,7 +3686,7 @@
           collapsed: false,
           order: getNextSiblingOrder(null),
           x: Math.round((56 - state.viewport.x) / scale) + rootIndex * 180,
-          y: Math.round((workspace.clientHeight / 2 - (96 * scale) / 2 - state.viewport.y) / scale) + rootIndex * 72,
+          y: Math.round((workspace.clientHeight / 2 - (initialHeight * scale) / 2 - state.viewport.y) / scale) + rootIndex * 72,
           offsetX: 0,
           offsetY: 0
         };
@@ -3505,6 +3694,7 @@
         state.nodes.push(node);
         setSelection(node.id, "node");
         renderAll();
+        syncTextNodeHeightToRenderedContent(node.id);
         syncEmbeddedState();
         return node;
       }
@@ -3521,6 +3711,7 @@
 
         parent.collapsed = false;
 
+        const initialHeight = MIN_NODE_HEIGHT;
         const child = {
           id: "node-" + nodeCounter++,
           type: "text",
@@ -3529,8 +3720,10 @@
           text: "",
           imageData: "",
           width: 180,
-          height: 84,
+          height: initialHeight,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
+          fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_CHILD_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
           textAlign: DEFAULT_TEXT_ALIGN,
@@ -3549,6 +3742,7 @@
         state.nodes.push(child);
         setSelection(child.id, "node");
         renderAll();
+        syncTextNodeHeightToRenderedContent(child.id);
         syncEmbeddedState();
         focusNodeEditor(child.id);
         return child;
@@ -3992,6 +4186,7 @@
             preview.className = "node-preview";
             editor = document.createElement("textarea");
             editor.className = "node-editor";
+            editor.rows = 1;
             editor.readOnly = isSharedView();
             editor.spellcheck = false;
             editor.value = node.text;
@@ -4340,10 +4535,35 @@
         return selectionId ? findNode(selectionId) : null;
       }
 
+      function getTextControlsDisplayNode() {
+        const selectedNode = getSelectedNode();
+        if (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch") {
+          lastTextControlsNodeId = selectedNode.id;
+          return selectedNode;
+        }
+
+        const editingNode = editingNodeId ? findNode(editingNodeId) : null;
+        if (editingNode && editingNode.type !== "image") {
+          lastTextControlsNodeId = editingNode.id;
+          return editingNode;
+        }
+
+        const lastNode = lastTextControlsNodeId ? findNode(lastTextControlsNodeId) : null;
+        if (lastNode && lastNode.type !== "image") {
+          return lastNode;
+        }
+
+        lastTextControlsNodeId = null;
+        return null;
+      }
+
       function updateTextControls() {
         if (
           !fontFamilySelect ||
           !fontSizeSelect ||
+          !fontSizeTrigger ||
+          !textBoldButton ||
+          !textItalicButton ||
           !textColorButton ||
           !textColorInput ||
           !textLayoutButton
@@ -4351,18 +4571,26 @@
           return;
         }
 
-        const node = getSelectedNode();
-        const enabled = !isSharedView() && Boolean(node && node.type !== "image" && selectionKind !== "branch");
-        [fontFamilySelect, fontSizeSelect].forEach((control) => {
+        const selectedNode = getSelectedNode();
+        const node = getTextControlsDisplayNode();
+        const enabled =
+          !isSharedView() && Boolean(selectedNode && selectedNode.type !== "image" && selectionKind !== "branch");
+        fontFamilySelect.disabled = !enabled;
+        fontSizeSelect.disabled = !enabled;
+        fontSizeTrigger.disabled = !enabled;
+        [textBoldButton, textItalicButton].forEach((control) => {
           control.disabled = !enabled;
         });
         textColorButton.disabled = !enabled;
         textColorInput.disabled = !enabled;
         textLayoutButton.disabled = !enabled;
 
-        if (!enabled || !node) {
+        if (!node) {
           fontFamilySelect.value = DEFAULT_TEXT_FONT_FAMILY;
           fontSizeSelect.value = String(DEFAULT_CHILD_FONT_SIZE);
+          updateTextStyleToggleState(fontSizeTrigger, false);
+          updateTextStyleToggleState(textBoldButton, false);
+          updateTextStyleToggleState(textItalicButton, false);
           syncTextColorInputs(DEFAULT_TEXT_COLOR);
           updateToolbarColorSwatches(DEFAULT_TEXT_COLOR);
           hideTextColorMenu();
@@ -4378,9 +4606,21 @@
           String(normalizeFontSize(node.fontSize, node.parentId === null)) + " pt"
         );
         fontSizeSelect.value = String(normalizeFontSize(node.fontSize, node.parentId === null));
+        updateTextStyleToggleState(
+          fontSizeTrigger,
+          normalizeFontSize(node.fontSize, node.parentId === null) !==
+            (node.parentId === null ? DEFAULT_ROOT_FONT_SIZE : DEFAULT_CHILD_FONT_SIZE)
+        );
+        updateTextStyleToggleState(textBoldButton, normalizeFontWeight(node.fontWeight) === "bold");
+        updateTextStyleToggleState(textItalicButton, normalizeFontStyle(node.fontStyle) === "italic");
         syncTextColorInputs(normalizeTextColor(node.textColor));
         updateToolbarColorSwatches(normalizeTextColor(node.textColor));
         updateLayoutMenuSelection(node.textAlign, node.textVAlign);
+
+        if (!enabled) {
+          hideTextColorMenu();
+          hideTextLayoutMenu();
+        }
       }
 
       function updateSelectedNodeTextStyle(updates) {
@@ -4393,10 +4633,36 @@
           return;
         }
 
-        Object.assign(node, updates);
+        const normalizedUpdates = { ...updates };
+        if ("fontFamily" in normalizedUpdates) {
+          normalizedUpdates.fontFamily = normalizeFontFamily(normalizedUpdates.fontFamily);
+        }
+        if ("fontWeight" in normalizedUpdates) {
+          normalizedUpdates.fontWeight = normalizeFontWeight(normalizedUpdates.fontWeight);
+        }
+        if ("fontStyle" in normalizedUpdates) {
+          normalizedUpdates.fontStyle = normalizeFontStyle(normalizedUpdates.fontStyle);
+        }
+        if ("fontSize" in normalizedUpdates) {
+          normalizedUpdates.fontSize = normalizeFontSize(normalizedUpdates.fontSize, node.parentId === null);
+        }
+        if ("textColor" in normalizedUpdates) {
+          normalizedUpdates.textColor = normalizeTextColor(normalizedUpdates.textColor);
+        }
+        if ("textAlign" in normalizedUpdates) {
+          normalizedUpdates.textAlign = normalizeTextAlign(normalizedUpdates.textAlign);
+        }
+        if ("textVAlign" in normalizedUpdates) {
+          normalizedUpdates.textVAlign = normalizeTextVAlign(normalizedUpdates.textVAlign);
+        }
+
+        Object.assign(node, normalizedUpdates);
         const editor = nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor');
         if (editor) {
           applyNodeTextStyles(editor, node);
+          if (fitTextNodeHeightToContent(node, editor)) {
+            renderAll();
+          }
         }
         updateTextControls();
         syncEmbeddedState();
@@ -4425,6 +4691,21 @@
         return true;
       }
 
+      function syncTextNodeHeightToRenderedContent(nodeId) {
+        const node = findNode(nodeId);
+        if (!node || node.type === "image") {
+          return false;
+        }
+
+        const editor = nodeLayer.querySelector('[data-node-id="' + nodeId + '"] .node-editor');
+        if (!editor || !fitTextNodeHeightToContent(node, editor)) {
+          return false;
+        }
+
+        renderAll();
+        return true;
+      }
+
       function scheduleTextRelayout(nodeId, editor) {
         queueEditorSelectionRestore(nodeId, editor);
         if (textRelayoutFrame) {
@@ -4443,17 +4724,33 @@
         const textWrap = editor ? editor.closest(".node-text-wrap") : null;
         const preview = textWrap ? textWrap.querySelector(".node-preview") : null;
         editor.style.fontFamily = normalizeFontFamily(node.fontFamily);
+        editor.style.fontWeight = normalizeFontWeight(node.fontWeight);
+        editor.style.fontStyle = normalizeFontStyle(node.fontStyle);
         editor.style.fontSize = normalizeFontSize(node.fontSize, node.parentId === null) + "px";
         editor.style.color = normalizeTextColor(node.textColor);
         editor.style.textAlign = normalizeTextAlign(node.textAlign);
         if (preview) {
           preview.style.fontFamily = normalizeFontFamily(node.fontFamily);
+          preview.style.fontWeight = normalizeFontWeight(node.fontWeight);
+          preview.style.fontStyle = normalizeFontStyle(node.fontStyle);
           preview.style.fontSize = normalizeFontSize(node.fontSize, node.parentId === null) + "px";
           preview.style.color = normalizeTextColor(node.textColor);
           preview.style.textAlign = normalizeTextAlign(node.textAlign);
         }
         syncNodeTextPreview(textWrap, editor, preview, node);
         updateEditorVerticalAlignment(editor, node);
+      }
+
+      function updateTextStyleToggleState(button, active) {
+        if (!button) {
+          return;
+        }
+
+        const isActive = Boolean(active);
+        button.classList.toggle("is-active", isActive);
+        if (button.tagName === "BUTTON") {
+          button.setAttribute("aria-pressed", isActive ? "true" : "false");
+        }
       }
 
       function updateEditorPlaceholderState(editor, node) {
@@ -4473,10 +4770,16 @@
 
         const styles = window.getComputedStyle(editor);
         const previousHeight = editor.style.height;
+        const previousPaddingTop = editor.style.paddingTop;
+        const previousPaddingBottom = editor.style.paddingBottom;
         editor.style.height = "auto";
+        editor.style.paddingTop = "0px";
+        editor.style.paddingBottom = "0px";
         editor.scrollTop = 0;
         const contentHeight = Math.ceil(editor.scrollHeight + 1);
         editor.style.height = previousHeight;
+        editor.style.paddingTop = previousPaddingTop;
+        editor.style.paddingBottom = previousPaddingBottom;
         const minHeight = parseFloat(styles.minHeight) || 0;
         return Math.max(contentHeight, Math.ceil(minHeight));
       }
@@ -4494,8 +4797,18 @@
         const activeHeight = previewVisible ? measurePreviewContentHeight(preview) : contentHeight;
         const availableHeight = textWrap ? Math.max(0, textWrap.clientHeight) : Math.max(0, node.height);
         const verticalAlign = normalizeTextVAlign(node.textVAlign);
+        const freeSpace = Math.max(0, availableHeight - contentHeight);
+        const topPadding =
+          verticalAlign === "middle"
+            ? Math.floor(freeSpace / 2)
+            : verticalAlign === "bottom"
+              ? freeSpace
+              : 0;
+        const bottomPadding = Math.max(0, freeSpace - topPadding);
 
-        editor.style.height = contentHeight + "px";
+        editor.style.height = (textWrap ? availableHeight : contentHeight) + "px";
+        editor.style.paddingTop = previewVisible ? "0px" : topPadding + "px";
+        editor.style.paddingBottom = previewVisible ? "0px" : bottomPadding + "px";
         editor.scrollTop = 0;
         if (preview) {
           preview.style.minHeight = activeHeight + "px";
@@ -4506,9 +4819,9 @@
         }
 
         textWrap.style.justifyContent =
-          verticalAlign === "middle"
+          previewVisible && verticalAlign === "middle"
             ? "center"
-            : verticalAlign === "bottom"
+            : previewVisible && verticalAlign === "bottom"
               ? "flex-end"
               : "flex-start";
       }
@@ -5512,6 +5825,14 @@
         return typeof value === "string" && ALLOWED_FONT_FAMILIES.has(value) ? value : DEFAULT_TEXT_FONT_FAMILY;
       }
 
+      function normalizeFontWeight(value) {
+        return value === "bold" ? "bold" : DEFAULT_TEXT_FONT_WEIGHT;
+      }
+
+      function normalizeFontStyle(value) {
+        return value === "italic" ? "italic" : DEFAULT_TEXT_FONT_STYLE;
+      }
+
       function normalizeFontSize(value, isRoot) {
         const fallback = isRoot ? DEFAULT_ROOT_FONT_SIZE : DEFAULT_CHILD_FONT_SIZE;
         const nextValue = Number(value);
@@ -6259,6 +6580,7 @@
           return null;
         }
 
+        const initialHeight = MIN_NODE_HEIGHT;
         const node = {
           id: "node-" + nodeCounter++,
           type: "text",
@@ -6267,8 +6589,10 @@
           text: text || "",
           imageData: "",
           width: 180,
-          height: 84,
+          height: initialHeight,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
+          fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_CHILD_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
           textAlign: DEFAULT_TEXT_ALIGN,
@@ -6279,7 +6603,7 @@
           collapsed: false,
           order: getNextSiblingOrder(null),
           x: round(worldPoint.x - 90),
-          y: round(worldPoint.y - 42),
+          y: round(worldPoint.y - initialHeight / 2),
           offsetX: 0,
           offsetY: 0
         };
@@ -6289,6 +6613,7 @@
         attachTargetId = null;
         hideContextMenu();
         renderAll();
+        syncTextNodeHeightToRenderedContent(node.id);
         syncEmbeddedState();
         return node;
       }
@@ -6314,6 +6639,8 @@
           width: size.width,
           height: size.height,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
+          fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_CHILD_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
           textAlign: DEFAULT_TEXT_ALIGN,
@@ -6440,6 +6767,8 @@
               width: round(node.width),
               height: round(node.height),
               fontFamily: normalizeFontFamily(node.fontFamily),
+              fontWeight: normalizeFontWeight(node.fontWeight),
+              fontStyle: normalizeFontStyle(node.fontStyle),
               fontSize: normalizeFontSize(node.fontSize, node.parentId === null),
               textColor: normalizeTextColor(node.textColor),
               textAlign: normalizeTextAlign(node.textAlign),
