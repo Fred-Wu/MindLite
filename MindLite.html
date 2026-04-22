@@ -2287,13 +2287,7 @@
           <div id="attachment-panel-title" class="attachment-panel-title" aria-label="0 files attached" title="0 files attached">0</div>
           <button id="attachment-panel-add" class="attachment-panel-add" type="button">Attach files</button>
         </div>
-        <div id="attachment-panel-direct-section" class="attachment-panel-section">
-          <div id="attachment-panel-direct-list" class="attachment-list"></div>
-        </div>
-        <div id="attachment-panel-child-section" class="attachment-panel-section" hidden>
-          <div class="attachment-panel-section-title">In child nodes</div>
-          <div id="attachment-panel-child-list" class="attachment-list"></div>
-        </div>
+        <div id="attachment-panel-direct-list" class="attachment-list"></div>
       </div>
       <input
         id="attachment-file-input"
@@ -2428,8 +2422,6 @@
   <script id="mindmap-data" type="application/json">
 {
   "mode": "editor",
-  "copyKind": "app",
-  "documentId": null,
   "nodes": [],
   "viewport": {
     "x": 0,
@@ -2449,7 +2441,6 @@
       "use strict";
 
       const APP_VERSION = "0.1.0";
-      const APP_COPY_KIND = "app";
       const MIN_NODE_WIDTH = 150;
       const MIN_NODE_HEIGHT = 72;
       const MAX_NODE_WIDTH = 420;
@@ -2532,10 +2523,7 @@
       const attachmentPanel = document.getElementById("attachment-panel");
       const attachmentPanelTitle = document.getElementById("attachment-panel-title");
       const attachmentPanelAddButton = document.getElementById("attachment-panel-add");
-      const attachmentPanelDirectSection = document.getElementById("attachment-panel-direct-section");
       const attachmentPanelDirectList = document.getElementById("attachment-panel-direct-list");
-      const attachmentPanelChildSection = document.getElementById("attachment-panel-child-section");
-      const attachmentPanelChildList = document.getElementById("attachment-panel-child-list");
       const attachmentFileInput = document.getElementById("attachment-file-input");
       const imageLightbox = document.getElementById("image-lightbox");
       const imageLightboxImage = document.getElementById("image-lightbox-image");
@@ -3173,14 +3161,12 @@
         try {
           const raw = stateScript.textContent.trim();
           if (!raw) {
-            return { mode: "editor", copyKind: APP_COPY_KIND, documentId: null, nodes: [], viewport: { x: 0, y: 0, scale: 1 } };
+            return { mode: "editor", nodes: [], viewport: { x: 0, y: 0, scale: 1 } };
           }
 
           const parsed = JSON.parse(raw);
           return {
             mode: parsed.mode === "shared" ? "shared" : "editor",
-            copyKind: APP_COPY_KIND,
-            documentId: null,
             nodes: Array.isArray(parsed.nodes) ? parsed.nodes.map(normalizeNode) : [],
             viewport: {
               x: Number.isFinite(parsed.viewport && parsed.viewport.x) ? parsed.viewport.x : 0,
@@ -3190,7 +3176,7 @@
           };
         } catch (error) {
           console.error("Unable to read embedded mind map data.", error);
-          return { mode: "editor", copyKind: APP_COPY_KIND, documentId: null, nodes: [], viewport: { x: 0, y: 0, scale: 1 } };
+          return { mode: "editor", nodes: [], viewport: { x: 0, y: 0, scale: 1 } };
         }
       }
 
@@ -3416,10 +3402,6 @@
 
       function isCentralNodeRecord(node) {
         return Boolean(node && node.parentId === null && node.type === "text" && !node.detached);
-      }
-
-      function getCentralNode() {
-        return getRootNodes().find((node) => isCentralNodeRecord(node)) || null;
       }
 
       function setSelection(nodeId, kind) {
@@ -4757,23 +4739,6 @@
         attachmentPanel.style.transform = "scale(" + scale + ")";
       }
 
-      function getNodeDisplayName(node) {
-        if (!node) {
-          return "Node";
-        }
-
-        if (node.type === "image") {
-          return "Image";
-        }
-
-        const text = String(node.text || "").trim();
-        if (text) {
-          return text;
-        }
-
-        return isCentralNodeRecord(node) ? "Central topic" : "Topic";
-      }
-
       function getAttachmentExtension(attachment) {
         const name = typeof attachment.name === "string" ? attachment.name : "";
         const match = name.match(/\.([a-z0-9]+)$/i);
@@ -4918,8 +4883,6 @@
           attachmentPanelAddButton.hidden = isSharedView();
         }
         renderAttachmentSection(attachmentPanelDirectList, visibleEntries);
-        attachmentPanelChildSection.hidden = true;
-        attachmentPanelChildList.innerHTML = "";
       }
 
       function syncAttachmentPanel() {
@@ -5706,8 +5669,6 @@
         closeAttachmentPanel();
         closeReferenceEditor();
         state.mode = exportMode;
-        state.copyKind = APP_COPY_KIND;
-        state.documentId = null;
         applyViewMode();
         hideContextMenu();
         if (exportMode === "shared") {
@@ -5719,8 +5680,6 @@
         const html = createExportHtml(exportMode);
 
         state.mode = previousMode;
-        state.copyKind = APP_COPY_KIND;
-        state.documentId = null;
         applyViewMode();
         selectionId = previousSelectionId;
         selectionKind = previousSelectionId ? previousSelectionKind : null;
@@ -5778,8 +5737,6 @@
         attachmentPanelNodeId = null;
         attachmentFileTargetNodeId = null;
         state.mode = "editor";
-        state.copyKind = APP_COPY_KIND;
-        state.documentId = null;
         state.nodes = [];
         state.viewport.x = 0;
         state.viewport.y = 0;
@@ -6385,8 +6342,6 @@
         stateScript.textContent = JSON.stringify(
           {
             mode: state.mode === "shared" ? "shared" : "editor",
-            copyKind: APP_COPY_KIND,
-            documentId: null,
             viewport: {
               x: round(state.viewport.x),
               y: round(state.viewport.y),
@@ -6638,10 +6593,6 @@
 
       function round(value) {
         return Math.round(value * 100) / 100;
-      }
-
-      function setStatus(message) {
-        void message;
       }
 
       function updateToolbar() {
