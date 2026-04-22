@@ -49,7 +49,7 @@ MindLite/
 
 - MindLite is currently a single-file app, which means `MindLite.html` is both the source file you edit and the app file you run or share.
 - Exported editable and share copies are ignored by `.gitignore`, which means generated files like `mindlite-save-...html` and `mindlite-share-...html` will not be tracked by Git if you save them in this folder.
-- The `working in progress` mark appears whenever an editable file contains mind map state or a changed canvas view, and the reset icon restores that file to the same blank state as the original app.
+- The `working in progress` mark appears whenever an editable file contains mind map state, and the reset icon restores that file to the same blank state as the original app.
 
 ## Licence
 
