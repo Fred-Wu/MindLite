@@ -53,8 +53,4 @@ MindLite/
 
 ## Licence
 
-No licence file is included yet.
-
-If you plan to publish this repository on GitHub for other people to use, copy, modify, or redistribute, add a licence file such as `MIT`, `Apache-2.0`, or `GPL-3.0`.
-
-Without a licence, other people can view the code on GitHub, but they do not automatically have permission to reuse it.
+MIT
