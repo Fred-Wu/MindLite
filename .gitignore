@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Editor temp files
+*.swp
+*.swo
+*~
+
+# MindLite exported copies
+mindlite-save-*.html
+mindlite-share-*.html
