@@ -4,26 +4,20 @@ MindLite is a self-contained browser-based mind mapping app distributed as a sin
 
 The project currently ships as [`MindLite.html`](./MindLite.html) with no build step, no package manager, and no external runtime dependencies. Open the file in a modern desktop browser and start working.
 
-## What It Does
+Current release: `v0.2.0`
+
+## Core Features
 
 - Creates a central topic and child nodes on an infinite canvas
 - Supports moving, resizing, folding, and reattaching branches
+- Supports text styling for nodes and hyperlinks
 - Saves editable mind maps as standalone HTML files
 - Exports read-only shareable HTML and landscape PDF output
 - Lets you pin hidden references and jump back to them from the toolbar
 - Supports pasting screenshots or images directly onto the canvas
 - Supports attaching PDF, Word, PowerPoint, Markdown, Quarto, and RTF documents to nodes
+- Adds hyperlinks with custom names that can float on the canvas, attach into a node file list, or append under a node
 - Renders inline LaTeX with the bundled KaTeX runtime
-
-## Project Layout
-
-```text
-MindLite/
-├── CHANGELOG.md
-├── MindLite.html
-├── README.md
-└── .gitignore
-```
 
 ## Run Locally
 
@@ -32,6 +26,7 @@ MindLite/
 3. Use the `+` control on a node to add child nodes.
 4. Drag empty canvas space to pan.
 5. Use the zoom controls, or hold `Ctrl` and scroll, to zoom.
+6. Click the hyperlink toolbar button to add a URL with a custom name.
 
 ## Editing and Sharing
 
@@ -43,6 +38,8 @@ MindLite/
 - Paste an image or screenshot onto the canvas to create an image node.
 - Drag a detached node onto another node to attach it as a child.
 - Drag supported files onto a node, or use the attachment button, to store file attachments inside the exported document.
+- `Ctrl+click` a hyperlink to open it.
+- Drag a hyperlink onto a node to choose whether it should attach into the file list or append under the node.
 
 
 ## Notes

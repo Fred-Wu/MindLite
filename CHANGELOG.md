@@ -2,6 +2,28 @@
 
 All notable changes to MindLite are documented in this file.
 
+## [0.2.0] - 2026-04-23
+
+### Added
+
+- Added hyperlink creation from the toolbar with URL and custom-name input.
+- Added hyperlink placement modes so links can remain free on the canvas, attach into a node file list, or append beneath a node.
+- Added hyperlink text styling support for font family, size, bold, and italic.
+- Added duplicate-name protection across hyperlinks and references.
+- Added stricter hyperlink URL validation with direct user feedback before saving.
+- Added "READ ONLY" marker in a shared HTML output.
+
+### Changed
+
+- Changed new text nodes to start middle-centered and narrower than before.
+- Changed the help and project documentation to describe the current hyperlink workflow and current app behavior.
+- Reduced the attachment button circle and child-node `+` button circle slightly.
+
+### Fixed
+
+- Fixed node dragging so fast pointer movement keeps a locked grabbing cursor and no longer drops visually back to the canvas mid-drag.
+- Fixed node edge dragging so starting a drag from the border more reliably moves the node instead of panning the canvas.
+
 ## [0.1.1] - 2026-04-22
 
 ### Added

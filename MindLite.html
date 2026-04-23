@@ -148,7 +148,7 @@
       pointer-events: none;
     }
 
-    .toolbar-working-mark {
+    .toolbar-status-mark {
       position: absolute;
       left: 0;
       top: calc(100% - 0.02rem);
@@ -162,6 +162,10 @@
       text-transform: uppercase;
       white-space: nowrap;
       pointer-events: none;
+    }
+
+    .toolbar-status-mark[data-status-kind="readonly"] {
+      color: rgba(73, 77, 92, 0.76);
     }
 
     .toolbar button {
@@ -716,6 +720,130 @@
       white-space: nowrap;
     }
 
+    .toolbar-link-wrap {
+      position: relative;
+    }
+
+    .toolbar-link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      color: var(--ink) !important;
+    }
+
+    .toolbar-link-button:hover,
+    .toolbar-link-button:focus-visible,
+    .toolbar-link-button.is-open {
+      color: var(--ink) !important;
+    }
+
+    .toolbar-link-button.is-open {
+      border-color: rgba(58, 50, 43, 0.32);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .toolbar-link-icon {
+      width: 20px;
+      height: 20px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .toolbar-link-editor {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      z-index: 40;
+      width: 220px;
+      padding: 10px;
+      border: 1px solid rgba(58, 50, 43, 0.12);
+      border-radius: 14px;
+      background: rgba(255, 250, 240, 0.98);
+      box-shadow: 0 18px 36px rgba(69, 52, 33, 0.16);
+      backdrop-filter: blur(10px);
+      transform: translateX(-50%);
+    }
+
+    .toolbar-link-editor[hidden] {
+      display: none;
+    }
+
+    .toolbar-link-fields {
+      display: grid;
+      gap: 8px;
+    }
+
+    .toolbar-link-field {
+      display: grid;
+      gap: 4px;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: rgba(31, 26, 21, 0.6);
+    }
+
+    .toolbar-link-input {
+      width: 100%;
+      appearance: none;
+      border: 1px solid rgba(58, 50, 43, 0.14);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--ink);
+      padding: 7px 8px;
+      font: inherit;
+      font-size: 0.76rem;
+      line-height: 1.25;
+      outline: none;
+    }
+
+    .toolbar-link-input:focus {
+      border-color: rgba(15, 118, 110, 0.34);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .toolbar-link-input.is-invalid {
+      border-color: rgba(220, 38, 38, 0.52);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
+    .toolbar-link-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .toolbar-link-actions button {
+      appearance: none;
+      border: 1px solid rgba(58, 50, 43, 0.14);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--ink);
+      padding: 4px 9px;
+      font: inherit;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      transform: none !important;
+    }
+
+    .toolbar-link-actions button:hover {
+      border-color: rgba(58, 50, 43, 0.28);
+    }
+
+    .toolbar-link-save {
+      background: rgba(37, 99, 235, 0.12) !important;
+      color: #1d4ed8 !important;
+    }
+
     .toolbar-layout-button {
       display: inline-flex;
       align-items: center;
@@ -900,11 +1028,13 @@
 
     body.is-shared-view #add-root-button,
     body.is-shared-view #save-controls,
+    body.is-shared-view #link-controls,
     body.is-shared-view #help-toggle-button,
     body.is-shared-view #text-style-controls,
     body.is-shared-view #text-panel,
     body.is-shared-view #context-menu,
     body.is-shared-view #reference-editor,
+    body.is-shared-view #link-drop-menu,
     body.is-shared-view .node-add,
     body.is-shared-view .node-resize,
     body.is-shared-view .node-pin,
@@ -931,6 +1061,13 @@
 
     .workspace.is-panning {
       cursor: grabbing;
+    }
+
+    .workspace.is-node-dragging,
+    .workspace.is-node-dragging *,
+    body.is-node-dragging,
+    body.is-node-dragging * {
+      cursor: grabbing !important;
     }
 
     .workspace:focus-visible {
@@ -1001,8 +1138,8 @@
       flex-direction: column;
       gap: 10px;
       padding: var(--node-pad-top) var(--node-pad-right) var(--node-pad-bottom) var(--node-pad-left);
-      min-width: 150px;
-      min-height: 72px;
+      min-width: 104px;
+      min-height: 48px;
       border: 2px solid color-mix(in srgb, var(--branch-color) 38%, rgba(58, 50, 43, 0.18));
       border-radius: 22px;
       background: transparent;
@@ -1226,9 +1363,9 @@
       position: absolute;
       z-index: 2;
       left: 50%;
-      top: -28px;
-      width: 28px;
-      height: 28px;
+      top: -26px;
+      width: 26px;
+      height: 26px;
       padding: 0;
       border: 0;
       border-radius: 999px;
@@ -1294,6 +1431,39 @@
     .node.file-drop-target {
       box-shadow: 0 0 0 8px rgba(15, 118, 110, 0.12), var(--shadow);
       border-color: color-mix(in srgb, var(--branch-color) 58%, rgba(15, 118, 110, 0.68));
+    }
+
+    .canvas-link {
+      position: absolute;
+      z-index: 8;
+      max-width: 240px;
+      padding: 4px 7px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #2563eb;
+      font: inherit;
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.25;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.14em;
+      text-align: left;
+      white-space: normal;
+      word-break: break-word;
+      cursor: pointer;
+      transform-origin: top left;
+      pointer-events: auto;
+    }
+
+    .canvas-link.is-selected {
+      background: rgba(37, 99, 235, 0.14);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .canvas-link.is-appended {
+      max-width: min(260px, calc(100vw - 80px));
     }
 
     .node-editor {
@@ -1378,11 +1548,11 @@
 
     .node-add {
       position: absolute;
-      right: -13px;
+      right: -12px;
       top: 50%;
       transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border: 0;
       border-radius: 999px;
       background: var(--branch-color);
@@ -1700,6 +1870,66 @@
       color: #0f766e;
     }
 
+    .link-drop-menu {
+      position: absolute;
+      z-index: 60;
+      width: 210px;
+      padding: 8px;
+      border: 1px solid rgba(58, 50, 43, 0.12);
+      border-radius: 14px;
+      background: rgba(255, 250, 240, 0.97);
+      box-shadow: 0 12px 28px rgba(69, 52, 33, 0.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .link-drop-menu[hidden] {
+      display: none;
+    }
+
+    .link-drop-menu-title {
+      margin-bottom: 6px;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: rgba(31, 26, 21, 0.56);
+    }
+
+    .link-drop-menu-actions {
+      display: grid;
+      gap: 6px;
+    }
+
+    .link-drop-menu-actions button {
+      appearance: none;
+      width: 100%;
+      border: 1px solid rgba(58, 50, 43, 0.14);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transform: none !important;
+    }
+
+    .link-drop-menu-actions button:hover {
+      border-color: rgba(58, 50, 43, 0.28);
+    }
+
+    .link-drop-attach {
+      background: rgba(37, 99, 235, 0.1) !important;
+      color: #1d4ed8 !important;
+    }
+
+    .link-drop-append {
+      background: rgba(15, 118, 110, 0.1) !important;
+      color: #0f766e !important;
+    }
+
     .attachment-panel {
       position: absolute;
       z-index: 4;
@@ -1797,6 +2027,10 @@
       border: 1px solid color-mix(in srgb, var(--attachment-row-color, #999999) 34%, rgba(58, 50, 43, 0.12));
     }
 
+    .attachment-item-button.is-link {
+      color: #2563eb;
+    }
+
     .attachment-item-button:hover,
     .attachment-item-button:focus-visible {
       background: rgba(255, 255, 255, 0.96);
@@ -1807,6 +2041,11 @@
     .attachment-item-button.is-colored:focus-visible {
       background: color-mix(in srgb, var(--attachment-row-color, #999999) 22%, rgba(255, 255, 255, 0.96));
       outline: none;
+    }
+
+    .attachment-item-button.is-link.is-colored:hover,
+    .attachment-item-button.is-link.is-colored:focus-visible {
+      background: color-mix(in srgb, var(--attachment-row-color, #999999) 20%, rgba(239, 246, 255, 0.98));
     }
 
     .attachment-item-meta {
@@ -1828,6 +2067,11 @@
       text-transform: uppercase;
     }
 
+    .attachment-item-type.is-link {
+      background: rgba(37, 99, 235, 0.12);
+      color: #1d4ed8;
+    }
+
     .attachment-item-name {
       min-width: 0;
       display: inline-flex;
@@ -1837,6 +2081,13 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .attachment-item-name.is-link {
+      color: #2563eb;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.14em;
     }
 
     .attachment-item-remove {
@@ -2160,7 +2411,7 @@
           <path class="logo-3" d="M46 25 C 54 27, 58 27, 66 25"></path>
         </svg>
         <span id="toolbar-wordmark-wrap" class="toolbar-wordmark-wrap">
-          <span class="toolbar-wordmark">MindLit<span class="toolbar-wordmark-end">e<span id="toolbar-version" class="toolbar-version" aria-label="MindLite version">v0.1.0</span></span></span>
+          <span class="toolbar-wordmark">MindLit<span class="toolbar-wordmark-end">e<span id="toolbar-version" class="toolbar-version" aria-label="MindLite version">v0.2.0</span></span></span>
         </span>
       </div>
       <button id="add-root-button" class="toolbar-icon-button" type="button" aria-label="Create central node" title="Create central node">
@@ -2178,6 +2429,31 @@
           <rect x="15" y="17" width="6" height="5" rx="0.8"></rect>
         </svg>
       </button>
+      <div id="link-controls" class="toolbar-link-wrap">
+        <button id="link-button" class="toolbar-icon-button toolbar-link-button" type="button" aria-label="Add hyperlink" title="Add hyperlink">
+          <svg class="toolbar-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.2 13.8 L 13.8 10.2"></path>
+            <path d="M8 15.9 L 6.8 17.1 A 3.2 3.2 0 1 1 2.3 12.6 L 4.6 10.3"></path>
+            <path d="M15.4 13.7 L 17.7 11.4 A 3.2 3.2 0 1 0 13.2 6.9 L 12 8.1"></path>
+          </svg>
+        </button>
+        <div id="link-editor" class="toolbar-link-editor" hidden>
+          <div class="toolbar-link-fields">
+            <label class="toolbar-link-field" for="link-url-input">
+              URL
+              <input id="link-url-input" class="toolbar-link-input" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://example.com">
+            </label>
+            <label class="toolbar-link-field" for="link-label-input">
+              Name
+              <input id="link-label-input" class="toolbar-link-input" type="text" autocomplete="off" spellcheck="false" placeholder="Example">
+            </label>
+          </div>
+          <div class="toolbar-link-actions">
+            <button id="link-cancel-button" type="button">Cancel</button>
+            <button id="link-save-button" class="toolbar-link-save" type="button">Add link</button>
+          </div>
+        </div>
+      </div>
       <div id="save-controls" class="toolbar-save-wrap">
         <button id="save-button" class="toolbar-icon-button toolbar-save-button" type="button" aria-label="Save options" title="Save options">
           <svg class="toolbar-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -2398,6 +2674,14 @@
       <div id="context-menu" class="context-menu" hidden>
         <button id="context-delete-button" type="button">Delete</button>
       </div>
+      <div id="link-drop-menu" class="link-drop-menu" hidden>
+        <div class="link-drop-menu-title">Drop Link Onto Node</div>
+        <div class="link-drop-menu-actions">
+          <button id="link-drop-attach-button" class="link-drop-attach" type="button">Attach</button>
+          <button id="link-drop-append-button" class="link-drop-append" type="button">Append</button>
+          <button id="link-drop-cancel-button" type="button">Cancel</button>
+        </div>
+      </div>
       <div id="reference-editor" class="reference-editor" hidden>
         <label class="reference-editor-label" for="reference-editor-input">Reference</label>
         <input id="reference-editor-input" class="reference-editor-input" type="text" autocomplete="off" spellcheck="false">
@@ -2535,6 +2819,20 @@
             </p>
           </section>
           <section class="help-panel-section">
+            <h3>Hyperlinks</h3>
+            <p>
+              Click
+              <span class="help-inline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M10.2 13.8 L 13.8 10.2"></path>
+                  <path d="M8 15.9 L 6.8 17.1 A 3.2 3.2 0 1 1 2.3 12.6 L 4.6 10.3"></path>
+                  <path d="M15.4 13.7 L 17.7 11.4 A 3.2 3.2 0 1 0 13.2 6.9 L 12 8.1"></path>
+                </svg>
+              </span>
+              to add a URL with a custom name. Drag the hyperlink anywhere on the canvas, or drop it onto a node to attach it to the file list or append it beneath the node.
+            </p>
+          </section>
+          <section class="help-panel-section">
             <h3>Render Math</h3>
             <p>Type inline LaTeX in a node using $...$. When you stop editing, MindLite renders it with KaTeX. Click the node again to edit the raw LaTeX.</p>
           </section>
@@ -2547,6 +2845,7 @@
 {
   "mode": "editor",
   "nodes": [],
+  "links": [],
   "viewport": {
     "x": 0,
     "y": 0,
@@ -2564,17 +2863,24 @@
     (() => {
       "use strict";
 
-      const APP_VERSION = "0.1.1";
-      const MIN_NODE_WIDTH = 150;
-      const MIN_NODE_HEIGHT = 72;
+      const APP_VERSION = "0.2.0";
+      const MIN_NODE_WIDTH = 104;
+      const MIN_NODE_HEIGHT = 48;
       const MAX_NODE_WIDTH = 420;
       const MAX_NODE_HEIGHT = 260;
+      const DEFAULT_ROOT_NODE_WIDTH = 160;
+      const DEFAULT_CHILD_NODE_WIDTH = 120;
       const MIN_IMAGE_NODE_WIDTH = 140;
       const MIN_IMAGE_NODE_HEIGHT = 100;
       const MAX_IMAGE_NODE_WIDTH = 640;
       const MAX_IMAGE_NODE_HEIGHT = 480;
       const HORIZONTAL_GAP = 120;
       const VERTICAL_GAP = 30;
+      const APPENDED_LINK_INSET_X = 8;
+      const APPENDED_LINK_OFFSET_Y = 4;
+      const APPENDED_LINK_GAP_X = 8;
+      const APPENDED_LINK_GAP_Y = 4;
+      const MIN_APPENDED_LINK_WRAP_WIDTH = 48;
       const ROOT_KEY = "__root__";
       const ROOT_COLOR = "#16a34a";
       const BRANCH_COLORS = ["#e74c3c", "#f39c12", "#16a34a", "#2563eb", "#8b5cf6", "#ec4899"];
@@ -2585,6 +2891,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const DEFAULT_TEXT_COLOR = "#1f1a15";
       const DEFAULT_TEXT_ALIGN = "left";
       const DEFAULT_TEXT_V_ALIGN = "top";
+      const DEFAULT_NEW_NODE_TEXT_ALIGN = "center";
+      const DEFAULT_NEW_NODE_TEXT_V_ALIGN = "middle";
       const DEFAULT_ROOT_FONT_SIZE = 16;
       const DEFAULT_CHILD_FONT_SIZE = 16;
       const MIN_TEXT_SIZE = 12;
@@ -2652,6 +2960,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const toolbarWordmarkWrap = document.getElementById("toolbar-wordmark-wrap");
       const toolbarVersion = document.getElementById("toolbar-version");
       const addRootButton = document.getElementById("add-root-button");
+      const linkControls = document.getElementById("link-controls");
+      const linkButton = document.getElementById("link-button");
+      const linkEditor = document.getElementById("link-editor");
+      const linkUrlInput = document.getElementById("link-url-input");
+      const linkLabelInput = document.getElementById("link-label-input");
+      const linkCancelButton = document.getElementById("link-cancel-button");
+      const linkSaveButton = document.getElementById("link-save-button");
       const clearButton = document.getElementById("clear-button");
       const saveControls = document.getElementById("save-controls");
       const saveButton = document.getElementById("save-button");
@@ -2682,6 +2997,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const textLayoutMenu = document.getElementById("text-layout-menu");
       const contextMenu = document.getElementById("context-menu");
       const contextDeleteButton = document.getElementById("context-delete-button");
+      const linkDropMenu = document.getElementById("link-drop-menu");
+      const linkDropAttachButton = document.getElementById("link-drop-attach-button");
+      const linkDropAppendButton = document.getElementById("link-drop-append-button");
+      const linkDropCancelButton = document.getElementById("link-drop-cancel-button");
       const referenceEditor = document.getElementById("reference-editor");
       const referenceEditorInput = document.getElementById("reference-editor-input");
       const referenceEditorClearButton = document.getElementById("reference-editor-clear");
@@ -2704,7 +3023,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       let selectionKind = null;
       let interaction = null;
       let currentLayout = null;
+      let appendedCanvasLinkLayoutMap = null;
       let nodeCounter = getNextCounter(state.nodes, "node");
+      let linkCounter = getNextCounter(state.links, "link");
       let attachmentCounter = getNextAttachmentCounter(state.nodes);
       let focusAfterRenderId = null;
       let focusAfterRenderSelection = null;
@@ -2722,7 +3043,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       let referenceEditorNodeId = null;
       let attachmentPanelNodeId = null;
       let attachmentFileTargetNodeId = null;
+      let pendingLinkDrop = null;
+      let suppressCanvasLinkClickId = null;
+      let activeNodeDragPointerId = null;
       let helpPanelOpen = !isSharedView();
+      reconcileCanvasLinksWithNodes();
       syncSvgSize();
       applyViewMode();
       renderAll();
@@ -2736,6 +3061,94 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           const node = createRootNode();
           focusNodeEditor(node.id);
+        });
+      }
+
+      if (linkButton) {
+        linkButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (isSharedView() || !linkEditor) {
+            return;
+          }
+
+          hideSaveMenu();
+          hideReferenceMenu();
+          hideTextColorMenu();
+          hideTextLayoutMenu();
+          closeLinkDropMenu();
+          const nextHidden = !linkEditor.hidden;
+          if (nextHidden) {
+            closeLinkEditor();
+            return;
+          }
+          openLinkEditor();
+        });
+      }
+
+      if (linkSaveButton) {
+        linkSaveButton.addEventListener("click", () => {
+          commitLinkEditor();
+        });
+      }
+
+      if (linkCancelButton) {
+        linkCancelButton.addEventListener("click", () => {
+          closeLinkEditor();
+        });
+      }
+
+      [linkUrlInput, linkLabelInput].forEach((input) => {
+        if (!input) {
+          return;
+        }
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            commitLinkEditor();
+            return;
+          }
+
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeLinkEditor();
+          }
+        });
+      });
+
+      if (linkUrlInput) {
+        linkUrlInput.addEventListener("input", () => {
+          setLinkUrlInputError("");
+        });
+
+        linkUrlInput.addEventListener("blur", () => {
+          validateLinkUrlInput({ required: false, normalize: true });
+        });
+      }
+
+      if (linkDropAttachButton) {
+        linkDropAttachButton.addEventListener("click", () => {
+          if (!pendingLinkDrop) {
+            closeLinkDropMenu();
+            return;
+          }
+          attachCanvasLinkToNode(pendingLinkDrop.linkId, pendingLinkDrop.nodeId);
+        });
+      }
+
+      if (linkDropAppendButton) {
+        linkDropAppendButton.addEventListener("click", () => {
+          if (!pendingLinkDrop) {
+            closeLinkDropMenu();
+            return;
+          }
+          appendCanvasLinkToNode(pendingLinkDrop.linkId, pendingLinkDrop.nodeId);
+        });
+      }
+
+      if (linkDropCancelButton) {
+        linkDropCancelButton.addEventListener("click", () => {
+          closeLinkDropMenu();
         });
       }
 
@@ -2874,7 +3287,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       if (fontFamilySelect) {
         fontFamilySelect.addEventListener("change", () => {
-          updateSelectedNodeTextStyle({
+          updateSelectedTextStyle({
             fontFamily: normalizeFontFamily(fontFamilySelect.value)
           });
         });
@@ -2882,8 +3295,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       if (fontSizeSelect) {
         fontSizeSelect.addEventListener("change", () => {
-          updateSelectedNodeTextStyle({
-            fontSize: normalizeFontSize(fontSizeSelect.value, Boolean(getSelectedNode() && getSelectedNode().parentId === null))
+          const target = getTextStyleTarget();
+          updateSelectedTextStyle({
+            fontSize: normalizeFontSize(fontSizeSelect.value, Boolean(target && target.kind === "node" && target.record.parentId === null))
           });
         });
       }
@@ -2912,26 +3326,26 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       if (textBoldButton) {
         textBoldButton.addEventListener("click", () => {
-          const node = getSelectedNode();
-          if (!node || node.type === "image" || textBoldButton.disabled) {
+          const target = getTextStyleTarget();
+          if (!target || textBoldButton.disabled) {
             return;
           }
 
-          updateSelectedNodeTextStyle({
-            fontWeight: normalizeFontWeight(node.fontWeight) === "bold" ? "normal" : "bold"
+          updateSelectedTextStyle({
+            fontWeight: normalizeFontWeight(target.record.fontWeight) === "bold" ? "normal" : "bold"
           });
         });
       }
 
       if (textItalicButton) {
         textItalicButton.addEventListener("click", () => {
-          const node = getSelectedNode();
-          if (!node || node.type === "image" || textItalicButton.disabled) {
+          const target = getTextStyleTarget();
+          if (!target || textItalicButton.disabled) {
             return;
           }
 
-          updateSelectedNodeTextStyle({
-            fontStyle: normalizeFontStyle(node.fontStyle) === "italic" ? "normal" : "italic"
+          updateSelectedTextStyle({
+            fontStyle: normalizeFontStyle(target.record.fontStyle) === "italic" ? "normal" : "italic"
           });
         });
       }
@@ -2955,7 +3369,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       if (textColorGrid) {
         textColorGrid.querySelectorAll("[data-color]").forEach((button) => {
           button.addEventListener("click", () => {
-            updateSelectedNodeTextStyle({
+            updateSelectedTextStyle({
               textColor: normalizeTextColor(button.dataset.color)
             });
           });
@@ -2964,7 +3378,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       if (textColorInput) {
         textColorInput.addEventListener("input", () => {
-          updateSelectedNodeTextStyle({
+          updateSelectedTextStyle({
             textColor: normalizeTextColor(textColorInput.value)
           });
         });
@@ -2990,7 +3404,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         textLayoutMenu.querySelectorAll("[data-align][data-valign]").forEach((button) => {
           button.addEventListener("click", () => {
             hideTextLayoutMenu();
-            updateSelectedNodeTextStyle({
+            updateSelectedTextStyle({
               textAlign: normalizeTextAlign(button.dataset.align),
               textVAlign: normalizeTextVAlign(button.dataset.valign)
             });
@@ -3065,6 +3479,17 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const clickedBoard = target === workspace || target === linkLayer || target === nodeLayer;
         if (!clickedBoard) {
           return;
+        }
+
+        if (!isSharedView()) {
+          const dragTargetId = getNodeBorderDragTarget(toWorldPoint(event.clientX, event.clientY));
+          if (dragTargetId) {
+            const dragTargetNode = findNode(dragTargetId);
+            if (dragTargetNode) {
+              beginNodeBranchDrag(dragTargetNode, event);
+              return;
+            }
+          }
         }
 
         clearSelection();
@@ -3168,6 +3593,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           hideSaveMenu();
         }
 
+        if (linkEditor && linkButton && !linkEditor.hidden && !linkEditor.contains(event.target) && event.target !== linkButton && !linkButton.contains(event.target)) {
+          closeLinkEditor();
+        }
+
         if (textColorMenu && textColorButton && !textColorMenu.hidden && !textColorMenu.contains(event.target) && event.target !== textColorButton && !textColorButton.contains(event.target)) {
           hideTextColorMenu();
         }
@@ -3198,6 +3627,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           closeAttachmentPanel();
         }
 
+        if (
+          linkDropMenu &&
+          !linkDropMenu.hidden &&
+          !linkDropMenu.contains(event.target)
+        ) {
+          closeLinkDropMenu();
+        }
+
         if (!contextMenu || contextMenu.hidden) {
           return;
         }
@@ -3225,14 +3662,45 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           return;
         }
 
+        const point = toWorldPoint(event.clientX, event.clientY);
+        const dx = point.x - interaction.startPoint.x;
+        const dy = point.y - interaction.startPoint.y;
+
+        if (interaction.type === "move-canvas-link") {
+          const link = findCanvasLink(interaction.id);
+          if (!link) {
+            return;
+          }
+
+          if (!interaction.moved && Math.hypot(dx, dy) > 5) {
+            interaction.moved = true;
+          }
+
+          if (!interaction.moved) {
+            return;
+          }
+
+          if (interaction.fromMode === "appended" && !interaction.detached) {
+            link.mode = "floating";
+            link.hostNodeId = null;
+            link.x = interaction.origin.x;
+            link.y = interaction.origin.y;
+            link.order = getNextCanvasLinkOrder(null);
+            interaction.detached = true;
+          }
+
+          link.x = interaction.origin.x + dx;
+          link.y = interaction.origin.y + dy;
+          attachTargetId = getCanvasLinkDropTarget(point);
+          renderAll();
+          syncEmbeddedState();
+          return;
+        }
+
         const node = findNode(interaction.id);
         if (!node) {
           return;
         }
-
-        const point = toWorldPoint(event.clientX, event.clientY);
-        const dx = point.x - interaction.startPoint.x;
-        const dy = point.y - interaction.startPoint.y;
 
         if (interaction.type === "move-branch") {
           if (node.parentId === null) {
@@ -3268,16 +3736,57 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       window.addEventListener("pointerup", (event) => {
         if (!interaction) {
+          clearNodeDragLock();
           return;
         }
 
         const isPan = interaction.type === "pan-canvas";
         const completedInteraction = interaction;
-        const node = isPan ? null : findNode(interaction.id);
+        const isCanvasLinkMove = interaction.type === "move-canvas-link";
+        const node = isPan || isCanvasLinkMove ? null : findNode(interaction.id);
         interaction = null;
         workspace.classList.remove("is-panning");
+        clearNodeDragLock();
 
-        if (isPan || !node) {
+        if (isPan) {
+          return;
+        }
+
+        if (isCanvasLinkMove) {
+          const link = findCanvasLink(completedInteraction.id);
+          suppressCanvasLinkClickId = null;
+          attachTargetId = null;
+          if (!link) {
+            closeLinkDropMenu();
+            renderAll();
+            return;
+          }
+
+          if (!completedInteraction.moved) {
+            closeLinkDropMenu();
+            hideContextMenu();
+            applySelectionState();
+            if (completedInteraction.openOnRelease || event.ctrlKey) {
+              openCanvasLink(link.url);
+            }
+            return;
+          }
+
+          const targetId = getCanvasLinkDropTarget(toWorldPoint(event.clientX, event.clientY));
+          if (targetId) {
+            openLinkDropMenu(link.id, targetId, event.clientX, event.clientY);
+            renderAll();
+            syncEmbeddedState();
+            return;
+          }
+
+          closeLinkDropMenu();
+          renderAll();
+          syncEmbeddedState();
+          return;
+        }
+
+        if (!node) {
           return;
         }
 
@@ -3304,10 +3813,31 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
       });
 
+      window.addEventListener("pointercancel", () => {
+        const hadInteraction = Boolean(interaction);
+        interaction = null;
+        attachTargetId = null;
+        workspace.classList.remove("is-panning");
+        clearNodeDragLock();
+        if (hadInteraction) {
+          renderAll();
+        }
+      });
+
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           if (!imageLightbox.hidden) {
             closeImageLightbox();
+            return;
+          }
+
+          if (linkDropMenu && !linkDropMenu.hidden) {
+            closeLinkDropMenu();
+            return;
+          }
+
+          if (linkEditor && !linkEditor.hidden) {
+            closeLinkEditor();
             return;
           }
 
@@ -3323,6 +3853,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           interaction = null;
           workspace.classList.remove("is-panning");
+          clearNodeDragLock();
           clearSelection();
           attachTargetId = null;
           hideContextMenu();
@@ -3359,6 +3890,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           return;
         }
 
+        if (selectionKind === "named-link") {
+          deleteCanvasLink(selectionId);
+          return;
+        }
+
         deleteNodeTree(selectionId);
       });
 
@@ -3380,13 +3916,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         try {
           const raw = stateScript.textContent.trim();
           if (!raw) {
-            return { mode: "editor", nodes: [], viewport: { x: 0, y: 0, scale: 1 } };
+            return { mode: "editor", nodes: [], links: [], viewport: { x: 0, y: 0, scale: 1 } };
           }
 
           const parsed = JSON.parse(raw);
           return {
             mode: parsed.mode === "shared" ? "shared" : "editor",
             nodes: Array.isArray(parsed.nodes) ? parsed.nodes.map(normalizeNode) : [],
+            links: Array.isArray(parsed.links) ? parsed.links.map(normalizeCanvasLink) : [],
             viewport: {
               x: Number.isFinite(parsed.viewport && parsed.viewport.x) ? parsed.viewport.x : 0,
               y: Number.isFinite(parsed.viewport && parsed.viewport.y) ? parsed.viewport.y : 0,
@@ -3395,7 +3932,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           };
         } catch (error) {
           console.error("Unable to read embedded mind map data.", error);
-          return { mode: "editor", nodes: [], viewport: { x: 0, y: 0, scale: 1 } };
+          return { mode: "editor", nodes: [], links: [], viewport: { x: 0, y: 0, scale: 1 } };
         }
       }
 
@@ -3404,35 +3941,57 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function hasWorkingState() {
-        return !isSharedView() && state.nodes.length > 0;
+        return !isSharedView() && (state.nodes.length > 0 || state.links.length > 0);
       }
 
-      function removeToolbarWorkingMark() {
-        const existing = document.getElementById("toolbar-working-mark");
+      function removeToolbarStatusMark() {
+        const existing = document.getElementById("toolbar-status-mark");
         if (existing) {
           existing.remove();
         }
       }
 
-      function syncToolbarWorkingMark() {
+      function getToolbarStatusMarkConfig() {
+        if (isSharedView()) {
+          return {
+            label: "READ ONLY",
+            title: "Shared HTML view",
+            ariaLabel: "read only"
+          };
+        }
+
+        if (hasWorkingState()) {
+          return {
+            label: "working in progress",
+            title: "Current working state",
+            ariaLabel: "working in progress"
+          };
+        }
+
+        return null;
+      }
+
+      function syncToolbarStatusMark() {
         if (!toolbarWordmarkWrap) {
           return;
         }
 
-        const shouldShow = hasWorkingState() && !isSharedView();
-        const existing = document.getElementById("toolbar-working-mark");
+        const statusConfig = getToolbarStatusMarkConfig();
+        const existing = document.getElementById("toolbar-status-mark");
 
-        if (!shouldShow) {
-          removeToolbarWorkingMark();
+        if (!statusConfig) {
+          removeToolbarStatusMark();
           return;
         }
 
         const mark = existing || document.createElement("span");
-        mark.id = "toolbar-working-mark";
-        mark.className = "toolbar-working-mark";
-        mark.textContent = "working in progress";
-        mark.title = "Current working state";
-        mark.setAttribute("aria-label", "working in progress");
+        const statusKind = isSharedView() ? "readonly" : "working";
+        mark.id = "toolbar-status-mark";
+        mark.className = "toolbar-status-mark";
+        mark.textContent = statusConfig.label;
+        mark.title = statusConfig.title;
+        mark.setAttribute("aria-label", statusConfig.ariaLabel);
+        mark.setAttribute("data-status-kind", statusKind);
 
         if (!existing) {
           toolbarWordmarkWrap.appendChild(mark);
@@ -3446,7 +4005,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           toolbarVersion.setAttribute("aria-label", "MindLite version " + APP_VERSION);
         }
 
-        syncToolbarWorkingMark();
+        syncToolbarStatusMark();
       }
 
       function applyViewMode() {
@@ -3454,6 +4013,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         updateDocumentIdentityUi();
         if (addRootButton) {
           addRootButton.hidden = isSharedView();
+        }
+        if (linkControls) {
+          linkControls.hidden = isSharedView();
         }
         if (clearButton) {
           clearButton.hidden = isSharedView();
@@ -3469,10 +4031,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         hideSaveMenu();
         hideReferenceMenu();
+        closeLinkEditor();
+        closeLinkDropMenu();
         closeReferenceEditor();
         updateHelpPanelVisibility();
         if (isSharedView()) {
           hideTextColorMenu();
+          hideTextLayoutMenu();
           hideContextMenu();
         }
       }
@@ -3511,13 +4076,38 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         };
       }
 
+      function normalizeCanvasLink(link, index) {
+        const normalizedUrl = normalizeLinkUrl(link && link.url);
+        const fallbackX = 56 + (index * 24);
+        const fallbackY = 84 + (index * 24);
+        const mode = normalizeCanvasLinkMode(link && link.mode, link && link.hostNodeId);
+        return {
+          id: typeof link.id === "string" ? link.id : "link-" + (index + 1),
+          url: normalizedUrl,
+          label: normalizeCanvasLinkLabel(link && link.label, normalizedUrl),
+          fontFamily: normalizeFontFamily(link && link.fontFamily),
+          fontWeight: link && typeof link.fontWeight !== "undefined" ? normalizeFontWeight(link.fontWeight) : "bold",
+          fontStyle: normalizeFontStyle(link && link.fontStyle),
+          fontSize: normalizeFontSize(link && link.fontSize, false),
+          x: Number.isFinite(link && link.x) ? link.x : fallbackX,
+          y: Number.isFinite(link && link.y) ? link.y : fallbackY,
+          mode: mode,
+          hostNodeId: mode === "appended" && typeof link.hostNodeId === "string" ? link.hostNodeId : null,
+          order: Number.isFinite(link && link.order) ? link.order : index
+        };
+      }
+
       function normalizeAttachment(attachment, index) {
+        const kind = normalizeAttachmentKind(attachment);
+        const normalizedUrl = kind === "url" ? normalizeLinkUrl(attachment && attachment.url) : "";
         return {
           id: typeof attachment.id === "string" ? attachment.id : "attachment-" + (index + 1),
-          name: typeof attachment.name === "string" && attachment.name.trim() ? attachment.name.trim() : "Attachment",
-          type: typeof attachment.type === "string" ? attachment.type : "",
-          data: typeof attachment.data === "string" ? attachment.data : "",
-          size: Number.isFinite(attachment.size) ? attachment.size : 0
+          kind: kind,
+          name: typeof attachment.name === "string" && attachment.name.trim() ? attachment.name.trim() : (kind === "url" ? normalizeCanvasLinkLabel("", normalizedUrl) : "Attachment"),
+          type: kind === "file" && typeof attachment.type === "string" ? attachment.type : "",
+          data: kind === "file" && typeof attachment.data === "string" ? attachment.data : "",
+          size: kind === "file" && Number.isFinite(attachment.size) ? attachment.size : 0,
+          url: normalizedUrl
         };
       }
 
@@ -3548,6 +4138,136 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           .sort((left, right) => left.order - right.order);
       }
 
+      function findCanvasLink(linkId) {
+        return state.links.find((link) => link.id === linkId) || null;
+      }
+
+      function getSelectedCanvasLink() {
+        return selectionKind === "named-link" && selectionId ? findCanvasLink(selectionId) : null;
+      }
+
+      function getCanvasLinksForHost(nodeId) {
+        return state.links
+          .filter((link) => link.mode === "appended" && link.hostNodeId === nodeId)
+          .sort((left, right) => left.order - right.order);
+      }
+
+      function createCanvasLinkMeasureElement() {
+        const measureEl = document.createElement("button");
+        measureEl.type = "button";
+        measureEl.className = "canvas-link is-appended";
+        measureEl.setAttribute("aria-hidden", "true");
+        measureEl.tabIndex = -1;
+        measureEl.style.position = "fixed";
+        measureEl.style.left = "-100000px";
+        measureEl.style.top = "-100000px";
+        measureEl.style.transform = "none";
+        measureEl.style.visibility = "hidden";
+        measureEl.style.pointerEvents = "none";
+        measureEl.style.zIndex = "-1";
+        return measureEl;
+      }
+
+      function measureCanvasLinkBox(link, maxWidth, measureEl) {
+        if (!measureEl) {
+          return {
+            width: MIN_APPENDED_LINK_WRAP_WIDTH,
+            height: 24,
+            maxWidth: MIN_APPENDED_LINK_WRAP_WIDTH
+          };
+        }
+
+        const constrainedWidth = Math.max(MIN_APPENDED_LINK_WRAP_WIDTH, round(maxWidth));
+        measureEl.textContent = String(link && link.label ? link.label : "");
+        measureEl.style.width = "auto";
+        measureEl.style.maxWidth = constrainedWidth + "px";
+        applyCanvasLinkTextStyles(measureEl, link);
+        const rect = measureEl.getBoundingClientRect();
+        return {
+          width: Math.max(MIN_APPENDED_LINK_WRAP_WIDTH, Math.ceil(rect.width)),
+          height: Math.max(20, Math.ceil(rect.height)),
+          maxWidth: constrainedWidth
+        };
+      }
+
+      function buildAppendedCanvasLinkLayoutMap() {
+        const layoutMap = new Map();
+        if (!currentLayout || !currentLayout.positions || !document.body) {
+          return layoutMap;
+        }
+
+        const measureEl = createCanvasLinkMeasureElement();
+        document.body.appendChild(measureEl);
+
+        try {
+          for (const node of state.nodes) {
+            const hostPosition = currentLayout.positions.get(node.id);
+            if (!hostPosition) {
+              continue;
+            }
+
+            const hostLinks = getCanvasLinksForHost(node.id);
+            if (!hostLinks.length) {
+              continue;
+            }
+
+            const availableWidth = Math.max(MIN_APPENDED_LINK_WRAP_WIDTH, node.width - APPENDED_LINK_INSET_X * 2);
+            let rowX = 0;
+            let rowY = 0;
+            let rowHeight = 0;
+
+            for (const link of hostLinks) {
+              const measured = measureCanvasLinkBox(link, availableWidth, measureEl);
+              if (rowX > 0 && rowX + measured.width > availableWidth) {
+                rowX = 0;
+                rowY += rowHeight + APPENDED_LINK_GAP_Y;
+                rowHeight = 0;
+              }
+
+              layoutMap.set(link.id, {
+                x: round(hostPosition.x + APPENDED_LINK_INSET_X + rowX),
+                y: round(hostPosition.y + node.height + APPENDED_LINK_OFFSET_Y + rowY),
+                width: measured.width,
+                height: measured.height,
+                maxWidth: measured.maxWidth
+              });
+
+              rowX += measured.width + APPENDED_LINK_GAP_X;
+              rowHeight = Math.max(rowHeight, measured.height);
+            }
+          }
+        } finally {
+          measureEl.remove();
+        }
+
+        return layoutMap;
+      }
+
+      function getAppendedCanvasLinkLayout(link) {
+        if (!link || link.mode !== "appended" || !link.hostNodeId) {
+          return null;
+        }
+
+        if (!appendedCanvasLinkLayoutMap) {
+          appendedCanvasLinkLayoutMap = buildAppendedCanvasLinkLayoutMap();
+        }
+
+        return appendedCanvasLinkLayoutMap.get(link.id) || null;
+      }
+
+      function getNextCanvasLinkOrder(hostNodeId) {
+        return (
+          state.links
+            .filter((link) => {
+              if (hostNodeId) {
+                return link.mode === "appended" && link.hostNodeId === hostNodeId;
+              }
+              return link.mode === "floating";
+            })
+            .reduce((maxOrder, link) => Math.max(maxOrder, Number.isFinite(link.order) ? link.order : -1), -1) + 1
+        );
+      }
+
       function getReferenceNodes() {
         return getRootNodes()
           .filter((node) => isCentralNodeRecord(node) && String(node.referenceText || "").trim())
@@ -3563,6 +4283,244 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       function getNodeAttachments(node) {
         return Array.isArray(node && node.attachments) ? node.attachments : [];
+      }
+
+      function normalizeCanvasLinkMode(value, hostNodeId) {
+        return value === "appended" && typeof hostNodeId === "string" ? "appended" : "floating";
+      }
+
+      function normalizeCanvasLinkLabel(value, url) {
+        const trimmed = typeof value === "string" ? value.trim() : "";
+        if (trimmed) {
+          return trimmed;
+        }
+        try {
+          const target = new URL(normalizeLinkUrl(url));
+          return target.hostname.replace(/^www\./i, "") || target.toString();
+        } catch (error) {
+          return String(url || "").trim() || "Link";
+        }
+      }
+
+      function normalizeNamedItemKey(value) {
+        return typeof value === "string" ? value.trim().replace(/\s+/g, " ").toLowerCase() : "";
+      }
+
+      function findNamedItemConflict(name, options) {
+        const normalizedName = normalizeNamedItemKey(name);
+        if (!normalizedName) {
+          return null;
+        }
+
+        const excludeNodeId = options && typeof options.excludeNodeId === "string" ? options.excludeNodeId : null;
+        const excludeLinkId = options && typeof options.excludeLinkId === "string" ? options.excludeLinkId : null;
+
+        for (const link of state.links) {
+          if (!link || link.id === excludeLinkId) {
+            continue;
+          }
+
+          const linkLabel = normalizeCanvasLinkLabel(link.label, link.url);
+          if (normalizeNamedItemKey(linkLabel) === normalizedName) {
+            return {
+              kind: "hyperlink",
+              label: linkLabel,
+              id: link.id
+            };
+          }
+        }
+
+        for (const node of state.nodes) {
+          if (!node || node.id === excludeNodeId || !isCentralNodeRecord(node)) {
+            continue;
+          }
+
+          const referenceText = String(node.referenceText || "").trim();
+          if (!referenceText) {
+            continue;
+          }
+
+          if (normalizeNamedItemKey(referenceText) === normalizedName) {
+            return {
+              kind: "reference",
+              label: referenceText,
+              id: node.id
+            };
+          }
+        }
+
+        return null;
+      }
+
+      function buildNamedItemConflictMessage(name, conflict) {
+        return "\"" + String(name || "").trim() + "\" is already used by a " + conflict.kind + ". Enter a different name.";
+      }
+
+      function isValidIpv4Address(value) {
+        const parts = String(value || "").split(".");
+        if (parts.length !== 4) {
+          return false;
+        }
+
+        return parts.every((part) => /^(0|[1-9]\d{0,2})$/.test(part) && Number(part) <= 255);
+      }
+
+      function isLikelyValidLinkHostname(value) {
+        const hostname = String(value || "").trim().toLowerCase();
+        if (!hostname) {
+          return false;
+        }
+
+        if (hostname === "localhost" || hostname.includes(":") || isValidIpv4Address(hostname)) {
+          return true;
+        }
+
+        if (!hostname.includes(".")) {
+          return false;
+        }
+
+        return hostname
+          .split(".")
+          .every((label) => label.length > 0 && /^[a-z0-9-]+$/i.test(label) && !label.startsWith("-") && !label.endsWith("-"));
+      }
+
+      function getLinkUrlValidation(value) {
+        const raw = String(value || "").trim();
+        if (!raw) {
+          return {
+            normalizedUrl: "",
+            error: "Enter a valid URL"
+          };
+        }
+
+        if (/\s/.test(raw)) {
+          return {
+            normalizedUrl: "",
+            error: "Enter a valid URL"
+          };
+        }
+
+        const candidate = /^[a-z][a-z0-9+.-]*:/i.test(raw) ? raw : "https://" + raw;
+        try {
+          const parsed = new URL(candidate);
+          if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+            return {
+              normalizedUrl: "",
+              error: "Enter a valid URL"
+            };
+          }
+
+          if (!isLikelyValidLinkHostname(parsed.hostname)) {
+            return {
+              normalizedUrl: "",
+              error: "Enter a valid URL"
+            };
+          }
+
+          return {
+            normalizedUrl: parsed.toString(),
+            error: ""
+          };
+        } catch (error) {
+          return {
+            normalizedUrl: "",
+            error: "Enter a valid URL"
+          };
+        }
+      }
+
+      function setLinkUrlInputError(message) {
+        if (!linkUrlInput) {
+          return;
+        }
+
+        const nextMessage = String(message || "");
+        linkUrlInput.setCustomValidity(nextMessage);
+        linkUrlInput.classList.toggle("is-invalid", Boolean(nextMessage));
+        linkUrlInput.setAttribute("aria-invalid", nextMessage ? "true" : "false");
+      }
+
+      function validateLinkUrlInput(options) {
+        if (!linkUrlInput) {
+          return {
+            normalizedUrl: "",
+            error: ""
+          };
+        }
+
+        const raw = String(linkUrlInput.value || "").trim();
+        if (!raw) {
+          const errorMessage = options && options.required ? "Enter a valid URL" : "";
+          setLinkUrlInputError(errorMessage);
+          if (errorMessage && options && options.report && typeof linkUrlInput.reportValidity === "function") {
+            linkUrlInput.reportValidity();
+          }
+          return {
+            normalizedUrl: "",
+            error: errorMessage
+          };
+        }
+
+        const validation = getLinkUrlValidation(raw);
+        setLinkUrlInputError(validation.error);
+        if (validation.error) {
+          if (options && options.report && typeof linkUrlInput.reportValidity === "function") {
+            linkUrlInput.reportValidity();
+          }
+          return validation;
+        }
+
+        if (options && options.normalize) {
+          linkUrlInput.value = validation.normalizedUrl;
+        }
+
+        return validation;
+      }
+
+      function normalizeLinkUrl(value) {
+        const raw = String(value || "").trim();
+        if (!raw) {
+          return "";
+        }
+
+        const candidate = /^[a-z][a-z0-9+.-]*:/i.test(raw) ? raw : "https://" + raw;
+        try {
+          const parsed = new URL(candidate);
+          if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+            return "";
+          }
+          return parsed.toString();
+        } catch (error) {
+          return "";
+        }
+      }
+
+      function normalizeAttachmentKind(attachment) {
+        if (attachment && attachment.kind === "url") {
+          return "url";
+        }
+        if (attachment && typeof attachment.url === "string" && attachment.url.trim()) {
+          return "url";
+        }
+        return "file";
+      }
+
+      function reconcileCanvasLinksWithNodes() {
+        if (!Array.isArray(state.links)) {
+          state.links = [];
+          return;
+        }
+
+        state.links.forEach((link) => {
+          if (link.mode !== "appended") {
+            return;
+          }
+          if (!link.hostNodeId || findNode(link.hostNodeId)) {
+            return;
+          }
+          link.mode = "floating";
+          link.hostNodeId = null;
+        });
       }
 
       function getSubtreeAttachmentCount(nodeId) {
@@ -3644,6 +4602,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return selectionKind === "branch" && selectionId === nodeId;
       }
 
+      function isCanvasLinkSelected(linkId) {
+        return selectionKind === "named-link" && selectionId === linkId;
+      }
+
       function getNextSiblingOrder(parentId) {
         return (
           state.nodes
@@ -3654,6 +4616,79 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       function findNode(nodeId) {
         return state.nodes.find((node) => node.id === nodeId) || null;
+      }
+
+      function setNodeDragCursorState(active) {
+        const isActive = Boolean(active);
+        workspace.classList.toggle("is-node-dragging", isActive);
+        if (document.body) {
+          document.body.classList.toggle("is-node-dragging", isActive);
+        }
+      }
+
+      function captureNodeDragPointer(event) {
+        if (!workspace || !event || !Number.isFinite(event.pointerId) || typeof workspace.setPointerCapture !== "function") {
+          return;
+        }
+
+        releaseNodeDragPointerCapture();
+        try {
+          workspace.setPointerCapture(event.pointerId);
+          activeNodeDragPointerId = event.pointerId;
+        } catch (error) {
+          activeNodeDragPointerId = null;
+        }
+      }
+
+      function releaseNodeDragPointerCapture() {
+        if (!workspace || !Number.isFinite(activeNodeDragPointerId) || typeof workspace.releasePointerCapture !== "function") {
+          activeNodeDragPointerId = null;
+          return;
+        }
+
+        try {
+          if (typeof workspace.hasPointerCapture !== "function" || workspace.hasPointerCapture(activeNodeDragPointerId)) {
+            workspace.releasePointerCapture(activeNodeDragPointerId);
+          }
+        } catch (error) {
+          // Ignore release failures when the pointer capture was already cleared by the browser.
+        }
+
+        activeNodeDragPointerId = null;
+      }
+
+      function clearNodeDragLock() {
+        setNodeDragCursorState(false);
+        releaseNodeDragPointerCapture();
+      }
+
+      function beginNodeBranchDrag(node, event) {
+        if (!node || isSharedView() || !event) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        blurActiveNodeEditor();
+        const nextNode = findNode(node.id);
+        if (!nextNode) {
+          return;
+        }
+        focusWorkspaceSurface();
+        setSelection(nextNode.id, "node");
+        hideContextMenu();
+        applySelectionState();
+        attachTargetId = null;
+        captureNodeDragPointer(event);
+        setNodeDragCursorState(true);
+        interaction = {
+          type: "move-branch",
+          id: nextNode.id,
+          startPoint: toWorldPoint(event.clientX, event.clientY),
+          origin: nextNode.parentId === null
+            ? { x: nextNode.x, y: nextNode.y }
+            : { offsetX: nextNode.offsetX, offsetY: nextNode.offsetY }
+        };
       }
 
       function createRootNode() {
@@ -3671,15 +4706,15 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           detached: false,
           text: "",
           imageData: "",
-          width: 240,
+          width: DEFAULT_ROOT_NODE_WIDTH,
           height: initialHeight,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
           fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
           fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_ROOT_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
-          textAlign: DEFAULT_TEXT_ALIGN,
-          textVAlign: DEFAULT_TEXT_V_ALIGN,
+          textAlign: DEFAULT_NEW_NODE_TEXT_ALIGN,
+          textVAlign: DEFAULT_NEW_NODE_TEXT_V_ALIGN,
           attachments: [],
           referenceText: "",
           referenceOrder: null,
@@ -3719,15 +4754,15 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           detached: false,
           text: "",
           imageData: "",
-          width: 180,
+          width: DEFAULT_CHILD_NODE_WIDTH,
           height: initialHeight,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
           fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
           fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_CHILD_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
-          textAlign: DEFAULT_TEXT_ALIGN,
-          textVAlign: DEFAULT_TEXT_V_ALIGN,
+          textAlign: DEFAULT_NEW_NODE_TEXT_ALIGN,
+          textVAlign: DEFAULT_NEW_NODE_TEXT_V_ALIGN,
           attachments: [],
           referenceText: "",
           referenceOrder: null,
@@ -3780,8 +4815,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const idsToDelete = new Set();
         collectSubtreeIds(nodeId, idsToDelete);
         state.nodes = state.nodes.filter((entry) => !idsToDelete.has(entry.id));
+        state.links = state.links.filter((link) => !(link.mode === "appended" && link.hostNodeId && idsToDelete.has(link.hostNodeId)));
         clearSelection();
         attachTargetId = null;
+        closeLinkDropMenu();
         hideContextMenu();
         renderAll();
         syncEmbeddedState();
@@ -3806,6 +4843,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         if (getNodeAttachments(node).length) {
+          return false;
+        }
+
+        if (getCanvasLinksForHost(node.id).length) {
           return false;
         }
 
@@ -3954,10 +4995,12 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       function renderAll() {
         currentLayout = buildLayout();
+        appendedCanvasLinkLayoutMap = null;
         updateWorkspaceBackground();
         updateZoomControls();
         renderLinks();
         renderNodes();
+        renderCanvasLinks();
         syncReferenceEditorPosition();
         syncAttachmentPanel();
         updateHelpPanelVisibility();
@@ -4062,17 +5105,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           });
 
           hit.addEventListener("contextmenu", (event) => {
-            if (isSharedView()) {
-              return;
-            }
-
             event.preventDefault();
             event.stopPropagation();
-            blurActiveNodeEditor();
-            focusWorkspaceSurface();
-            setSelection(node.id, "branch");
-            applySelectionState();
-            showContextMenu("branch", node.id, event.clientX, event.clientY);
+            hideContextMenu();
           });
 
           linkLayer.appendChild(path);
@@ -4285,42 +5320,18 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               return;
             }
 
-            event.preventDefault();
-            event.stopPropagation();
-            blurActiveNodeEditor();
-            if (!findNode(node.id)) {
-              return;
-            }
-            focusWorkspaceSurface();
-            setSelection(node.id, "node");
-            hideContextMenu();
-            applySelectionState();
-            attachTargetId = null;
-            interaction = {
-              type: "move-branch",
-              id: node.id,
-              startPoint: toWorldPoint(event.clientX, event.clientY),
-              origin: node.parentId === null
-                ? { x: node.x, y: node.y }
-                : { offsetX: node.offsetX, offsetY: node.offsetY }
-            };
+            beginNodeBranchDrag(node, event);
           });
 
           nodeEl.addEventListener("contextmenu", (event) => {
-            if (isSharedView()) {
+            if (editor && (event.target === editor || editor.contains(event.target))) {
+              hideContextMenu();
               return;
             }
 
             event.preventDefault();
             event.stopPropagation();
-            blurActiveNodeEditor();
-            if (!findNode(node.id)) {
-              return;
-            }
-            focusWorkspaceSurface();
-            setSelection(node.id, "node");
-            applySelectionState();
-            showContextMenu("node", node.id, event.clientX, event.clientY);
+            hideContextMenu();
           });
 
           if (foldButton) {
@@ -4521,10 +5532,168 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         });
       }
 
+      function getCanvasLinkWorldPosition(link) {
+        if (!link) {
+          return { x: 56, y: 84 };
+        }
+
+        const appendedLayout = getAppendedCanvasLinkLayout(link);
+        if (appendedLayout) {
+          return {
+            x: appendedLayout.x,
+            y: appendedLayout.y
+          };
+        }
+
+        if (link.mode !== "appended" || !link.hostNodeId || !currentLayout || !currentLayout.positions) {
+          return {
+            x: Number.isFinite(link.x) ? link.x : 56,
+            y: Number.isFinite(link.y) ? link.y : 84
+          };
+        }
+
+        const hostNode = findNode(link.hostNodeId);
+        const hostPosition = currentLayout.positions.get(link.hostNodeId);
+        if (!hostNode || !hostPosition) {
+          return {
+            x: Number.isFinite(link.x) ? link.x : 56,
+            y: Number.isFinite(link.y) ? link.y : 84
+          };
+        }
+
+        return {
+          x: round(hostPosition.x + APPENDED_LINK_INSET_X),
+          y: round(hostPosition.y + hostNode.height + APPENDED_LINK_OFFSET_Y)
+        };
+      }
+
+      function renderCanvasLinks() {
+        if (!currentLayout) {
+          return;
+        }
+
+        const scale = normalizeScale(state.viewport.scale);
+        const orderedLinks = state.links.slice().sort((left, right) => {
+          const leftPosition = getCanvasLinkWorldPosition(left);
+          const rightPosition = getCanvasLinkWorldPosition(right);
+          if (leftPosition.y !== rightPosition.y) {
+            return leftPosition.y - rightPosition.y;
+          }
+          return leftPosition.x - rightPosition.x;
+        });
+
+        orderedLinks.forEach((link, index) => {
+          if (!link.url) {
+            return;
+          }
+
+          const position = getCanvasLinkWorldPosition(link);
+          const appendedLayout = getAppendedCanvasLinkLayout(link);
+          const linkEl = document.createElement("button");
+          linkEl.type = "button";
+          linkEl.className =
+            "canvas-link" +
+            (link.mode === "appended" ? " is-appended" : "") +
+            (isCanvasLinkSelected(link.id) ? " is-selected" : "");
+          linkEl.dataset.linkId = link.id;
+          linkEl.textContent = link.label;
+          linkEl.title = link.url;
+          linkEl.setAttribute("aria-label", link.label + ": " + link.url);
+          linkEl.style.left = "0px";
+          linkEl.style.top = "0px";
+          linkEl.style.transform =
+            "translate(" +
+            round(position.x * scale + state.viewport.x) +
+            "px, " +
+            round(position.y * scale + state.viewport.y) +
+            "px) scale(" +
+            scale +
+            ")";
+          linkEl.style.zIndex = isCanvasLinkSelected(link.id) ? String(220 + index) : String(40 + index);
+          if (appendedLayout) {
+            linkEl.style.width = appendedLayout.width + "px";
+            linkEl.style.maxWidth = appendedLayout.maxWidth + "px";
+          } else {
+            linkEl.style.width = "";
+            linkEl.style.maxWidth = "";
+          }
+          applyCanvasLinkTextStyles(linkEl, link);
+
+          linkEl.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0 || isSharedView()) {
+              return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+            blurActiveNodeEditor();
+            if (!findCanvasLink(link.id)) {
+              return;
+            }
+            focusWorkspaceSurface();
+            setSelection(link.id, "named-link");
+            hideContextMenu();
+            closeLinkEditor();
+            closeLinkDropMenu();
+            applySelectionState();
+            attachTargetId = null;
+            interaction = {
+              type: "move-canvas-link",
+              id: link.id,
+              startPoint: toWorldPoint(event.clientX, event.clientY),
+              origin: getCanvasLinkWorldPosition(link),
+              moved: false,
+              openOnRelease: event.ctrlKey,
+              fromMode: link.mode,
+              detached: link.mode !== "appended"
+            };
+          });
+
+          linkEl.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const nextLink = findCanvasLink(link.id);
+            if (!nextLink) {
+              return;
+            }
+
+            focusWorkspaceSurface();
+            setSelection(nextLink.id, "named-link");
+            hideContextMenu();
+            applySelectionState();
+          });
+
+          linkEl.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const nextLink = findCanvasLink(link.id);
+            if (event.ctrlKey && nextLink) {
+              if (interaction && interaction.type === "move-canvas-link" && interaction.id === link.id && !interaction.moved) {
+                interaction = null;
+              }
+              workspace.classList.remove("is-panning");
+              focusWorkspaceSurface();
+              setSelection(nextLink.id, "named-link");
+              closeLinkDropMenu();
+              hideContextMenu();
+              applySelectionState();
+              openCanvasLink(nextLink.url);
+              return;
+            }
+            hideContextMenu();
+          });
+
+          nodeLayer.appendChild(linkEl);
+        });
+      }
+
       function applySelectionState() {
         nodeLayer.querySelectorAll(".node").forEach((nodeEl) => {
           nodeEl.classList.toggle("selected", isNodeSelected(nodeEl.dataset.nodeId));
           nodeEl.classList.toggle("attach-target", nodeEl.dataset.nodeId === attachTargetId);
+        });
+        nodeLayer.querySelectorAll(".canvas-link").forEach((linkEl) => {
+          linkEl.classList.toggle("is-selected", isCanvasLinkSelected(linkEl.dataset.linkId));
         });
         renderLinks();
         updateTextControls();
@@ -4535,22 +5704,41 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return selectionId ? findNode(selectionId) : null;
       }
 
-      function getTextControlsDisplayNode() {
+      function getTextStyleTarget() {
+        const selectedLink = getSelectedCanvasLink();
+        if (selectedLink) {
+          return { kind: "named-link", record: selectedLink };
+        }
+
+        const selectedNode = getSelectedNode();
+        if (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch") {
+          return { kind: "node", record: selectedNode };
+        }
+
+        return null;
+      }
+
+      function getTextControlsDisplayTarget() {
+        const selectedLink = getSelectedCanvasLink();
+        if (selectedLink) {
+          return { kind: "named-link", record: selectedLink };
+        }
+
         const selectedNode = getSelectedNode();
         if (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch") {
           lastTextControlsNodeId = selectedNode.id;
-          return selectedNode;
+          return { kind: "node", record: selectedNode };
         }
 
         const editingNode = editingNodeId ? findNode(editingNodeId) : null;
         if (editingNode && editingNode.type !== "image") {
           lastTextControlsNodeId = editingNode.id;
-          return editingNode;
+          return { kind: "node", record: editingNode };
         }
 
         const lastNode = lastTextControlsNodeId ? findNode(lastTextControlsNodeId) : null;
         if (lastNode && lastNode.type !== "image") {
-          return lastNode;
+          return { kind: "node", record: lastNode };
         }
 
         lastTextControlsNodeId = null;
@@ -4572,20 +5760,29 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         const selectedNode = getSelectedNode();
-        const node = getTextControlsDisplayNode();
-        const enabled =
+        const selectedLink = getSelectedCanvasLink();
+        const target = getTextControlsDisplayTarget();
+        const targetRecord = target ? target.record : null;
+        const isNamedLinkTarget = Boolean(target && target.kind === "named-link");
+        const canEditTextStyle =
+          !isSharedView() &&
+          Boolean(
+            selectedLink ||
+            (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch")
+          );
+        const canEditColorAndAlignment =
           !isSharedView() && Boolean(selectedNode && selectedNode.type !== "image" && selectionKind !== "branch");
-        fontFamilySelect.disabled = !enabled;
-        fontSizeSelect.disabled = !enabled;
-        fontSizeTrigger.disabled = !enabled;
+        fontFamilySelect.disabled = !canEditTextStyle;
+        fontSizeSelect.disabled = !canEditTextStyle;
+        fontSizeTrigger.disabled = !canEditTextStyle;
         [textBoldButton, textItalicButton].forEach((control) => {
-          control.disabled = !enabled;
+          control.disabled = !canEditTextStyle;
         });
-        textColorButton.disabled = !enabled;
-        textColorInput.disabled = !enabled;
-        textLayoutButton.disabled = !enabled;
+        textColorButton.disabled = !canEditColorAndAlignment;
+        textColorInput.disabled = !canEditColorAndAlignment;
+        textLayoutButton.disabled = !canEditColorAndAlignment;
 
-        if (!node) {
+        if (!targetRecord) {
           fontFamilySelect.value = DEFAULT_TEXT_FONT_FAMILY;
           fontSizeSelect.value = String(DEFAULT_CHILD_FONT_SIZE);
           updateTextStyleToggleState(fontSizeTrigger, false);
@@ -4599,37 +5796,45 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           return;
         }
 
-        fontFamilySelect.value = normalizeFontFamily(node.fontFamily);
+        const isRootNodeTarget = Boolean(target && target.kind === "node" && targetRecord.parentId === null);
+        fontFamilySelect.value = normalizeFontFamily(targetRecord.fontFamily);
         ensureSelectHasOption(
           fontSizeSelect,
-          String(normalizeFontSize(node.fontSize, node.parentId === null)),
-          String(normalizeFontSize(node.fontSize, node.parentId === null)) + " pt"
+          String(normalizeFontSize(targetRecord.fontSize, isRootNodeTarget)),
+          String(normalizeFontSize(targetRecord.fontSize, isRootNodeTarget)) + " pt"
         );
-        fontSizeSelect.value = String(normalizeFontSize(node.fontSize, node.parentId === null));
+        fontSizeSelect.value = String(normalizeFontSize(targetRecord.fontSize, isRootNodeTarget));
         updateTextStyleToggleState(
           fontSizeTrigger,
-          normalizeFontSize(node.fontSize, node.parentId === null) !==
-            (node.parentId === null ? DEFAULT_ROOT_FONT_SIZE : DEFAULT_CHILD_FONT_SIZE)
+          normalizeFontSize(targetRecord.fontSize, isRootNodeTarget) !==
+            (isRootNodeTarget ? DEFAULT_ROOT_FONT_SIZE : DEFAULT_CHILD_FONT_SIZE)
         );
-        updateTextStyleToggleState(textBoldButton, normalizeFontWeight(node.fontWeight) === "bold");
-        updateTextStyleToggleState(textItalicButton, normalizeFontStyle(node.fontStyle) === "italic");
-        syncTextColorInputs(normalizeTextColor(node.textColor));
-        updateToolbarColorSwatches(normalizeTextColor(node.textColor));
-        updateLayoutMenuSelection(node.textAlign, node.textVAlign);
+        updateTextStyleToggleState(textBoldButton, normalizeFontWeight(targetRecord.fontWeight) === "bold");
+        updateTextStyleToggleState(textItalicButton, normalizeFontStyle(targetRecord.fontStyle) === "italic");
 
-        if (!enabled) {
+        if (isNamedLinkTarget) {
+          syncTextColorInputs("#2563eb");
+          updateToolbarColorSwatches("#2563eb");
+          updateLayoutMenuSelection(DEFAULT_TEXT_ALIGN, DEFAULT_TEXT_V_ALIGN);
+        } else {
+          syncTextColorInputs(normalizeTextColor(targetRecord.textColor));
+          updateToolbarColorSwatches(normalizeTextColor(targetRecord.textColor));
+          updateLayoutMenuSelection(targetRecord.textAlign, targetRecord.textVAlign);
+        }
+
+        if (!canEditColorAndAlignment) {
           hideTextColorMenu();
           hideTextLayoutMenu();
         }
       }
 
-      function updateSelectedNodeTextStyle(updates) {
+      function updateSelectedTextStyle(updates) {
         if (isSharedView()) {
           return;
         }
 
-        const node = getSelectedNode();
-        if (!node || node.type === "image") {
+        const target = getTextStyleTarget();
+        if (!target) {
           return;
         }
 
@@ -4644,26 +5849,42 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           normalizedUpdates.fontStyle = normalizeFontStyle(normalizedUpdates.fontStyle);
         }
         if ("fontSize" in normalizedUpdates) {
-          normalizedUpdates.fontSize = normalizeFontSize(normalizedUpdates.fontSize, node.parentId === null);
+          normalizedUpdates.fontSize = normalizeFontSize(
+            normalizedUpdates.fontSize,
+            target.kind === "node" && target.record.parentId === null
+          );
         }
-        if ("textColor" in normalizedUpdates) {
+        if ("textColor" in normalizedUpdates && target.kind === "node") {
           normalizedUpdates.textColor = normalizeTextColor(normalizedUpdates.textColor);
+        } else {
+          delete normalizedUpdates.textColor;
         }
-        if ("textAlign" in normalizedUpdates) {
+        if ("textAlign" in normalizedUpdates && target.kind === "node") {
           normalizedUpdates.textAlign = normalizeTextAlign(normalizedUpdates.textAlign);
+        } else {
+          delete normalizedUpdates.textAlign;
         }
-        if ("textVAlign" in normalizedUpdates) {
+        if ("textVAlign" in normalizedUpdates && target.kind === "node") {
           normalizedUpdates.textVAlign = normalizeTextVAlign(normalizedUpdates.textVAlign);
+        } else {
+          delete normalizedUpdates.textVAlign;
         }
 
-        Object.assign(node, normalizedUpdates);
-        const editor = nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor');
-        if (editor) {
-          applyNodeTextStyles(editor, node);
-          if (fitTextNodeHeightToContent(node, editor)) {
-            renderAll();
+        Object.assign(target.record, normalizedUpdates);
+
+        if (target.kind === "node") {
+          const node = target.record;
+          const editor = nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor');
+          if (editor) {
+            applyNodeTextStyles(editor, node);
+            if (fitTextNodeHeightToContent(node, editor)) {
+              renderAll();
+            }
           }
+        } else {
+          renderAll();
         }
+
         updateTextControls();
         syncEmbeddedState();
       }
@@ -4739,6 +5960,17 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         syncNodeTextPreview(textWrap, editor, preview, node);
         updateEditorVerticalAlignment(editor, node);
+      }
+
+      function applyCanvasLinkTextStyles(linkEl, link) {
+        if (!linkEl || !link) {
+          return;
+        }
+
+        linkEl.style.fontFamily = normalizeFontFamily(link.fontFamily);
+        linkEl.style.fontWeight = normalizeFontWeight(link.fontWeight);
+        linkEl.style.fontStyle = normalizeFontStyle(link.fontStyle);
+        linkEl.style.fontSize = normalizeFontSize(link.fontSize, false) + "px";
       }
 
       function updateTextStyleToggleState(button, active) {
@@ -4881,6 +6113,126 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         referenceMenu.hidden = true;
         referenceButton.classList.remove("is-open");
+      }
+
+      function openLinkEditor() {
+        if (isSharedView() || !linkEditor || !linkButton || !linkUrlInput || !linkLabelInput) {
+          return;
+        }
+
+        linkEditor.hidden = false;
+        linkButton.classList.add("is-open");
+        linkUrlInput.value = "";
+        linkLabelInput.value = "";
+        setLinkUrlInputError("");
+        requestAnimationFrame(() => {
+          if (linkEditor.hidden) {
+            return;
+          }
+          linkUrlInput.focus();
+          linkUrlInput.select();
+        });
+      }
+
+      function closeLinkEditor() {
+        if (!linkEditor || !linkButton) {
+          return;
+        }
+        linkEditor.hidden = true;
+        linkButton.classList.remove("is-open");
+        setLinkUrlInputError("");
+      }
+
+      function commitLinkEditor() {
+        if (!linkUrlInput || !linkLabelInput) {
+          closeLinkEditor();
+          return;
+        }
+
+        const validation = validateLinkUrlInput({ required: true, report: true, normalize: true });
+        if (validation.error) {
+          requestAnimationFrame(() => {
+            linkUrlInput.focus();
+            linkUrlInput.select();
+          });
+          return;
+        }
+
+        const normalizedUrl = validation.normalizedUrl;
+
+        const normalizedLabel = normalizeCanvasLinkLabel(linkLabelInput.value, normalizedUrl);
+        const nameConflict = findNamedItemConflict(normalizedLabel);
+        if (nameConflict) {
+          window.alert(buildNamedItemConflictMessage(normalizedLabel, nameConflict));
+          requestAnimationFrame(() => {
+            linkLabelInput.focus();
+            linkLabelInput.select();
+          });
+          return;
+        }
+
+        const worldPoint = getPreferredPasteWorldPoint();
+        createCanvasLinkAt(worldPoint, normalizedUrl, normalizedLabel);
+        closeLinkEditor();
+      }
+
+      function openLinkDropMenu(linkId, nodeId, clientX, clientY) {
+        pendingLinkDrop = { linkId: linkId, nodeId: nodeId };
+        if (!linkDropMenu) {
+          return;
+        }
+
+        linkDropMenu.hidden = false;
+        const menuWidth = linkDropMenu.offsetWidth || 210;
+        const menuHeight = linkDropMenu.offsetHeight || 132;
+        const minLeft = 12;
+        const maxLeft = Math.max(12, workspace.clientWidth - menuWidth - 12);
+        const minTop = 12;
+        const maxTop = Math.max(12, workspace.clientHeight - menuHeight - 12);
+        const node = findNode(nodeId);
+        const position = node && currentLayout && currentLayout.positions ? currentLayout.positions.get(node.id) : null;
+
+        if (node && position) {
+          const scale = normalizeScale(state.viewport.scale);
+          const anchorX = position.x * scale + state.viewport.x + (node.width * scale) / 2;
+          const belowTop = position.y * scale + state.viewport.y + node.height * scale + 10;
+          const aboveTop = position.y * scale + state.viewport.y - menuHeight - 10;
+          const menuTop = belowTop <= maxTop || aboveTop < minTop ? belowTop : aboveTop;
+          linkDropMenu.style.left = clamp(anchorX - menuWidth / 2, minLeft, maxLeft) + "px";
+          linkDropMenu.style.top = clamp(menuTop, minTop, maxTop) + "px";
+          return;
+        }
+
+        const point = toViewportPoint(clientX, clientY);
+        linkDropMenu.style.left = clamp(point.x - menuWidth / 2, minLeft, maxLeft) + "px";
+        linkDropMenu.style.top = clamp(point.y + 10, minTop, maxTop) + "px";
+      }
+
+      function closeLinkDropMenu() {
+        pendingLinkDrop = null;
+        if (!linkDropMenu) {
+          return;
+        }
+        linkDropMenu.hidden = true;
+      }
+
+      function openCanvasLink(url) {
+        const validation = getLinkUrlValidation(url);
+        if (validation.error) {
+          window.alert("Enter a valid URL");
+          return;
+        }
+
+        const normalizedUrl = validation.normalizedUrl;
+
+        const popup = window.open(normalizedUrl, "_blank", "noopener");
+        if (!popup) {
+          const anchor = document.createElement("a");
+          anchor.href = normalizedUrl;
+          anchor.target = "_blank";
+          anchor.rel = "noopener";
+          anchor.click();
+        }
       }
 
       function isEscapedCharacter(text, index) {
@@ -5128,6 +6480,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function getAttachmentTypeLabel(attachment) {
+        if (attachment && attachment.kind === "url") {
+          return "URL";
+        }
+
         const type = String(attachment.type || "").toLowerCase();
         if (type === "application/pdf") {
           return "PDF";
@@ -5183,24 +6539,34 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if (!entries.length) {
           const empty = document.createElement("div");
           empty.className = "attachment-empty";
-          empty.textContent = "No files attached yet.";
+          empty.textContent = "No attachments yet.";
           listElement.appendChild(empty);
           return;
         }
 
         entries.forEach((entry) => {
+          const isUrlAttachment = entry.attachment && entry.attachment.kind === "url";
           const row = document.createElement("div");
           row.className = "attachment-item";
 
           const button = document.createElement("button");
           button.type = "button";
           button.className = "attachment-item-button";
-          button.title = "Double-click to open";
+          button.title = isUrlAttachment ? "Click to open" : "Double-click to open";
           button.classList.add("is-colored");
+          if (isUrlAttachment) {
+            button.classList.add("is-link");
+          }
           button.style.setProperty("--attachment-row-color", getNodeBranchColor(entry.node.id));
-          button.addEventListener("dblclick", () => {
-            openAttachmentRecord(entry.attachment);
-          });
+          if (isUrlAttachment) {
+            button.addEventListener("click", () => {
+              openAttachmentRecord(entry.attachment);
+            });
+          } else {
+            button.addEventListener("dblclick", () => {
+              openAttachmentRecord(entry.attachment);
+            });
+          }
           button.addEventListener("keydown", (event) => {
             if (event.key !== "Enter" && event.key !== " ") {
               return;
@@ -5216,10 +6582,16 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           const type = document.createElement("span");
           type.className = "attachment-item-type";
           type.textContent = getAttachmentTypeLabel(entry.attachment);
+          if (isUrlAttachment) {
+            type.classList.add("is-link");
+          }
 
           const name = document.createElement("span");
           name.className = "attachment-item-name";
           name.textContent = entry.attachment.name;
+          if (isUrlAttachment) {
+            name.classList.add("is-link");
+          }
 
           meta.appendChild(type);
           meta.appendChild(name);
@@ -5257,7 +6629,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const descendantEntries = getDescendantAttachmentEntries(node.id);
         const visibleEntries = node.collapsed ? directEntries.concat(descendantEntries) : directEntries;
         const attachmentCount = visibleEntries.length;
-        const attachmentLabel = attachmentCount === 1 ? "1 file attached" : attachmentCount + " files attached";
+        const attachmentLabel = attachmentCount === 1 ? "1 attachment" : attachmentCount + " attachments";
         attachmentPanelTitle.textContent = String(attachmentCount);
         attachmentPanelTitle.setAttribute("aria-label", attachmentLabel);
         attachmentPanelTitle.title = attachmentLabel;
@@ -5306,6 +6678,34 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         syncEmbeddedState();
       }
 
+      function attachCanvasLinkToNode(linkId, nodeId) {
+        const link = findCanvasLink(linkId);
+        const node = findNode(nodeId);
+        if (!link || !node) {
+          closeLinkDropMenu();
+          return;
+        }
+
+        node.attachments = getNodeAttachments(node).concat([
+          {
+            id: "attachment-" + attachmentCounter++,
+            kind: "url",
+            name: link.label,
+            type: "",
+            data: "",
+            size: 0,
+            url: link.url
+          }
+        ]);
+        deleteCanvasLink(link.id, true);
+        setSelection(node.id, "node");
+        attachTargetId = null;
+        closeLinkDropMenu();
+        openAttachmentPanel(node.id);
+        renderAll();
+        syncEmbeddedState();
+      }
+
       function dataUrlToBlob(dataUrl, fallbackType) {
         const match = String(dataUrl || "").match(/^data:([^;,]*)(;base64)?,(.*)$/);
         if (!match) {
@@ -5324,7 +6724,16 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function openAttachmentRecord(attachment) {
-        if (!attachment || !attachment.data) {
+        if (!attachment) {
+          return;
+        }
+
+        if (attachment.kind === "url") {
+          openCanvasLink(attachment.url);
+          return;
+        }
+
+        if (!attachment.data) {
           return;
         }
 
@@ -5371,6 +6780,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           files.accepted.map((file) =>
             readFileAsDataUrl(file).then((dataUrl) => ({
               id: "attachment-" + attachmentCounter++,
+              kind: "file",
               name: file.name || "Attachment",
               type: file.type || "",
               data: dataUrl,
@@ -5477,6 +6887,15 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           node.referenceText = "";
           node.referenceOrder = null;
         } else {
+          const nameConflict = findNamedItemConflict(trimmedValue, { excludeNodeId: node.id });
+          if (nameConflict) {
+            window.alert(buildNamedItemConflictMessage(trimmedValue, nameConflict));
+            requestAnimationFrame(() => {
+              referenceEditorInput.focus();
+              referenceEditorInput.select();
+            });
+            return;
+          }
           node.referenceText = trimmedValue;
           if (!Number.isFinite(node.referenceOrder)) {
             node.referenceOrder = getNextReferenceOrder();
@@ -5558,6 +6977,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const label =
           kind === "branch"
             ? "Delete link"
+            : kind === "named-link"
+              ? "Delete link"
             : node && node.type === "image"
                 ? "Delete image"
               : "Delete node";
@@ -6060,6 +7481,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const previousSelectionKind = selectionKind;
         hideSaveMenu();
         hideReferenceMenu();
+        closeLinkEditor();
+        closeLinkDropMenu();
         hideTextColorMenu();
         hideTextLayoutMenu();
         closeImageLightbox();
@@ -6108,6 +7531,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         hideSaveMenu();
         hideReferenceMenu();
+        closeLinkEditor();
+        closeLinkDropMenu();
         hideTextColorMenu();
         hideTextLayoutMenu();
         closeImageLightbox();
@@ -6122,6 +7547,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         helpPanelOpen = true;
         interaction = null;
         workspace.classList.remove("is-panning");
+        clearNodeDragLock();
         clearSelection();
         attachTargetId = null;
         attachmentDropTargetId = null;
@@ -6133,14 +7559,18 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         referenceEditorNodeId = null;
         attachmentPanelNodeId = null;
         attachmentFileTargetNodeId = null;
+        pendingLinkDrop = null;
+        suppressCanvasLinkClickId = null;
         state.mode = "editor";
         state.nodes = [];
+        state.links = [];
         state.viewport.x = 0;
         state.viewport.y = 0;
         state.viewport.scale = 1;
-        removeToolbarWorkingMark();
+        removeToolbarStatusMark();
         updateDocumentIdentityUi();
         nodeCounter = getNextCounter(state.nodes, "node");
+        linkCounter = getNextCounter(state.links, "link");
         attachmentCounter = getNextAttachmentCounter(state.nodes);
         renderAll();
         applySelectionState();
@@ -6159,6 +7589,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         hideSaveMenu();
         hideReferenceMenu();
+        closeLinkEditor();
+        closeLinkDropMenu();
         hideTextColorMenu();
         hideTextLayoutMenu();
         closeImageLightbox();
@@ -6217,9 +7649,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       function createExportHtml(exportMode) {
         if (exportMode !== "shared") {
           const clone = document.documentElement.cloneNode(true);
-          const workingMark = clone.querySelector("#toolbar-working-mark");
-          if (workingMark) {
-            workingMark.remove();
+          const statusMark = clone.querySelector("#toolbar-status-mark");
+          if (statusMark) {
+            statusMark.remove();
           }
           return "<!DOCTYPE html>\n" + clone.outerHTML;
         }
@@ -6272,6 +7704,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           ".workspace { overflow: visible !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: #ffffff !important; cursor: default !important; page-break-inside: avoid; break-inside: avoid; }",
           "#link-layer, #node-layer { position: absolute !important; inset: 0 !important; }",
           ".node { pointer-events: none !important; }",
+          ".canvas-link { pointer-events: none !important; }",
           ".node-editor { overflow: hidden !important; resize: none !important; user-select: none !important; pointer-events: none !important; }",
           "#reference-menu, #attachment-panel, #image-lightbox { display: none !important; }"
         ].join("\n");
@@ -6287,12 +7720,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         [
           "#add-root-button",
+          "#link-controls",
           "#clear-button",
           "#save-controls",
           "#help-toggle-button",
           "#text-style-controls",
           "#empty-state",
           "#context-menu",
+          "#link-drop-menu",
           "#reference-editor",
           "#attachment-panel-add",
           "#attachment-file-input"
@@ -6317,6 +7752,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           ".toolbar",
           "#empty-state",
           "#context-menu",
+          "#link-drop-menu",
           "#reference-editor",
           "#attachment-panel",
           "#attachment-file-input",
@@ -6575,6 +8011,43 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         };
       }
 
+      function createCanvasLinkAt(worldPoint, url, label) {
+        if (isSharedView()) {
+          return null;
+        }
+
+        const validation = getLinkUrlValidation(url);
+        if (validation.error) {
+          return null;
+        }
+
+        const normalizedUrl = validation.normalizedUrl;
+
+        const link = {
+          id: "link-" + linkCounter++,
+          url: normalizedUrl,
+          label: normalizeCanvasLinkLabel(label, normalizedUrl),
+          fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontWeight: "bold",
+          fontStyle: DEFAULT_TEXT_FONT_STYLE,
+          fontSize: DEFAULT_CHILD_FONT_SIZE,
+          x: round(worldPoint && Number.isFinite(worldPoint.x) ? worldPoint.x : 56),
+          y: round(worldPoint && Number.isFinite(worldPoint.y) ? worldPoint.y : 84),
+          mode: "floating",
+          hostNodeId: null,
+          order: getNextCanvasLinkOrder(null)
+        };
+
+        state.links.push(link);
+        setSelection(link.id, "named-link");
+        attachTargetId = null;
+        hideContextMenu();
+        closeLinkDropMenu();
+        renderAll();
+        syncEmbeddedState();
+        return link;
+      }
+
       function createTextNodeAt(worldPoint, text) {
         if (isSharedView()) {
           return null;
@@ -6588,21 +8061,21 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           detached: true,
           text: text || "",
           imageData: "",
-          width: 180,
+          width: DEFAULT_CHILD_NODE_WIDTH,
           height: initialHeight,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
           fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
           fontStyle: DEFAULT_TEXT_FONT_STYLE,
           fontSize: DEFAULT_CHILD_FONT_SIZE,
           textColor: DEFAULT_TEXT_COLOR,
-          textAlign: DEFAULT_TEXT_ALIGN,
-          textVAlign: DEFAULT_TEXT_V_ALIGN,
+          textAlign: DEFAULT_NEW_NODE_TEXT_ALIGN,
+          textVAlign: DEFAULT_NEW_NODE_TEXT_V_ALIGN,
           attachments: [],
           referenceText: "",
           referenceOrder: null,
           collapsed: false,
           order: getNextSiblingOrder(null),
-          x: round(worldPoint.x - 90),
+          x: round(worldPoint.x - DEFAULT_CHILD_NODE_WIDTH / 2),
           y: round(worldPoint.y - initialHeight / 2),
           offsetX: 0,
           offsetY: 0
@@ -6663,6 +8136,56 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         renderAll();
         syncEmbeddedState();
         return node;
+      }
+
+      function deleteCanvasLink(linkId, skipRender) {
+        const existing = findCanvasLink(linkId);
+        if (!existing) {
+          return;
+        }
+
+        state.links = state.links.filter((link) => link.id !== linkId);
+        if (selectionKind === "named-link" && selectionId === linkId) {
+          clearSelection();
+        }
+        if (suppressCanvasLinkClickId === linkId) {
+          suppressCanvasLinkClickId = null;
+        }
+        if (interaction && interaction.id === linkId) {
+          interaction = null;
+        }
+        if (contextMenuTarget && contextMenuTarget.id === linkId) {
+          hideContextMenu();
+        }
+        if (pendingLinkDrop && pendingLinkDrop.linkId === linkId) {
+          closeLinkDropMenu();
+        }
+
+        if (skipRender) {
+          return;
+        }
+
+        renderAll();
+        syncEmbeddedState();
+      }
+
+      function appendCanvasLinkToNode(linkId, nodeId) {
+        const link = findCanvasLink(linkId);
+        const node = findNode(nodeId);
+        if (!link || !node) {
+          closeLinkDropMenu();
+          return;
+        }
+
+        link.mode = "appended";
+        link.hostNodeId = node.id;
+        link.order = getNextCanvasLinkOrder(node.id);
+        setSelection(link.id, "named-link");
+        attachTargetId = null;
+        closeLinkDropMenu();
+        hideContextMenu();
+        renderAll();
+        syncEmbeddedState();
       }
 
       function detachNodeFromParent(nodeId) {
@@ -6759,10 +8282,12 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               imageData: node.type === "image" ? normalizeImageData(node.imageData) : "",
               attachments: getNodeAttachments(node).map((attachment) => ({
                 id: attachment.id,
+                kind: attachment.kind === "url" ? "url" : "file",
                 name: attachment.name,
                 type: attachment.type,
                 data: attachment.data,
-                size: Number.isFinite(attachment.size) ? attachment.size : 0
+                size: Number.isFinite(attachment.size) ? attachment.size : 0,
+                url: attachment.kind === "url" ? normalizeLinkUrl(attachment.url) : ""
               })),
               width: round(node.width),
               height: round(node.height),
@@ -6781,6 +8306,20 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               y: round(node.y),
               offsetX: round(node.offsetX),
               offsetY: round(node.offsetY)
+            })),
+            links: state.links.map((link) => ({
+              id: link.id,
+              url: normalizeLinkUrl(link.url),
+              label: normalizeCanvasLinkLabel(link.label, link.url),
+              fontFamily: normalizeFontFamily(link.fontFamily),
+              fontWeight: normalizeFontWeight(link.fontWeight),
+              fontStyle: normalizeFontStyle(link.fontStyle),
+              fontSize: normalizeFontSize(link.fontSize, false),
+              x: round(link.x),
+              y: round(link.y),
+              mode: link.mode === "appended" ? "appended" : "floating",
+              hostNodeId: link.mode === "appended" ? link.hostNodeId : null,
+              order: Number.isFinite(link.order) ? link.order : 0
             }))
           },
           null,
@@ -6988,6 +8527,97 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return matchId;
       }
 
+      function getCanvasLinkDropTarget(worldPoint) {
+        if (!currentLayout || !worldPoint) {
+          return null;
+        }
+
+        let matchId = null;
+        let matchDistance = Infinity;
+
+        for (const candidate of state.nodes) {
+          const position = currentLayout.positions.get(candidate.id);
+          if (!position) {
+            continue;
+          }
+
+          const padding = 18;
+          const withinBounds =
+            worldPoint.x >= position.x - padding &&
+            worldPoint.x <= position.x + candidate.width + padding &&
+            worldPoint.y >= position.y - padding &&
+            worldPoint.y <= position.y + candidate.height + padding;
+
+          if (!withinBounds) {
+            continue;
+          }
+
+          const centerX = position.x + candidate.width / 2;
+          const centerY = position.y + candidate.height / 2;
+          const distance = Math.hypot(worldPoint.x - centerX, worldPoint.y - centerY);
+
+          if (distance < matchDistance) {
+            matchDistance = distance;
+            matchId = candidate.id;
+          }
+        }
+
+        return matchId;
+      }
+
+      function getNodeBorderDragTarget(worldPoint) {
+        if (!currentLayout || !currentLayout.positions || !worldPoint) {
+          return null;
+        }
+
+        const selectedNode = getSelectedNode();
+        const orderedNodes = state.nodes.slice().sort((left, right) => {
+          const leftPosition = currentLayout.positions.get(left.id);
+          const rightPosition = currentLayout.positions.get(right.id);
+          if (!leftPosition || !rightPosition) {
+            return 0;
+          }
+          if (leftPosition.x !== rightPosition.x) {
+            return leftPosition.x - rightPosition.x;
+          }
+          return leftPosition.y - rightPosition.y;
+        });
+        const candidates = [];
+
+        if (selectedNode) {
+          candidates.push(selectedNode);
+        }
+
+        for (let index = orderedNodes.length - 1; index >= 0; index -= 1) {
+          const candidate = orderedNodes[index];
+          if (selectedNode && candidate.id === selectedNode.id) {
+            continue;
+          }
+          candidates.push(candidate);
+        }
+
+        for (const candidate of candidates) {
+          const position = currentLayout.positions.get(candidate.id);
+          if (!position) {
+            continue;
+          }
+
+          const paddingX = 10;
+          const paddingY = 10;
+          const withinBounds =
+            worldPoint.x >= position.x - paddingX &&
+            worldPoint.x <= position.x + candidate.width + paddingX &&
+            worldPoint.y >= position.y - paddingY &&
+            worldPoint.y <= position.y + candidate.height + paddingY;
+
+          if (withinBounds) {
+            return candidate.id;
+          }
+        }
+
+        return null;
+      }
+
       function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
       }
@@ -7003,6 +8633,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       function updateToolbar() {
         if (addRootButton) {
           addRootButton.disabled = isSharedView();
+        }
+        if (linkButton) {
+          linkButton.disabled = isSharedView();
         }
         if (clearButton) {
           clearButton.disabled = isSharedView() || !hasWorkingState();
@@ -7028,6 +8661,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           if (contextMenuTarget.kind === "branch") {
             detachNodeFromParent(contextMenuTarget.id);
+            return;
+          }
+
+          if (contextMenuTarget.kind === "named-link") {
+            deleteCanvasLink(contextMenuTarget.id);
             return;
           }
 
