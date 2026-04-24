@@ -2,6 +2,17 @@
 
 All notable changes to MindLite are documented in this file.
 
+## [0.2.1] - 2026-04-24
+
+### Fixed
+
+- Hardened shared HTML view so empty node text boxes are explicitly read-only and non-editable.
+- Changed shared HTML and PDF exports to show node document buttons only when documents are available.
+- Fixed appended hyperlinks on folded branches so they follow the folded parent with the child branch tint and stay inactive until the branch is unfolded.
+- Consolidated editor and shared hyperlinks and attached URL rows as real browser links that open in a new tab or window only with `Ctrl+click` or `Cmd+click`.
+- Made appended hyperlink tint chips use a consistent branch-colored fill.
+- Added a locked grabbing cursor while dragging hyperlinks, matching node drag behavior.
+
 ## [0.2.0] - 2026-04-23
 
 ### Added

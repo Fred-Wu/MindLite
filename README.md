@@ -4,7 +4,7 @@ MindLite is a self-contained browser-based mind mapping app distributed as a sin
 
 The project currently ships as [`MindLite.html`](./MindLite.html) with no build step, no package manager, and no external runtime dependencies. Open the file in a modern desktop browser and start working.
 
-Current release: `v0.2.0`
+Current release: `v0.2.1`
 
 ## Core Features
 
@@ -38,7 +38,7 @@ Current release: `v0.2.0`
 - Paste an image or screenshot onto the canvas to create an image node.
 - Drag a detached node onto another node to attach it as a child.
 - Drag supported files onto a node, or use the attachment button, to store file attachments inside the exported document.
-- `Ctrl+click` a hyperlink to open it.
+- In shared HTML and editor mode, `Ctrl+click` or `Cmd+click` opens hyperlinks and attached URL rows in a new tab or window; plain click does not open them.
 - Drag a hyperlink onto a node to choose whether it should attach into the file list or append under the node.
 
 

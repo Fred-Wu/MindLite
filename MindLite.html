@@ -1434,10 +1434,14 @@
     }
 
     .canvas-link {
+      appearance: none;
       position: absolute;
+      display: block;
+      box-sizing: border-box;
       z-index: 8;
       max-width: 240px;
       padding: 4px 7px;
+      margin: 0;
       border: 0;
       border-radius: 10px;
       background: transparent;
@@ -1452,9 +1456,17 @@
       text-align: left;
       white-space: normal;
       word-break: break-word;
-      cursor: pointer;
+      cursor: grab;
       transform-origin: top left;
       pointer-events: auto;
+    }
+
+    .canvas-link:active {
+      cursor: grabbing;
+    }
+
+    body.is-shared-view .canvas-link {
+      cursor: pointer;
     }
 
     .canvas-link.is-selected {
@@ -1464,6 +1476,23 @@
 
     .canvas-link.is-appended {
       max-width: min(260px, calc(100vw - 80px));
+      background: color-mix(in srgb, var(--canvas-link-tint-color, #2563eb) 12%, rgba(255, 255, 255, 0.92));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--canvas-link-tint-color, #2563eb) 30%, rgba(58, 50, 43, 0.08));
+    }
+
+    .canvas-link.is-appended.is-selected {
+      background: color-mix(in srgb, #2563eb 18%, rgba(255, 255, 255, 0.92));
+      box-shadow:
+        inset 0 0 0 1px rgba(37, 99, 235, 0.22),
+        0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .canvas-link.is-folded-proxy {
+      background: color-mix(in srgb, var(--canvas-link-tint-color, #2563eb) 12%, rgba(255, 255, 255, 0.92));
+      color: var(--canvas-link-tint-color, #2563eb);
+      cursor: default;
+      pointer-events: none;
+      text-decoration-style: dotted;
     }
 
     .node-editor {
@@ -2019,6 +2048,7 @@
       color: var(--ink);
       padding: 5px 6px;
       text-align: left;
+      text-decoration: none;
       cursor: pointer;
     }
 
@@ -2863,7 +2893,7 @@
     (() => {
       "use strict";
 
-      const APP_VERSION = "0.2.0";
+      const APP_VERSION = "0.2.1";
       const MIN_NODE_WIDTH = 104;
       const MIN_NODE_HEIGHT = 48;
       const MAX_NODE_WIDTH = 420;
@@ -2880,7 +2910,7 @@
       const APPENDED_LINK_OFFSET_Y = 4;
       const APPENDED_LINK_GAP_X = 8;
       const APPENDED_LINK_GAP_Y = 4;
-      const MIN_APPENDED_LINK_WRAP_WIDTH = 48;
+      const MIN_APPENDED_LINK_WRAP_WIDTH = 24;
       const ROOT_KEY = "__root__";
       const ROOT_COLOR = "#16a34a";
       const BRANCH_COLORS = ["#e74c3c", "#f39c12", "#16a34a", "#2563eb", "#8b5cf6", "#ec4899"];
@@ -3766,7 +3796,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             closeLinkDropMenu();
             hideContextMenu();
             applySelectionState();
-            if (completedInteraction.openOnRelease || event.ctrlKey) {
+            if (completedInteraction.openOnRelease) {
+              suppressCanvasLinkClickId = link.id;
               openCanvasLink(link.url);
             }
             return;
@@ -4146,12 +4177,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return selectionKind === "named-link" && selectionId ? findCanvasLink(selectionId) : null;
       }
 
-      function getCanvasLinksForHost(nodeId) {
-        return state.links
-          .filter((link) => link.mode === "appended" && link.hostNodeId === nodeId)
-          .sort((left, right) => left.order - right.order);
-      }
-
       function createCanvasLinkMeasureElement() {
         const measureEl = document.createElement("button");
         measureEl.type = "button";
@@ -4190,11 +4215,93 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         };
       }
 
+      function getNodeSortPath(nodeId) {
+        const path = [];
+        let node = findNode(nodeId);
+        const visited = new Set();
+
+        while (node && !visited.has(node.id)) {
+          visited.add(node.id);
+          path.unshift(Number.isFinite(node.order) ? node.order : 0);
+          node = typeof node.parentId === "string" ? findNode(node.parentId) : null;
+        }
+
+        return path;
+      }
+
+      function compareNumberPaths(leftPath, rightPath) {
+        const length = Math.max(leftPath.length, rightPath.length);
+        for (let index = 0; index < length; index += 1) {
+          const leftValue = Number.isFinite(leftPath[index]) ? leftPath[index] : -1;
+          const rightValue = Number.isFinite(rightPath[index]) ? rightPath[index] : -1;
+          if (leftValue !== rightValue) {
+            return leftValue - rightValue;
+          }
+        }
+        return 0;
+      }
+
+      function getAppendedCanvasLinkDisplayInfo(link) {
+        if (!link || link.mode !== "appended" || !link.hostNodeId || !currentLayout || !currentLayout.positions) {
+          return null;
+        }
+
+        const hostNode = findNode(link.hostNodeId);
+        if (!hostNode) {
+          return null;
+        }
+
+        if (currentLayout.positions.has(hostNode.id)) {
+          return {
+            hostNode: hostNode,
+            displayNode: hostNode,
+            isFoldedProxy: false,
+            branchColor: getNodeBranchColor(hostNode.id),
+            sortPath: getNodeSortPath(hostNode.id)
+          };
+        }
+
+        let cursor = hostNode;
+        const visited = new Set();
+        while (cursor && cursor.parentId && !visited.has(cursor.id)) {
+          visited.add(cursor.id);
+          cursor = findNode(cursor.parentId);
+          if (cursor && currentLayout.positions.has(cursor.id)) {
+            return {
+              hostNode: hostNode,
+              displayNode: cursor,
+              isFoldedProxy: true,
+              branchColor: getNodeBranchColor(hostNode.id),
+              sortPath: getNodeSortPath(hostNode.id)
+            };
+          }
+        }
+
+        return null;
+      }
+
       function buildAppendedCanvasLinkLayoutMap() {
         const layoutMap = new Map();
         if (!currentLayout || !currentLayout.positions || !document.body) {
           return layoutMap;
         }
+
+        const entriesByDisplayNode = new Map();
+        state.links.forEach((link) => {
+          const displayInfo = getAppendedCanvasLinkDisplayInfo(link);
+          if (!displayInfo) {
+            return;
+          }
+
+          const displayNodeId = displayInfo.displayNode.id;
+          if (!entriesByDisplayNode.has(displayNodeId)) {
+            entriesByDisplayNode.set(displayNodeId, []);
+          }
+          entriesByDisplayNode.get(displayNodeId).push({
+            link: link,
+            displayInfo: displayInfo
+          });
+        });
 
         const measureEl = createCanvasLinkMeasureElement();
         document.body.appendChild(measureEl);
@@ -4206,17 +4313,31 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               continue;
             }
 
-            const hostLinks = getCanvasLinksForHost(node.id);
-            if (!hostLinks.length) {
+            const hostEntries = entriesByDisplayNode.get(node.id) || [];
+            if (!hostEntries.length) {
               continue;
             }
+
+            hostEntries.sort((left, right) => {
+              if (left.displayInfo.isFoldedProxy !== right.displayInfo.isFoldedProxy) {
+                return left.displayInfo.isFoldedProxy ? 1 : -1;
+              }
+
+              const pathResult = compareNumberPaths(left.displayInfo.sortPath, right.displayInfo.sortPath);
+              if (pathResult !== 0) {
+                return pathResult;
+              }
+
+              return left.link.order - right.link.order;
+            });
 
             const availableWidth = Math.max(MIN_APPENDED_LINK_WRAP_WIDTH, node.width - APPENDED_LINK_INSET_X * 2);
             let rowX = 0;
             let rowY = 0;
             let rowHeight = 0;
 
-            for (const link of hostLinks) {
+            for (const entry of hostEntries) {
+              const link = entry.link;
               const measured = measureCanvasLinkBox(link, availableWidth, measureEl);
               if (rowX > 0 && rowX + measured.width > availableWidth) {
                 rowX = 0;
@@ -4229,7 +4350,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
                 y: round(hostPosition.y + node.height + APPENDED_LINK_OFFSET_Y + rowY),
                 width: measured.width,
                 height: measured.height,
-                maxWidth: measured.maxWidth
+                maxWidth: measured.maxWidth,
+                displayNodeId: node.id,
+                hostNodeId: entry.displayInfo.hostNode.id,
+                isFoldedProxy: entry.displayInfo.isFoldedProxy,
+                branchColor: entry.displayInfo.branchColor
               });
 
               rowX += measured.width + APPENDED_LINK_GAP_X;
@@ -4846,7 +4971,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           return false;
         }
 
-        if (getCanvasLinksForHost(node.id).length) {
+        if (state.links.some((link) => link.mode === "appended" && link.hostNodeId === node.id)) {
           return false;
         }
 
@@ -5223,6 +5348,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             editor.className = "node-editor";
             editor.rows = 1;
             editor.readOnly = isSharedView();
+            if (isSharedView()) {
+              editor.tabIndex = -1;
+              editor.setAttribute("aria-readonly", "true");
+            }
             editor.spellcheck = false;
             editor.value = node.text;
             editor.placeholder = "";
@@ -5265,17 +5394,26 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             addButton.textContent = "+";
           }
 
-          const attachmentButton = document.createElement("button");
-          attachmentButton.type = "button";
-          attachmentButton.className = "node-attachment" + (attachmentCount ? "" : " is-empty");
-          attachmentButton.title = attachmentCount ? attachmentCount + " attachment" + (attachmentCount === 1 ? "" : "s") : "Attach files";
-          attachmentButton.setAttribute("aria-label", attachmentCount ? attachmentCount + " attachments" : "Attach files");
-          attachmentButton.appendChild(createAttachmentIconSvg("node-attachment-icon"));
-          if (attachmentCount) {
-            const attachmentCountLabel = document.createElement("span");
-            attachmentCountLabel.className = "node-attachment-count";
-            attachmentCountLabel.textContent = String(attachmentCount);
-            attachmentButton.appendChild(attachmentCountLabel);
+          let attachmentButton = null;
+          if (!isSharedView() || attachmentCount) {
+            attachmentButton = document.createElement("button");
+            attachmentButton.type = "button";
+            attachmentButton.className = "node-attachment" + (attachmentCount ? "" : " is-empty");
+            const attachmentLabel = attachmentCount === 1 ? "1 attachment" : attachmentCount + " attachments";
+            const attachmentTitle = isSharedView()
+              ? "View " + (attachmentCount === 1 ? "1 document" : attachmentCount + " documents")
+              : attachmentCount
+                ? attachmentLabel
+                : "Attach files";
+            attachmentButton.title = attachmentTitle;
+            attachmentButton.setAttribute("aria-label", attachmentTitle);
+            attachmentButton.appendChild(createAttachmentIconSvg("node-attachment-icon"));
+            if (attachmentCount) {
+              const attachmentCountLabel = document.createElement("span");
+              attachmentCountLabel.className = "node-attachment-count";
+              attachmentCountLabel.textContent = String(attachmentCount);
+              attachmentButton.appendChild(attachmentCountLabel);
+            }
           }
 
           let resizeHandle = null;
@@ -5295,7 +5433,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           if (addButton) {
             nodeEl.appendChild(addButton);
           }
-          nodeEl.appendChild(attachmentButton);
+          if (attachmentButton) {
+            nodeEl.appendChild(attachmentButton);
+          }
           if (resizeHandle) {
             nodeEl.appendChild(resizeHandle);
           }
@@ -5391,30 +5531,32 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             });
           }
 
-          attachmentButton.addEventListener("pointerdown", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-          });
+          if (attachmentButton) {
+            attachmentButton.addEventListener("pointerdown", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            });
 
-          attachmentButton.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            blurActiveNodeEditor();
-            if (!findNode(node.id)) {
-              return;
-            }
-            focusWorkspaceSurface();
-            setSelection(node.id, "node");
-            hideContextMenu();
-            hideReferenceMenu();
-            closeReferenceEditor();
-            applySelectionState();
-            if (attachmentPanelNodeId === node.id && !attachmentPanel.hidden) {
-              closeAttachmentPanel();
-              return;
-            }
-            openAttachmentPanel(node.id);
-          });
+            attachmentButton.addEventListener("click", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              blurActiveNodeEditor();
+              if (!findNode(node.id)) {
+                return;
+              }
+              focusWorkspaceSurface();
+              setSelection(node.id, "node");
+              hideContextMenu();
+              hideReferenceMenu();
+              closeReferenceEditor();
+              applySelectionState();
+              if (attachmentPanelNodeId === node.id && !attachmentPanel.hidden) {
+                closeAttachmentPanel();
+                return;
+              }
+              openAttachmentPanel(node.id);
+            });
+          }
 
           if (resizeHandle) {
             resizeHandle.addEventListener("pointerdown", (event) => {
@@ -5589,16 +5731,38 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           const position = getCanvasLinkWorldPosition(link);
           const appendedLayout = getAppendedCanvasLinkLayout(link);
-          const linkEl = document.createElement("button");
-          linkEl.type = "button";
+          const isFoldedProxy = Boolean(appendedLayout && appendedLayout.isFoldedProxy);
+          const validation = getLinkUrlValidation(link.url);
+          const normalizedUrl = validation.error ? "" : validation.normalizedUrl;
+          const isBrowserLink = !isFoldedProxy && Boolean(normalizedUrl);
+          const linkEl = document.createElement(isBrowserLink ? "a" : "button");
+          if (isBrowserLink) {
+            linkEl.href = normalizedUrl;
+            linkEl.target = "_blank";
+            linkEl.rel = "noopener noreferrer";
+            linkEl.draggable = false;
+            guardBrowserLinkActivation(linkEl, normalizedUrl);
+          } else {
+            linkEl.type = "button";
+          }
           linkEl.className =
             "canvas-link" +
             (link.mode === "appended" ? " is-appended" : "") +
-            (isCanvasLinkSelected(link.id) ? " is-selected" : "");
+            (isFoldedProxy ? " is-folded-proxy" : "") +
+            (isCanvasLinkSelected(link.id) && !isFoldedProxy ? " is-selected" : "");
           linkEl.dataset.linkId = link.id;
           linkEl.textContent = link.label;
-          linkEl.title = link.url;
-          linkEl.setAttribute("aria-label", link.label + ": " + link.url);
+          linkEl.title = isFoldedProxy ? "Hidden in folded branch" : link.url;
+          linkEl.setAttribute(
+            "aria-label",
+            isFoldedProxy
+              ? link.label + ": hidden in folded branch"
+              : link.label + ": " + link.url
+          );
+          if (isFoldedProxy) {
+            linkEl.tabIndex = -1;
+            linkEl.setAttribute("aria-disabled", "true");
+          }
           linkEl.style.left = "0px";
           linkEl.style.top = "0px";
           linkEl.style.transform =
@@ -5613,75 +5777,99 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           if (appendedLayout) {
             linkEl.style.width = appendedLayout.width + "px";
             linkEl.style.maxWidth = appendedLayout.maxWidth + "px";
+            if (appendedLayout.branchColor) {
+              linkEl.style.setProperty("--canvas-link-tint-color", appendedLayout.branchColor);
+            }
           } else {
             linkEl.style.width = "";
             linkEl.style.maxWidth = "";
           }
           applyCanvasLinkTextStyles(linkEl, link);
 
-          linkEl.addEventListener("pointerdown", (event) => {
-            if (event.button !== 0 || isSharedView()) {
-              return;
-            }
-
-            event.preventDefault();
-            event.stopPropagation();
-            blurActiveNodeEditor();
-            if (!findCanvasLink(link.id)) {
-              return;
-            }
-            focusWorkspaceSurface();
-            setSelection(link.id, "named-link");
-            hideContextMenu();
-            closeLinkEditor();
-            closeLinkDropMenu();
-            applySelectionState();
-            attachTargetId = null;
-            interaction = {
-              type: "move-canvas-link",
-              id: link.id,
-              startPoint: toWorldPoint(event.clientX, event.clientY),
-              origin: getCanvasLinkWorldPosition(link),
-              moved: false,
-              openOnRelease: event.ctrlKey,
-              fromMode: link.mode,
-              detached: link.mode !== "appended"
-            };
-          });
-
-          linkEl.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            const nextLink = findCanvasLink(link.id);
-            if (!nextLink) {
-              return;
-            }
-
-            focusWorkspaceSurface();
-            setSelection(nextLink.id, "named-link");
-            hideContextMenu();
-            applySelectionState();
-          });
-
-          linkEl.addEventListener("contextmenu", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            const nextLink = findCanvasLink(link.id);
-            if (event.ctrlKey && nextLink) {
-              if (interaction && interaction.type === "move-canvas-link" && interaction.id === link.id && !interaction.moved) {
-                interaction = null;
+          if (!isSharedView() && !isFoldedProxy) {
+            linkEl.addEventListener("pointerdown", (event) => {
+              if (event.button !== 0) {
+                return;
               }
-              workspace.classList.remove("is-panning");
+
+              if (isBrowserLink && (event.ctrlKey || event.metaKey)) {
+                return;
+              }
+
+              event.preventDefault();
+              event.stopPropagation();
+              blurActiveNodeEditor();
+              if (!findCanvasLink(link.id)) {
+                return;
+              }
               focusWorkspaceSurface();
-              setSelection(nextLink.id, "named-link");
-              closeLinkDropMenu();
+              setSelection(link.id, "named-link");
               hideContextMenu();
+              closeLinkEditor();
+              closeLinkDropMenu();
               applySelectionState();
-              openCanvasLink(nextLink.url);
-              return;
+              attachTargetId = null;
+              captureNodeDragPointer(event);
+              setNodeDragCursorState(true);
+              interaction = {
+                type: "move-canvas-link",
+                id: link.id,
+                startPoint: toWorldPoint(event.clientX, event.clientY),
+                origin: getCanvasLinkWorldPosition(link),
+                moved: false,
+                openOnRelease: !isBrowserLink && (event.ctrlKey || event.metaKey),
+                fromMode: link.mode,
+                detached: link.mode !== "appended"
+              };
+            });
+
+            if (!isBrowserLink) {
+              linkEl.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (suppressCanvasLinkClickId === link.id) {
+                  suppressCanvasLinkClickId = null;
+                  return;
+                }
+
+                const nextLink = findCanvasLink(link.id);
+                if (!nextLink) {
+                  return;
+                }
+
+                if (event.ctrlKey || event.metaKey) {
+                  openCanvasLink(nextLink.url);
+                  return;
+                }
+
+                focusWorkspaceSurface();
+                setSelection(nextLink.id, "named-link");
+                hideContextMenu();
+                applySelectionState();
+              });
+
+              linkEl.addEventListener("contextmenu", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const nextLink = findCanvasLink(link.id);
+                if (event.ctrlKey && nextLink) {
+                  if (interaction && interaction.type === "move-canvas-link" && interaction.id === link.id && !interaction.moved) {
+                    interaction = null;
+                  }
+                  workspace.classList.remove("is-panning");
+                  focusWorkspaceSurface();
+                  setSelection(nextLink.id, "named-link");
+                  closeLinkDropMenu();
+                  hideContextMenu();
+                  applySelectionState();
+                  openCanvasLink(nextLink.url);
+                  return;
+                }
+                hideContextMenu();
+              });
             }
-            hideContextMenu();
-          });
+          }
 
           nodeLayer.appendChild(linkEl);
         });
@@ -6144,6 +6332,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function commitLinkEditor() {
+        if (isSharedView()) {
+          closeLinkEditor();
+          return;
+        }
+
         if (!linkUrlInput || !linkLabelInput) {
           closeLinkEditor();
           return;
@@ -6177,6 +6370,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function openLinkDropMenu(linkId, nodeId, clientX, clientY) {
+        if (isSharedView()) {
+          closeLinkDropMenu();
+          return;
+        }
+
         pendingLinkDrop = { linkId: linkId, nodeId: nodeId };
         if (!linkDropMenu) {
           return;
@@ -6216,6 +6414,27 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         linkDropMenu.hidden = true;
       }
 
+      function guardBrowserLinkActivation(element, url) {
+        if (!element) {
+          return;
+        }
+
+        element.setAttribute(
+          "onclick",
+          "if (!event.ctrlKey && !event.metaKey) { event.preventDefault(); event.stopPropagation(); }"
+        );
+
+        element.addEventListener("contextmenu", (event) => {
+          if (!event.ctrlKey) {
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+          openCanvasLink(url || element.href);
+        });
+      }
+
       function openCanvasLink(url) {
         const validation = getLinkUrlValidation(url);
         if (validation.error) {
@@ -6224,15 +6443,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         const normalizedUrl = validation.normalizedUrl;
-
-        const popup = window.open(normalizedUrl, "_blank", "noopener");
-        if (!popup) {
-          const anchor = document.createElement("a");
-          anchor.href = normalizedUrl;
-          anchor.target = "_blank";
-          anchor.rel = "noopener";
-          anchor.click();
-        }
+        const anchor = document.createElement("a");
+        anchor.href = normalizedUrl;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        anchor.style.display = "none";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
       }
 
       function isEscapedCharacter(text, index) {
@@ -6546,11 +6764,21 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         entries.forEach((entry) => {
           const isUrlAttachment = entry.attachment && entry.attachment.kind === "url";
+          const normalizedAttachmentUrl = isUrlAttachment ? normalizeLinkUrl(entry.attachment.url) : "";
+          const isBrowserAttachmentLink = isUrlAttachment && Boolean(normalizedAttachmentUrl);
           const row = document.createElement("div");
           row.className = "attachment-item";
 
-          const button = document.createElement("button");
-          button.type = "button";
+          const button = document.createElement(isBrowserAttachmentLink ? "a" : "button");
+          if (isBrowserAttachmentLink) {
+            button.href = normalizedAttachmentUrl;
+            button.target = "_blank";
+            button.rel = "noopener noreferrer";
+            button.draggable = false;
+            guardBrowserLinkActivation(button, normalizedAttachmentUrl);
+          } else {
+            button.type = "button";
+          }
           button.className = "attachment-item-button";
           button.title = isUrlAttachment ? "Click to open" : "Double-click to open";
           button.classList.add("is-colored");
@@ -6558,23 +6786,25 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             button.classList.add("is-link");
           }
           button.style.setProperty("--attachment-row-color", getNodeBranchColor(entry.node.id));
-          if (isUrlAttachment) {
-            button.addEventListener("click", () => {
-              openAttachmentRecord(entry.attachment);
-            });
-          } else {
-            button.addEventListener("dblclick", () => {
+          if (!isBrowserAttachmentLink) {
+            if (isUrlAttachment) {
+              button.addEventListener("click", () => {
+                openAttachmentRecord(entry.attachment);
+              });
+            } else {
+              button.addEventListener("dblclick", () => {
+                openAttachmentRecord(entry.attachment);
+              });
+            }
+            button.addEventListener("keydown", (event) => {
+              if (event.key !== "Enter" && event.key !== " ") {
+                return;
+              }
+
+              event.preventDefault();
               openAttachmentRecord(entry.attachment);
             });
           }
-          button.addEventListener("keydown", (event) => {
-            if (event.key !== "Enter" && event.key !== " ") {
-              return;
-            }
-
-            event.preventDefault();
-            openAttachmentRecord(entry.attachment);
-          });
 
           const meta = document.createElement("div");
           meta.className = "attachment-item-meta";
@@ -6668,6 +6898,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function removeAttachmentFromNode(nodeId, attachmentId) {
+        if (isSharedView()) {
+          return;
+        }
+
         const node = findNode(nodeId);
         if (!node) {
           return;
@@ -6679,6 +6913,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function attachCanvasLinkToNode(linkId, nodeId) {
+        if (isSharedView()) {
+          closeLinkDropMenu();
+          return;
+        }
+
         const link = findCanvasLink(linkId);
         const node = findNode(nodeId);
         if (!link || !node) {
@@ -6763,6 +7002,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function handleAttachmentFiles(nodeId, fileList) {
+        if (isSharedView()) {
+          return;
+        }
+
         const node = findNode(nodeId);
         const files = splitAttachmentFiles(fileList);
         if (!node || !files.accepted.length) {
@@ -6866,6 +7109,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function commitReferenceEditor() {
+        if (isSharedView()) {
+          closeReferenceEditor();
+          return;
+        }
+
         if (!referenceEditorNodeId) {
           closeReferenceEditor();
           return;
@@ -7493,8 +7741,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         hideContextMenu();
         if (exportMode === "shared") {
           clearSelection();
-          applySelectionState();
         }
+        renderAll();
         syncEmbeddedState();
 
         const html = createExportHtml(exportMode);
@@ -7503,7 +7751,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         applyViewMode();
         selectionId = previousSelectionId;
         selectionKind = previousSelectionId ? previousSelectionKind : null;
-        applySelectionState();
+        renderAll();
         syncEmbeddedState();
 
         return html;
@@ -7713,6 +7961,16 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return "<!DOCTYPE html>\n" + clone.outerHTML;
       }
 
+      function stripEmptyNodeAttachmentButtons(root) {
+        if (!root) {
+          return;
+        }
+
+        root.querySelectorAll(".node-attachment.is-empty").forEach((element) => {
+          element.remove();
+        });
+      }
+
       function stripSharedExportUi(root) {
         if (!root) {
           return;
@@ -7741,6 +7999,15 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         root.querySelectorAll(".node-add, .node-resize, .node-pin").forEach((element) => {
           element.remove();
         });
+
+        stripEmptyNodeAttachmentButtons(root);
+
+        root.querySelectorAll("textarea").forEach((textarea) => {
+          textarea.textContent = textarea.value || "";
+          textarea.setAttribute("readonly", "");
+          textarea.setAttribute("tabindex", "-1");
+          textarea.setAttribute("aria-readonly", "true");
+        });
       }
 
       function stripPdfExportUi(root) {
@@ -7766,6 +8033,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         root.querySelectorAll(".node-add, .node-resize, .node-pin").forEach((element) => {
           element.remove();
         });
+
+        stripEmptyNodeAttachmentButtons(root);
       }
 
       function getExportContentBounds() {
@@ -8139,6 +8408,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function deleteCanvasLink(linkId, skipRender) {
+        if (isSharedView()) {
+          return;
+        }
+
         const existing = findCanvasLink(linkId);
         if (!existing) {
           return;
@@ -8170,6 +8443,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function appendCanvasLinkToNode(linkId, nodeId) {
+        if (isSharedView()) {
+          closeLinkDropMenu();
+          return;
+        }
+
         const link = findCanvasLink(linkId);
         const node = findNode(nodeId);
         if (!link || !node) {
