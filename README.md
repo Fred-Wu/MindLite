@@ -4,7 +4,7 @@ MindLite is a self-contained browser-based mind mapping app distributed as a sin
 
 The project currently ships as [`MindLite.html`](./MindLite.html) with no build step, no package manager, and no external runtime dependencies. Open the file in a modern desktop browser and start working.
 
-Current release: `v0.2.1`
+Current release: `v0.2.2`
 
 ## Core Features
 
@@ -12,7 +12,7 @@ Current release: `v0.2.1`
 - Supports moving, resizing, folding, and reattaching branches
 - Supports text styling for nodes and hyperlinks
 - Saves editable mind maps as standalone HTML files
-- Exports read-only shareable HTML and landscape PDF output
+- Exports read-only shareable HTML, landscape PDF output, and PDF ZIP packages with attachments
 - Lets you pin hidden references and jump back to them from the toolbar
 - Supports pasting screenshots or images directly onto the canvas
 - Supports attaching PDF, Word, PowerPoint, Markdown, Quarto, and RTF documents to nodes
@@ -34,6 +34,7 @@ Current release: `v0.2.1`
 - The reset icon restores the current editable file back to the blank app state.
 - `Share As -> HTML` exports a read-only HTML version for sharing.
 - `Share As -> PDF` opens a print-ready landscape export flow.
+- `Share As -> ZIP` exports a PDF package with `mindmap.pdf`, attached files, and attached/appended URL records.
 - Press `Del` to remove a selected node or link.
 - Paste an image or screenshot onto the canvas to create an image node.
 - Drag a detached node onto another node to attach it as a child.

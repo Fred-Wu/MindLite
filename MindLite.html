@@ -2499,6 +2499,7 @@
             <div class="toolbar-save-actions">
               <button id="share-pdf-button" class="toolbar-save-item" type="button">PDF</button>
               <button id="share-html-button" class="toolbar-save-item" type="button">HTML</button>
+              <button id="share-zip-button" class="toolbar-save-item" type="button">ZIP</button>
             </div>
           </div>
         </div>
@@ -2893,7 +2894,7 @@
     (() => {
       "use strict";
 
-      const APP_VERSION = "0.2.1";
+      const APP_VERSION = "0.2.2";
       const MIN_NODE_WIDTH = 104;
       const MIN_NODE_HEIGHT = 48;
       const MAX_NODE_WIDTH = 420;
@@ -3004,6 +3005,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const saveCurrentButton = document.getElementById("save-current-button");
       const sharePdfButton = document.getElementById("share-pdf-button");
       const shareHtmlButton = document.getElementById("share-html-button");
+      const shareZipButton = document.getElementById("share-zip-button");
       const referenceButton = document.getElementById("reference-button");
       const referenceMenu = document.getElementById("reference-menu");
       const referenceList = document.getElementById("reference-list");
@@ -3233,6 +3235,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         shareHtmlButton.addEventListener("click", () => {
           hideSaveMenu();
           void exportAsHtml("shared");
+        });
+      }
+
+      if (shareZipButton) {
+        shareZipButton.addEventListener("click", () => {
+          hideSaveMenu();
+          void exportAsZip();
         });
       }
 
@@ -6945,7 +6954,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         syncEmbeddedState();
       }
 
-      function dataUrlToBlob(dataUrl, fallbackType) {
+      function dataUrlToBytes(dataUrl, fallbackType) {
         const match = String(dataUrl || "").match(/^data:([^;,]*)(;base64)?,(.*)$/);
         if (!match) {
           return null;
@@ -6959,7 +6968,17 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         for (let index = 0; index < binaryString.length; index += 1) {
           bytes[index] = binaryString.charCodeAt(index);
         }
-        return new Blob([bytes], { type: mimeType });
+
+        return { bytes: bytes, mimeType: mimeType };
+      }
+
+      function dataUrlToBlob(dataUrl, fallbackType) {
+        const decoded = dataUrlToBytes(dataUrl, fallbackType);
+        if (!decoded) {
+          return null;
+        }
+
+        return new Blob([decoded.bytes], { type: decoded.mimeType });
       }
 
       function openAttachmentRecord(attachment) {
@@ -7162,6 +7181,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const referenceNodes = getReferenceNodes();
         referenceList.innerHTML = "";
         referenceButton.disabled = false;
+        referenceEmpty.textContent = isSharedView() ? "No pinned references" : "No pinned references yet";
 
         if (!referenceNodes.length) {
           referenceEmpty.hidden = false;
@@ -7682,6 +7702,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return "mindlite-" + kind + "-" + stamp + ".html";
       }
 
+      function createTimestampedZipFileName(kind) {
+        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+        return "mindlite-" + kind + "-" + stamp + ".zip";
+      }
+
       function getEditableSaveFileNameHint() {
         if (hasWorkingState()) {
           return ensureHtmlExtension(getCurrentDocumentFileName());
@@ -7690,14 +7715,17 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return createTimestampedFileName("save");
       }
 
-      function downloadHtmlFile(html, fileName) {
-        const blob = new Blob([html], { type: "text/html" });
+      function downloadBlob(blob, fileName) {
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
         anchor.href = url;
-        anchor.download = ensureHtmlExtension(fileName);
+        anchor.download = fileName;
         anchor.click();
         window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      }
+
+      function downloadHtmlFile(html, fileName) {
+        downloadBlob(new Blob([html], { type: "text/html" }), ensureHtmlExtension(fileName));
       }
 
       function saveWorkingCopy() {
@@ -7772,6 +7800,357 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         downloadHtmlFile(html, fileName);
       }
 
+      async function exportAsZip() {
+        if (isSharedView()) {
+          return;
+        }
+
+        if (shareZipButton) {
+          shareZipButton.disabled = true;
+        }
+
+        try {
+          const zipBlob = await createSharePackageZipBlob();
+          if (!zipBlob) {
+            return;
+          }
+
+          downloadBlob(zipBlob, createTimestampedZipFileName("share"));
+        } catch (error) {
+          console.error("Unable to create the ZIP share package.", error);
+          window.alert("Unable to create the ZIP share package.");
+        } finally {
+          if (shareZipButton) {
+            shareZipButton.disabled = false;
+          }
+        }
+      }
+
+      async function createSharePackageZipBlob() {
+        const pdfBlob = await createMindMapPdfBlob();
+        if (!pdfBlob) {
+          return null;
+        }
+
+        const packageEntries = [];
+        const usedPaths = new Set();
+        const addPackageEntry = (path, data) => {
+          const uniquePath = getUniquePackagePath(path, usedPaths);
+          usedPaths.add(uniquePath);
+          packageEntries.push({
+            path: uniquePath,
+            data: data
+          });
+        };
+
+        addPackageEntry("mindmap.pdf", pdfBlob);
+
+        const attachmentEntries = getPackageAttachmentEntries();
+        let includedFileAttachmentCount = 0;
+        attachmentEntries.files.forEach((entry, index) => {
+          const decoded = dataUrlToBytes(entry.attachment.data, entry.attachment.type);
+          if (!decoded) {
+            return;
+          }
+
+          const folderName = getPackageNodeFolderName(entry.node);
+          const fallbackFileName = "attachment-" + (index + 1);
+          const fileName = sanitizePackagePathPart(entry.attachment.name, fallbackFileName);
+          addPackageEntry("attachments/" + folderName + "/" + fileName, decoded.bytes);
+          includedFileAttachmentCount += 1;
+        });
+
+        if (attachmentEntries.urls.length) {
+          addPackageEntry("attached-links.txt", createAttachedLinksText(attachmentEntries.urls));
+        }
+
+        addPackageEntry(
+          "README.txt",
+          createSharePackageReadme(includedFileAttachmentCount, attachmentEntries.urls.length)
+        );
+
+        return createZipArchiveBlob(packageEntries);
+      }
+
+      function getPackageAttachmentEntries() {
+        const files = [];
+        const urls = [];
+        const appendedLinksByHostNodeId = new Map();
+
+        state.links.forEach((link) => {
+          if (!link || link.mode !== "appended" || !link.hostNodeId || !link.url) {
+            return;
+          }
+
+          if (!findNode(link.hostNodeId)) {
+            return;
+          }
+
+          if (!appendedLinksByHostNodeId.has(link.hostNodeId)) {
+            appendedLinksByHostNodeId.set(link.hostNodeId, []);
+          }
+          appendedLinksByHostNodeId.get(link.hostNodeId).push(link);
+        });
+
+        state.nodes.forEach((node) => {
+          getNodeAttachments(node).forEach((attachment) => {
+            if (attachment && attachment.kind === "url") {
+              urls.push({ node: node, attachment: attachment });
+              return;
+            }
+
+            if (attachment && attachment.kind !== "url" && attachment.data) {
+              files.push({ node: node, attachment: attachment });
+            }
+          });
+
+          const appendedLinks = appendedLinksByHostNodeId.get(node.id) || [];
+          appendedLinks
+            .slice()
+            .sort((left, right) => left.order - right.order)
+            .forEach((link) => {
+              urls.push({
+                node: node,
+                attachment: {
+                  kind: "url",
+                  name: normalizeCanvasLinkLabel(link.label, link.url),
+                  url: normalizeLinkUrl(link.url)
+                }
+              });
+            });
+        });
+
+        return { files: files, urls: urls };
+      }
+
+      function getPackageNodeFolderName(node) {
+        const nodeId = sanitizePackagePathPart(node && node.id, "node");
+        const nodeLabel = sanitizePackagePathPart(getPackageNodeLabel(node), nodeId);
+        return nodeLabel && nodeLabel !== nodeId ? nodeId + "-" + nodeLabel : nodeId;
+      }
+
+      function getPackageNodeLabel(node) {
+        const rawText = node && node.type === "image" ? "Image node" : node && typeof node.text === "string" ? node.text : "";
+        const text = rawText.replace(/\s+/g, " ").trim();
+        return text ? text.slice(0, 48) : "node";
+      }
+
+      function sanitizePackagePathPart(value, fallback) {
+        const sanitized = String(value || "")
+          .replace(/[\x00-\x1f\x7f]/g, "")
+          .replace(/[\\/:*?"<>|]/g, "-")
+          .replace(/\s+/g, " ")
+          .trim()
+          .replace(/^\.+$/, "");
+
+        return sanitized || fallback || "item";
+      }
+
+      function getUniquePackagePath(path, usedPaths) {
+        const cleanPath = String(path || "item").replace(/^\/+/, "");
+        if (!usedPaths.has(cleanPath)) {
+          return cleanPath;
+        }
+
+        const slashIndex = cleanPath.lastIndexOf("/");
+        const directory = slashIndex >= 0 ? cleanPath.slice(0, slashIndex + 1) : "";
+        const fileName = slashIndex >= 0 ? cleanPath.slice(slashIndex + 1) : cleanPath;
+        const dotIndex = fileName.lastIndexOf(".");
+        const baseName = dotIndex > 0 ? fileName.slice(0, dotIndex) : fileName;
+        const extension = dotIndex > 0 ? fileName.slice(dotIndex) : "";
+        let counter = 2;
+        let candidate = "";
+
+        do {
+          candidate = directory + baseName + " (" + counter + ")" + extension;
+          counter += 1;
+        } while (usedPaths.has(candidate));
+
+        return candidate;
+      }
+
+      function createAttachedLinksText(entries) {
+        return entries
+          .map((entry, index) => {
+            const nodeLabel = getPackageNodeLabel(entry.node);
+            const attachment = entry.attachment || {};
+            return [
+              "[" + (index + 1) + "] " + nodeLabel,
+              "Name: " + (attachment.name || "Link"),
+              "URL: " + normalizeLinkUrl(attachment.url),
+              ""
+            ].join("\n");
+          })
+          .join("\n");
+      }
+
+      function createSharePackageReadme(fileAttachmentCount, urlAttachmentCount) {
+        return [
+          "MindLite share package",
+          "",
+          "Open mindmap.pdf to view the exported mind map.",
+          "Attached files are in the attachments folder.",
+          fileAttachmentCount + " file attachment" + (fileAttachmentCount === 1 ? "" : "s") + " included.",
+          urlAttachmentCount + " attached URL" + (urlAttachmentCount === 1 ? "" : "s") + " included."
+        ].join("\n");
+      }
+
+      async function createZipArchiveBlob(entries) {
+        if (!Array.isArray(entries) || !entries.length) {
+          return new Blob([], { type: "application/zip" });
+        }
+        if (entries.length > 0xffff) {
+          throw new Error("ZIP packages with more than 65535 files are not supported.");
+        }
+
+        const encoder = new TextEncoder();
+        const zipDateTime = getZipDateTime(new Date());
+        const localParts = [];
+        const centralParts = [];
+        let offset = 0;
+
+        for (const entry of entries) {
+          const pathBytes = encoder.encode(String(entry.path || "item"));
+          const dataBytes = await getZipEntryBytes(entry.data, encoder);
+          if (pathBytes.length > 0xffff || dataBytes.length > 0xffffffff || offset > 0xffffffff) {
+            throw new Error("ZIP package is too large.");
+          }
+
+          const checksum = getCrc32(dataBytes);
+          const localHeader = createZipLocalFileHeader(pathBytes, dataBytes.length, checksum, zipDateTime);
+          const centralHeader = createZipCentralDirectoryHeader(pathBytes, dataBytes.length, checksum, zipDateTime, offset);
+
+          localParts.push(localHeader, dataBytes);
+          centralParts.push(centralHeader);
+          offset += localHeader.length + dataBytes.length;
+        }
+
+        const centralDirectoryOffset = offset;
+        const centralDirectorySize = centralParts.reduce((size, part) => size + part.length, 0);
+        if (centralDirectoryOffset > 0xffffffff || centralDirectorySize > 0xffffffff) {
+          throw new Error("ZIP package is too large.");
+        }
+
+        const endRecord = createZipEndOfCentralDirectory(entries.length, centralDirectorySize, centralDirectoryOffset);
+        return new Blob(localParts.concat(centralParts, endRecord), { type: "application/zip" });
+      }
+
+      async function getZipEntryBytes(data, encoder) {
+        if (data instanceof Uint8Array) {
+          return data;
+        }
+        if (data instanceof ArrayBuffer) {
+          return new Uint8Array(data);
+        }
+        if (ArrayBuffer.isView(data)) {
+          return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+        }
+        if (data && typeof data.arrayBuffer === "function") {
+          return new Uint8Array(await data.arrayBuffer());
+        }
+
+        return encoder.encode(data == null ? "" : String(data));
+      }
+
+      function getZipDateTime(date) {
+        const year = Math.max(1980, date.getFullYear());
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = Math.floor(date.getSeconds() / 2);
+
+        return {
+          date: ((year - 1980) << 9) | (month << 5) | day,
+          time: (hours << 11) | (minutes << 5) | seconds
+        };
+      }
+
+      function createZipLocalFileHeader(pathBytes, dataLength, checksum, zipDateTime) {
+        const header = new Uint8Array(30 + pathBytes.length);
+        const view = new DataView(header.buffer);
+        view.setUint32(0, 0x04034b50, true);
+        view.setUint16(4, 20, true);
+        view.setUint16(6, 0x0800, true);
+        view.setUint16(8, 0, true);
+        view.setUint16(10, zipDateTime.time, true);
+        view.setUint16(12, zipDateTime.date, true);
+        view.setUint32(14, checksum, true);
+        view.setUint32(18, dataLength, true);
+        view.setUint32(22, dataLength, true);
+        view.setUint16(26, pathBytes.length, true);
+        view.setUint16(28, 0, true);
+        header.set(pathBytes, 30);
+        return header;
+      }
+
+      function createZipCentralDirectoryHeader(pathBytes, dataLength, checksum, zipDateTime, localHeaderOffset) {
+        const header = new Uint8Array(46 + pathBytes.length);
+        const view = new DataView(header.buffer);
+        view.setUint32(0, 0x02014b50, true);
+        view.setUint16(4, 20, true);
+        view.setUint16(6, 20, true);
+        view.setUint16(8, 0x0800, true);
+        view.setUint16(10, 0, true);
+        view.setUint16(12, zipDateTime.time, true);
+        view.setUint16(14, zipDateTime.date, true);
+        view.setUint32(16, checksum, true);
+        view.setUint32(20, dataLength, true);
+        view.setUint32(24, dataLength, true);
+        view.setUint16(28, pathBytes.length, true);
+        view.setUint16(30, 0, true);
+        view.setUint16(32, 0, true);
+        view.setUint16(34, 0, true);
+        view.setUint16(36, 0, true);
+        view.setUint32(38, 0, true);
+        view.setUint32(42, localHeaderOffset, true);
+        header.set(pathBytes, 46);
+        return header;
+      }
+
+      function createZipEndOfCentralDirectory(entryCount, centralDirectorySize, centralDirectoryOffset) {
+        const record = new Uint8Array(22);
+        const view = new DataView(record.buffer);
+        view.setUint32(0, 0x06054b50, true);
+        view.setUint16(4, 0, true);
+        view.setUint16(6, 0, true);
+        view.setUint16(8, entryCount, true);
+        view.setUint16(10, entryCount, true);
+        view.setUint32(12, centralDirectorySize, true);
+        view.setUint32(16, centralDirectoryOffset, true);
+        view.setUint16(20, 0, true);
+        return record;
+      }
+
+      let crc32Table = null;
+
+      function getCrc32(bytes) {
+        const table = getCrc32Table();
+        let crc = 0xffffffff;
+        for (let index = 0; index < bytes.length; index += 1) {
+          crc = (crc >>> 8) ^ table[(crc ^ bytes[index]) & 0xff];
+        }
+
+        return (crc ^ 0xffffffff) >>> 0;
+      }
+
+      function getCrc32Table() {
+        if (crc32Table) {
+          return crc32Table;
+        }
+
+        crc32Table = new Uint32Array(256);
+        for (let index = 0; index < 256; index += 1) {
+          let value = index;
+          for (let bit = 0; bit < 8; bit += 1) {
+            value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+          }
+          crc32Table[index] = value >>> 0;
+        }
+
+        return crc32Table;
+      }
+
       function clearWorkingState() {
         if (isSharedView()) {
           return;
@@ -7826,8 +8205,41 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function exportAsPdf() {
+        const pdfHtml = createPdfPrintSnapshot();
+        if (pdfHtml) {
+          openPdfPrintFrame(pdfHtml);
+        }
+      }
+
+      function createPdfPrintSnapshot() {
+        const exportSnapshot = beginPdfExportLayout();
+        if (!exportSnapshot) {
+          return "";
+        }
+
+        try {
+          return createPdfPrintHtml(exportSnapshot.size);
+        } finally {
+          exportSnapshot.restore();
+        }
+      }
+
+      async function createMindMapPdfBlob() {
+        const exportSnapshot = beginPdfExportLayout();
+        if (!exportSnapshot) {
+          return null;
+        }
+
+        try {
+          return await createPdfBlobFromCurrentWorkspace(exportSnapshot.size);
+        } finally {
+          exportSnapshot.restore();
+        }
+      }
+
+      function beginPdfExportLayout() {
         if (isSharedView()) {
-          return;
+          return null;
         }
 
         const activeElement = document.activeElement;
@@ -7872,26 +8284,306 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         state.viewport.scale = 1;
         renderAll();
 
-        const pdfHtml = createPdfPrintHtml({
+        const size = {
           width: Math.max(960, round(exportBounds.width + exportPadding * 2)),
           height: Math.max(540, round(exportBounds.height + exportPadding * 2))
-        });
-        openPdfPrintFrame(pdfHtml);
+        };
 
-        collapseSnapshot.forEach((entry) => {
-          const node = findNode(entry.id);
-          if (node) {
-            node.collapsed = entry.collapsed;
+        let didRestore = false;
+        const restore = () => {
+          if (didRestore) {
+            return;
+          }
+          didRestore = true;
+          collapseSnapshot.forEach((entry) => {
+            const node = findNode(entry.id);
+            if (node) {
+              node.collapsed = entry.collapsed;
+            }
+          });
+          state.viewport.x = previousViewport.x;
+          state.viewport.y = previousViewport.y;
+          state.viewport.scale = previousViewport.scale;
+          selectionId = previousSelectionId;
+          selectionKind = previousSelectionId ? previousSelectionKind : null;
+          renderAll();
+          applySelectionState();
+          syncEmbeddedState();
+        };
+
+        return {
+          size: size,
+          restore: restore
+        };
+      }
+
+      async function createPdfBlobFromCurrentWorkspace(size) {
+        const canvas = await renderWorkspaceSnapshotToCanvas(size);
+        const jpegBytes = await canvasToJpegBytes(canvas);
+        return createRasterPdfBlob(jpegBytes, canvas.width, canvas.height);
+      }
+
+      async function renderWorkspaceSnapshotToCanvas(size) {
+        const exportWidth = Math.max(1, round(size && size.width ? size.width : 960));
+        const exportHeight = Math.max(1, round(size && size.height ? size.height : 540));
+        const workspaceClone = workspace.cloneNode(true);
+        workspaceClone.style.width = exportWidth + "px";
+        workspaceClone.style.height = exportHeight + "px";
+        workspaceClone.style.minHeight = "0";
+        workspaceClone.style.overflow = "visible";
+        workspaceClone.style.border = "0";
+        workspaceClone.style.borderRadius = "0";
+        workspaceClone.style.boxShadow = "none";
+        workspaceClone.style.background = "#ffffff";
+
+        const linkLayerClone = workspaceClone.querySelector("#link-layer");
+        if (linkLayerClone) {
+          linkLayerClone.setAttribute("width", exportWidth);
+          linkLayerClone.setAttribute("height", exportHeight);
+          linkLayerClone.setAttribute("viewBox", "0 0 " + exportWidth + " " + exportHeight);
+        }
+
+        workspaceClone.querySelectorAll("textarea").forEach((textarea) => {
+          textarea.textContent = textarea.value || "";
+          textarea.setAttribute("readonly", "");
+          textarea.setAttribute("tabindex", "-1");
+        });
+
+        workspaceClone.querySelectorAll(".branch-hit, .node-fold").forEach((element) => {
+          element.remove();
+        });
+
+        stripPdfExportUi(workspaceClone);
+
+        const cssText = createWorkspaceSnapshotCss();
+        const rootVariables = getRootCssVariableDeclarations();
+        const workspaceMarkup = new XMLSerializer().serializeToString(workspaceClone);
+        const svgText = [
+          '<svg xmlns="http://www.w3.org/2000/svg" width="' + exportWidth + '" height="' + exportHeight + '" viewBox="0 0 ' + exportWidth + " " + exportHeight + '">',
+          '<foreignObject x="0" y="0" width="100%" height="100%">',
+          '<div xmlns="http://www.w3.org/1999/xhtml" style="' + escapeXmlAttribute(rootVariables) + '">',
+          "<style>" + escapeXmlText(cssText) + "</style>",
+          workspaceMarkup,
+          "</div>",
+          "</foreignObject>",
+          "</svg>"
+        ].join("");
+
+        const svgBlob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        try {
+          const image = await loadImageFromUrl(svgUrl);
+          const rasterScale = getPdfRasterScale(exportWidth, exportHeight);
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(exportWidth * rasterScale));
+          canvas.height = Math.max(1, Math.round(exportHeight * rasterScale));
+          const context = canvas.getContext("2d");
+          if (!context) {
+            throw new Error("Canvas rendering is unavailable.");
+          }
+
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.setTransform(rasterScale, 0, 0, rasterScale, 0, 0);
+          context.drawImage(image, 0, 0, exportWidth, exportHeight);
+          return canvas;
+        } finally {
+          URL.revokeObjectURL(svgUrl);
+        }
+      }
+
+      function createWorkspaceSnapshotCss() {
+        const documentStyles = Array.from(document.querySelectorAll("style"))
+          .map((style) => style.textContent || "")
+          .join("\n");
+
+        return [
+          documentStyles,
+          "html, body { margin: 0 !important; padding: 0 !important; background: #ffffff !important; }",
+          ".workspace { overflow: visible !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: #ffffff !important; cursor: default !important; }",
+          "#link-layer, #node-layer { position: absolute !important; inset: 0 !important; }",
+          ".node { pointer-events: none !important; }",
+          ".canvas-link { pointer-events: none !important; }",
+          ".node-editor { overflow: hidden !important; resize: none !important; user-select: none !important; pointer-events: none !important; }",
+          "#reference-menu, #attachment-panel, #image-lightbox { display: none !important; }"
+        ].join("\n");
+      }
+
+      function getRootCssVariableDeclarations() {
+        const style = window.getComputedStyle(document.documentElement);
+        return [
+          "--paper",
+          "--ink",
+          "--muted",
+          "--accent",
+          "--accent-soft",
+          "--panel",
+          "--grid",
+          "--selection",
+          "--selection-soft",
+          "--branch-neutral",
+          "--shadow"
+        ]
+          .map((name) => name + ": " + style.getPropertyValue(name).trim())
+          .join("; ");
+      }
+
+      function getPdfRasterScale(width, height) {
+        const maxDimension = 3600;
+        const maxPixels = 12000000;
+        const deviceScale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+        return Math.max(
+          0.25,
+          Math.min(
+            deviceScale,
+            maxDimension / Math.max(1, width, height),
+            Math.sqrt(maxPixels / Math.max(1, width * height))
+          )
+        );
+      }
+
+      function loadImageFromUrl(url) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = () => reject(new Error("Unable to render the mind map PDF image."));
+          image.src = url;
+        });
+      }
+
+      function canvasToJpegBytes(canvas) {
+        return new Promise((resolve, reject) => {
+          if (canvas && typeof canvas.toBlob === "function") {
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error("Unable to encode the mind map image."));
+                  return;
+                }
+                blob.arrayBuffer()
+                  .then((buffer) => resolve(new Uint8Array(buffer)))
+                  .catch(reject);
+              },
+              "image/jpeg",
+              0.92
+            );
+            return;
+          }
+
+          try {
+            const decoded = dataUrlToBytes(canvas.toDataURL("image/jpeg", 0.92), "image/jpeg");
+            if (!decoded) {
+              reject(new Error("Unable to encode the mind map image."));
+              return;
+            }
+            resolve(decoded.bytes);
+          } catch (error) {
+            reject(error);
           }
         });
-        state.viewport.x = previousViewport.x;
-        state.viewport.y = previousViewport.y;
-        state.viewport.scale = previousViewport.scale;
-        selectionId = previousSelectionId;
-        selectionKind = previousSelectionId ? previousSelectionKind : null;
-        renderAll();
-        applySelectionState();
-        syncEmbeddedState();
+      }
+
+      function createRasterPdfBlob(jpegBytes, imageWidth, imageHeight) {
+        const encoder = new TextEncoder();
+        const aspectRatio = imageWidth / Math.max(1, imageHeight);
+        const isLandscape = aspectRatio >= 1;
+        const pageWidth = isLandscape ? 842 : 595;
+        const pageHeight = isLandscape ? 595 : 842;
+        const margin = 24;
+        let drawWidth = pageWidth - margin * 2;
+        let drawHeight = drawWidth / aspectRatio;
+        if (drawHeight > pageHeight - margin * 2) {
+          drawHeight = pageHeight - margin * 2;
+          drawWidth = drawHeight * aspectRatio;
+        }
+
+        const drawX = (pageWidth - drawWidth) / 2;
+        const drawY = (pageHeight - drawHeight) / 2;
+        const content = [
+          "q",
+          formatPdfNumber(drawWidth) + " 0 0 " + formatPdfNumber(drawHeight) + " " + formatPdfNumber(drawX) + " " + formatPdfNumber(drawY) + " cm",
+          "/Im0 Do",
+          "Q",
+          ""
+        ].join("\n");
+        const contentBytes = encoder.encode(content);
+        const objects = [
+          [encoder.encode("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n")],
+          [encoder.encode("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n")],
+          [
+            encoder.encode(
+              "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " +
+                formatPdfNumber(pageWidth) +
+                " " +
+                formatPdfNumber(pageHeight) +
+                "] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n"
+            )
+          ],
+          [
+            encoder.encode(
+              "4 0 obj\n<< /Type /XObject /Subtype /Image /Width " +
+                imageWidth +
+                " /Height " +
+                imageHeight +
+                " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " +
+                jpegBytes.length +
+                " >>\nstream\n"
+            ),
+            jpegBytes,
+            encoder.encode("\nendstream\nendobj\n")
+          ],
+          [
+            encoder.encode("5 0 obj\n<< /Length " + contentBytes.length + " >>\nstream\n"),
+            contentBytes,
+            encoder.encode("endstream\nendobj\n")
+          ]
+        ];
+
+        const chunks = [];
+        const offsets = [];
+        let byteOffset = 0;
+        const pushChunk = (chunk) => {
+          chunks.push(chunk);
+          byteOffset += chunk.length;
+        };
+
+        pushChunk(encoder.encode("%PDF-1.4\n%MindLite\n"));
+        objects.forEach((parts) => {
+          offsets.push(byteOffset);
+          parts.forEach(pushChunk);
+        });
+
+        const xrefOffset = byteOffset;
+        const xref = [
+          "xref",
+          "0 6",
+          "0000000000 65535 f ",
+          offsets.map((offset) => String(offset).padStart(10, "0") + " 00000 n ").join("\n"),
+          "trailer",
+          "<< /Size 6 /Root 1 0 R >>",
+          "startxref",
+          String(xrefOffset),
+          "%%EOF",
+          ""
+        ].join("\n");
+        pushChunk(encoder.encode(xref));
+
+        return new Blob(chunks, { type: "application/pdf" });
+      }
+
+      function formatPdfNumber(value) {
+        return String(Math.round(value * 1000) / 1000);
+      }
+
+      function escapeXmlText(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function escapeXmlAttribute(value) {
+        return escapeXmlText(value).replace(/"/g, "&quot;");
       }
 
       function createExportHtml(exportMode) {

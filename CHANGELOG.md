@@ -2,6 +2,12 @@
 
 All notable changes to MindLite are documented in this file.
 
+## [0.2.2] - 2026-04-26
+
+### Added
+
+- Added `Share As -> ZIP`, which exports a PDF package containing `mindmap.pdf`, extracted file attachments, attached/appended URL records, and a package README.
+
 ## [0.2.1] - 2026-04-24
 
 ### Fixed
