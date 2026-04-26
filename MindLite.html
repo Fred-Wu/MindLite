@@ -668,6 +668,11 @@
       transform: translateX(-50%);
     }
 
+    .toolbar-reference-menu.is-empty {
+      width: max-content;
+      min-width: 126px;
+    }
+
     .toolbar-reference-menu[hidden] {
       display: none;
     }
@@ -713,9 +718,10 @@
     }
 
     .toolbar-reference-empty {
-      padding: 4px 5px 2px;
+      padding: 5px 10px 4px;
       font-size: 10pt;
       line-height: 1.15;
+      text-align: center;
       color: rgba(31, 26, 21, 0.56);
       white-space: nowrap;
     }
@@ -1793,6 +1799,16 @@
       box-shadow: 0 2px 5px rgba(31, 26, 21, 0.08);
     }
 
+    .help-inline-latex-symbol {
+      display: inline-block;
+      margin: 0 2px;
+      color: rgba(31, 26, 21, 0.86);
+      font-family: KaTeX_Main, "Times New Roman", serif;
+      font-size: 1.04em;
+      line-height: 1;
+      vertical-align: -1px;
+    }
+
     .context-menu {
       position: absolute;
       z-index: 3;
@@ -2505,7 +2521,7 @@
         </div>
       </div>
       <div class="toolbar-reference-wrap">
-        <button id="reference-button" class="toolbar-icon-button toolbar-reference-button" type="button" aria-label="References" title="References">
+        <button id="reference-button" class="toolbar-icon-button toolbar-reference-button" type="button" aria-label="Pinned maps" title="Pinned maps">
           <svg class="toolbar-icon toolbar-reference-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 4.6 C 8.9 4.6 6.45 6.95 6.45 10 C 6.45 13.65 10.19 16.68 11.48 17.79 C 11.78 18.05 12.22 18.05 12.52 17.79 C 13.81 16.68 17.55 13.65 17.55 10 C 17.55 6.95 15.1 4.6 12 4.6 Z"></path>
             <circle cx="12" cy="9.8" r="2.7"></circle>
@@ -2514,10 +2530,10 @@
         </button>
         <div id="reference-menu" class="toolbar-reference-menu" hidden>
           <div id="reference-list" class="toolbar-reference-list"></div>
-          <div id="reference-empty" class="toolbar-reference-empty" hidden>No pinned references yet</div>
+          <div id="reference-empty" class="toolbar-reference-empty" hidden>No pinned maps yet</div>
         </div>
       </div>
-      <button id="help-toggle-button" class="toolbar-icon-button toolbar-help-button" type="button" aria-label="Usage panel" title="Usage panel">
+      <button id="help-toggle-button" class="toolbar-icon-button toolbar-help-button" type="button" aria-label="Quick guide" title="Quick guide">
         <span class="toolbar-help-glyph" aria-hidden="true">?</span>
       </button>
       <div id="text-style-controls" class="toolbar-format-group">
@@ -2714,7 +2730,7 @@
         </div>
       </div>
       <div id="reference-editor" class="reference-editor" hidden>
-        <label class="reference-editor-label" for="reference-editor-input">Reference</label>
+        <label class="reference-editor-label" for="reference-editor-input">Pinned map</label>
         <input id="reference-editor-input" class="reference-editor-input" type="text" autocomplete="off" spellcheck="false">
         <div class="reference-editor-actions">
           <button id="reference-editor-clear" type="button">Clear</button>
@@ -2741,7 +2757,7 @@
           <img id="image-lightbox-image" class="image-lightbox-image" alt="Enlarged pasted image">
         </div>
       </div>
-      <aside id="empty-state" class="help-panel" aria-label="MindLite usage">
+      <aside id="empty-state" class="help-panel" aria-label="MindLite quick guide">
         <div class="help-panel-sections">
           <section class="help-panel-section">
             <h3>Create Nodes</h3>
@@ -2784,11 +2800,11 @@
                   <path d="M7 3.8 V 7.5 H 10.7"></path>
                 </svg>
               </span>
-              to restore the file back to the blank app. Use <strong>Share As</strong> to export a landscape PDF or a read-only HTML file.
+              to restore the file back to the blank app. Use <strong>Share As</strong> to export a landscape PDF, a read-only HTML file, or a ZIP package with a PDF and attachments.
             </p>
           </section>
           <section class="help-panel-section">
-            <h3>Set Reference</h3>
+            <h3>Pin Maps</h3>
             <p>
               Click
               <span class="help-inline-node-button help-inline-node-pin" aria-hidden="true">
@@ -2798,7 +2814,7 @@
                   <ellipse cx="12" cy="19.55" rx="4.95" ry="1.2"></ellipse>
                 </svg>
               </span>
-              on a central node to add a hidden reference. Use
+              on a central node to pin that map. Use
               <span class="help-inline-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 4.6 C 8.9 4.6 6.45 6.95 6.45 10 C 6.45 13.65 10.19 16.68 11.48 17.79 C 11.78 18.05 12.22 18.05 12.52 17.79 C 13.81 16.68 17.55 13.65 17.55 10 C 17.55 6.95 15.1 4.6 12 4.6 Z"></path>
@@ -2865,7 +2881,7 @@
           </section>
           <section class="help-panel-section">
             <h3>Render Math</h3>
-            <p>Type inline LaTeX in a node using $...$. When you stop editing, MindLite renders it with KaTeX. Click the node again to edit the raw LaTeX.</p>
+            <p>Type inline LaTeX in a node between <span class="help-inline-latex-symbol">$ $</span> delimiters. When you stop editing, MindLite renders it with KaTeX. Click the node again to edit the raw LaTeX.</p>
           </section>
         </div>
       </aside>
@@ -4476,7 +4492,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           if (normalizeNamedItemKey(referenceText) === normalizedName) {
             return {
-              kind: "reference",
+              kind: "pinned map",
               label: referenceText,
               id: node.id
             };
@@ -5313,8 +5329,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             pinButton = document.createElement("button");
             pinButton.type = "button";
             pinButton.className = "node-pin";
-            pinButton.title = node.referenceText ? "Edit reference" : "Add reference";
-            pinButton.setAttribute("aria-label", node.referenceText ? "Edit reference" : "Add reference");
+            pinButton.title = node.referenceText ? "Edit pinned map" : "Add pinned map";
+            pinButton.setAttribute("aria-label", node.referenceText ? "Edit pinned map" : "Add pinned map");
             pinButton.appendChild(createPinIconSvg("node-pin-icon"));
           }
 
@@ -7175,13 +7191,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function updateReferenceMenu() {
-        if (!referenceList || !referenceButton || !referenceEmpty) {
+        if (!referenceList || !referenceButton || !referenceEmpty || !referenceMenu) {
           return;
         }
         const referenceNodes = getReferenceNodes();
         referenceList.innerHTML = "";
         referenceButton.disabled = false;
-        referenceEmpty.textContent = isSharedView() ? "No pinned references" : "No pinned references yet";
+        referenceEmpty.textContent = isSharedView() ? "No pinned maps" : "No pinned maps yet";
+        referenceMenu.classList.toggle("is-empty", !referenceNodes.length);
 
         if (!referenceNodes.length) {
           referenceEmpty.hidden = false;

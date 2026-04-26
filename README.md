@@ -13,7 +13,7 @@ Current release: `v0.2.2`
 - Supports text styling for nodes and hyperlinks
 - Saves editable mind maps as standalone HTML files
 - Exports read-only shareable HTML, landscape PDF output, and PDF ZIP packages with attachments
-- Lets you pin hidden references and jump back to them from the toolbar
+- Lets you pin mind maps by their central nodes and jump back to them from the toolbar
 - Supports pasting screenshots or images directly onto the canvas
 - Supports attaching PDF, Word, PowerPoint, Markdown, Quarto, and RTF documents to nodes
 - Adds hyperlinks with custom names that can float on the canvas, attach into a node file list, or append under a node

@@ -26,7 +26,7 @@ All notable changes to MindLite are documented in this file.
 - Added hyperlink creation from the toolbar with URL and custom-name input.
 - Added hyperlink placement modes so links can remain free on the canvas, attach into a node file list, or append beneath a node.
 - Added hyperlink text styling support for font family, size, bold, and italic.
-- Added duplicate-name protection across hyperlinks and references.
+- Added duplicate-name protection across hyperlinks and pinned maps.
 - Added stricter hyperlink URL validation with direct user feedback before saving.
 - Added "READ ONLY" marker in a shared HTML output.
 
