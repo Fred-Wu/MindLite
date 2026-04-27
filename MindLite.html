@@ -573,7 +573,7 @@
     }
 
     .toolbar-save-actions {
-      padding: 0 0 0 10px;
+      padding: 0;
     }
 
     .toolbar-save-actions .toolbar-save-item + .toolbar-save-item {
@@ -601,7 +601,8 @@
       transition: background 120ms ease, color 120ms ease;
     }
 
-    #save-current-button {
+    #save-current-button,
+    #save-password-button {
       font-weight: 700;
       padding-bottom: var(--save-divider-gap);
     }
@@ -619,6 +620,105 @@
       color: rgba(31, 26, 21, 0.84);
       outline: none;
       transform: none;
+    }
+
+    .password-dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background: rgba(31, 26, 21, 0.34);
+      backdrop-filter: blur(4px);
+    }
+
+    .password-dialog {
+      width: min(100%, 292px);
+      padding: 10px;
+      border: 1px solid rgba(58, 50, 43, 0.16);
+      border-radius: 10px;
+      background: rgba(255, 250, 240, 0.98);
+      box-shadow: 0 24px 60px rgba(31, 26, 21, 0.22);
+    }
+
+    .password-dialog-title {
+      margin: 0 0 4px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .password-dialog-message {
+      margin: 0 0 8px;
+      color: rgba(31, 26, 21, 0.68);
+      font-size: 0.76rem;
+      line-height: 1.3;
+    }
+
+    .password-dialog-field {
+      display: grid;
+      gap: 4px;
+      margin: 0 0 7px;
+      color: rgba(31, 26, 21, 0.72);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .password-dialog-field input {
+      width: 100%;
+      min-width: 0;
+      padding: 5px 7px;
+      border: 1px solid rgba(58, 50, 43, 0.18);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .password-dialog-field input:focus {
+      border-color: rgba(15, 118, 110, 0.5);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .password-dialog-error {
+      min-height: 0.95rem;
+      margin: -2px 0 7px;
+      color: #b91c1c;
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .password-dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .password-dialog-actions button {
+      appearance: none;
+      border: 1px solid rgba(58, 50, 43, 0.16);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      padding: 4px 7px;
+      font: inherit;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .password-dialog-actions button:hover {
+      border-color: rgba(58, 50, 43, 0.32);
+    }
+
+    .password-dialog-submit {
+      background: rgba(15, 118, 110, 0.12) !important;
+      color: #0f766e !important;
     }
 
     .toolbar-reference-button {
@@ -2510,12 +2610,14 @@
         </button>
         <div id="save-menu" class="toolbar-save-menu" hidden>
           <button id="save-current-button" class="toolbar-save-item" type="button">Save</button>
+          <button id="save-password-button" class="toolbar-save-item" type="button">Save with password</button>
           <div class="toolbar-save-section">
             <div class="toolbar-save-label">Share As</div>
             <div class="toolbar-save-actions">
-              <button id="share-pdf-button" class="toolbar-save-item" type="button">PDF</button>
-              <button id="share-html-button" class="toolbar-save-item" type="button">HTML</button>
-              <button id="share-zip-button" class="toolbar-save-item" type="button">ZIP</button>
+              <button id="share-pdf-button" class="toolbar-save-item" type="button" title="Export a print-ready landscape PDF" aria-label="Export a print-ready landscape PDF">PDF</button>
+              <button id="share-html-button" class="toolbar-save-item" type="button" title="Export a read-only HTML copy" aria-label="Export a read-only HTML copy">HTML</button>
+              <button id="share-html-password-button" class="toolbar-save-item" type="button" title="Export a password-protected read-only HTML copy" aria-label="Export a password-protected read-only HTML copy">HTML with password</button>
+              <button id="share-zip-button" class="toolbar-save-item" type="button" title="Export a ZIP package with PDF, attachments, and URL records" aria-label="Export a ZIP package with PDF, attachments, and URL records">ZIP</button>
             </div>
           </div>
         </div>
@@ -2801,6 +2903,7 @@
                 </svg>
               </span>
               to restore the file back to the blank app. Use <strong>Share As</strong> to export a landscape PDF, a read-only HTML file, or a ZIP package with a PDF and attachments.
+              Choose <strong>Save with password</strong> or <strong>HTML with password</strong> to encrypt the mind map data inside the saved HTML.
             </p>
           </section>
           <section class="help-panel-section">
@@ -2910,7 +3013,7 @@
     (() => {
       "use strict";
 
-      const APP_VERSION = "0.2.2";
+      const APP_VERSION = "0.3.0";
       const MIN_NODE_WIDTH = 104;
       const MIN_NODE_HEIGHT = 48;
       const MAX_NODE_WIDTH = 420;
@@ -2998,6 +3101,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         "\"Courier New\", Courier, monospace"
       ]);
       const SCRIPT_ESCAPE_PATTERN = new RegExp("</" + "script", "gi");
+      const ENCRYPTED_STATE_FORMAT = "mindlite-encrypted-state";
+      const ENCRYPTED_STATE_VERSION = 1;
+      const ENCRYPTION_KDF = "PBKDF2-SHA-256";
+      const ENCRYPTION_CIPHER = "AES-GCM";
+      const ENCRYPTION_ITERATIONS = 250000;
 
       const workspace = document.getElementById("workspace");
       const nodeLayer = document.getElementById("node-layer");
@@ -3021,6 +3129,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const saveCurrentButton = document.getElementById("save-current-button");
       const sharePdfButton = document.getElementById("share-pdf-button");
       const shareHtmlButton = document.getElementById("share-html-button");
+      const savePasswordButton = document.getElementById("save-password-button");
+      const shareHtmlPasswordButton = document.getElementById("share-html-password-button");
       const shareZipButton = document.getElementById("share-zip-button");
       const referenceButton = document.getElementById("reference-button");
       const referenceMenu = document.getElementById("reference-menu");
@@ -3066,6 +3176,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         attachmentFileInput.setAttribute("accept", ATTACHMENT_ACCEPT_ATTRIBUTE);
       }
 
+      let encryptedStatePayload = null;
+      let encryptedStateLocked = false;
       const state = parseInitialState();
       let selectionId = null;
       let selectionKind = null;
@@ -3099,7 +3211,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       syncSvgSize();
       applyViewMode();
       renderAll();
-      syncEmbeddedState();
+      if (encryptedStateLocked) {
+        void unlockEmbeddedEncryptedState();
+      } else {
+        syncEmbeddedState();
+      }
 
       if (addRootButton) {
         addRootButton.addEventListener("click", () => {
@@ -3240,6 +3356,17 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         });
       }
 
+      if (savePasswordButton) {
+        savePasswordButton.addEventListener("click", () => {
+          if (savePasswordButton.disabled) {
+            return;
+          }
+
+          hideSaveMenu();
+          void saveWorkingCopyWithPassword();
+        });
+      }
+
       if (sharePdfButton) {
         sharePdfButton.addEventListener("click", () => {
           hideSaveMenu();
@@ -3251,6 +3378,17 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         shareHtmlButton.addEventListener("click", () => {
           hideSaveMenu();
           void exportAsHtml("shared");
+        });
+      }
+
+      if (shareHtmlPasswordButton) {
+        shareHtmlPasswordButton.addEventListener("click", () => {
+          if (shareHtmlPasswordButton.disabled) {
+            return;
+          }
+
+          hideSaveMenu();
+          void exportAsHtmlWithPassword("shared");
         });
       }
 
@@ -3972,28 +4110,70 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         try {
           const raw = stateScript.textContent.trim();
           if (!raw) {
-            return { mode: "editor", nodes: [], links: [], viewport: { x: 0, y: 0, scale: 1 } };
+            return createEmptyState("editor");
           }
 
           const parsed = JSON.parse(raw);
-          return {
-            mode: parsed.mode === "shared" ? "shared" : "editor",
-            nodes: Array.isArray(parsed.nodes) ? parsed.nodes.map(normalizeNode) : [],
-            links: Array.isArray(parsed.links) ? parsed.links.map(normalizeCanvasLink) : [],
-            viewport: {
-              x: Number.isFinite(parsed.viewport && parsed.viewport.x) ? parsed.viewport.x : 0,
-              y: Number.isFinite(parsed.viewport && parsed.viewport.y) ? parsed.viewport.y : 0,
-              scale: normalizeScale(parsed.viewport && parsed.viewport.scale)
-            }
-          };
+          if (isEncryptedStatePayload(parsed)) {
+            encryptedStatePayload = parsed;
+            encryptedStateLocked = true;
+            return createEmptyState(parsed.mode === "shared" ? "shared" : "editor");
+          }
+
+          return normalizeEmbeddedState(parsed);
         } catch (error) {
           console.error("Unable to read embedded mind map data.", error);
-          return { mode: "editor", nodes: [], links: [], viewport: { x: 0, y: 0, scale: 1 } };
+          return createEmptyState("editor");
         }
       }
 
       function isSharedView() {
-        return state.mode === "shared";
+        return encryptedStateLocked || state.mode === "shared";
+      }
+
+      function createEmptyState(mode) {
+        return { mode: mode === "shared" ? "shared" : "editor", nodes: [], links: [], viewport: { x: 0, y: 0, scale: 1 } };
+      }
+
+      function normalizeEmbeddedState(parsed) {
+        return {
+          mode: parsed && parsed.mode === "shared" ? "shared" : "editor",
+          nodes: parsed && Array.isArray(parsed.nodes) ? parsed.nodes.map(normalizeNode) : [],
+          links: parsed && Array.isArray(parsed.links) ? parsed.links.map(normalizeCanvasLink) : [],
+          viewport: {
+            x: Number.isFinite(parsed && parsed.viewport && parsed.viewport.x) ? parsed.viewport.x : 0,
+            y: Number.isFinite(parsed && parsed.viewport && parsed.viewport.y) ? parsed.viewport.y : 0,
+            scale: normalizeScale(parsed && parsed.viewport && parsed.viewport.scale)
+          }
+        };
+      }
+
+      function applyLoadedState(nextState) {
+        state.mode = nextState.mode === "shared" ? "shared" : "editor";
+        state.nodes = Array.isArray(nextState.nodes) ? nextState.nodes : [];
+        state.links = Array.isArray(nextState.links) ? nextState.links : [];
+        state.viewport = nextState.viewport || { x: 0, y: 0, scale: 1 };
+        nodeCounter = getNextCounter(state.nodes, "node");
+        linkCounter = getNextCounter(state.links, "link");
+        attachmentCounter = getNextAttachmentCounter(state.nodes);
+        selectionId = null;
+        selectionKind = null;
+        reconcileCanvasLinksWithNodes();
+        syncSvgSize();
+        applyViewMode();
+        renderAll();
+        syncEmbeddedState();
+      }
+
+      function isEncryptedStatePayload(payload) {
+        return Boolean(
+          payload &&
+          payload.format === ENCRYPTED_STATE_FORMAT &&
+          payload.version === ENCRYPTED_STATE_VERSION &&
+          typeof payload.payload === "string" &&
+          typeof payload.salt === "string" &&
+          typeof payload.iv === "string"
+        );
       }
 
       function hasWorkingState() {
@@ -4008,6 +4188,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function getToolbarStatusMarkConfig() {
+        if (encryptedStateLocked) {
+          return {
+            label: "LOCKED",
+            title: "Password-protected mind map",
+            ariaLabel: "locked"
+          };
+        }
+
         if (isSharedView()) {
           return {
             label: "READ ONLY",
@@ -4041,7 +4229,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         const mark = existing || document.createElement("span");
-        const statusKind = isSharedView() ? "readonly" : "working";
+        const statusKind = encryptedStateLocked || isSharedView() ? "readonly" : "working";
         mark.id = "toolbar-status-mark";
         mark.className = "toolbar-status-mark";
         mark.textContent = statusConfig.label;
@@ -7745,6 +7933,358 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         downloadBlob(new Blob([html], { type: "text/html" }), ensureHtmlExtension(fileName));
       }
 
+      function requestPassword(options) {
+        const settings = options || {};
+        const requireConfirmation = Boolean(settings.confirm);
+        const previousActiveElement = document.activeElement;
+
+        return new Promise((resolve) => {
+          const existingDialog = document.querySelector(".password-dialog-backdrop");
+          if (existingDialog) {
+            existingDialog.remove();
+          }
+
+          const backdrop = document.createElement("div");
+          backdrop.className = "password-dialog-backdrop";
+
+          const form = document.createElement("form");
+          form.className = "password-dialog";
+          form.noValidate = true;
+          form.setAttribute("role", "dialog");
+          form.setAttribute("aria-modal", "true");
+
+          const title = document.createElement("h2");
+          const titleId = "password-dialog-title-" + Date.now();
+          title.id = titleId;
+          title.className = "password-dialog-title";
+          title.textContent = settings.title || "Mind map password";
+          form.setAttribute("aria-labelledby", titleId);
+
+          const message = document.createElement("p");
+          message.className = "password-dialog-message";
+          message.textContent = settings.message || "Enter the password for this mind map.";
+
+          const passwordLabel = document.createElement("label");
+          passwordLabel.className = "password-dialog-field";
+          passwordLabel.textContent = "Password";
+
+          const passwordInput = document.createElement("input");
+          passwordInput.type = "password";
+          passwordInput.autocomplete = settings.autocomplete || (requireConfirmation ? "new-password" : "current-password");
+          passwordInput.spellcheck = false;
+          passwordLabel.appendChild(passwordInput);
+
+          const confirmLabel = document.createElement("label");
+          let confirmInput = null;
+          if (requireConfirmation) {
+            confirmLabel.className = "password-dialog-field";
+            confirmLabel.textContent = "Confirm password";
+            confirmInput = document.createElement("input");
+            confirmInput.type = "password";
+            confirmInput.autocomplete = "new-password";
+            confirmInput.spellcheck = false;
+            confirmLabel.appendChild(confirmInput);
+          }
+
+          const error = document.createElement("div");
+          error.className = "password-dialog-error";
+          error.setAttribute("aria-live", "polite");
+
+          const actions = document.createElement("div");
+          actions.className = "password-dialog-actions";
+
+          const cancelButton = document.createElement("button");
+          cancelButton.type = "button";
+          cancelButton.textContent = "Cancel";
+
+          const submitButton = document.createElement("button");
+          submitButton.type = "submit";
+          submitButton.className = "password-dialog-submit";
+          submitButton.textContent = settings.submitLabel || "Continue";
+
+          actions.append(cancelButton, submitButton);
+          form.append(title, message, passwordLabel);
+          if (requireConfirmation) {
+            form.appendChild(confirmLabel);
+          }
+          form.append(error, actions);
+          backdrop.appendChild(form);
+
+          const finish = (value) => {
+            backdrop.remove();
+            if (previousActiveElement && typeof previousActiveElement.focus === "function") {
+              previousActiveElement.focus();
+            }
+            resolve(value);
+          };
+
+          const setError = (messageText) => {
+            error.textContent = messageText;
+          };
+
+          cancelButton.addEventListener("click", () => finish(null));
+
+          backdrop.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              finish(null);
+            }
+          });
+
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const password = passwordInput.value;
+            if (!password) {
+              setError("Enter a password.");
+              passwordInput.focus();
+              return;
+            }
+
+            if (confirmInput && password !== confirmInput.value) {
+              setError("Passwords do not match.");
+              confirmInput.focus();
+              return;
+            }
+
+            finish(password);
+          });
+
+          document.body.appendChild(backdrop);
+          window.setTimeout(() => passwordInput.focus(), 0);
+        });
+      }
+
+      function isEncryptionSupported() {
+        return Boolean(
+          window.crypto &&
+          window.crypto.subtle &&
+          typeof window.crypto.getRandomValues === "function" &&
+          typeof TextEncoder === "function" &&
+          typeof TextDecoder === "function" &&
+          typeof btoa === "function" &&
+          typeof atob === "function"
+        );
+      }
+
+      async function createEncryptedStatePayload(serializableState, password) {
+        if (!isEncryptionSupported()) {
+          throw new Error("Web Crypto is not available.");
+        }
+
+        const salt = new Uint8Array(16);
+        const iv = new Uint8Array(12);
+        window.crypto.getRandomValues(salt);
+        window.crypto.getRandomValues(iv);
+
+        const encoder = new TextEncoder();
+        const key = await derivePasswordKey(password, salt, ENCRYPTION_ITERATIONS, ["encrypt"]);
+        const plainBytes = encoder.encode(JSON.stringify(serializableState));
+        const encryptedBytes = new Uint8Array(
+          await window.crypto.subtle.encrypt({ name: ENCRYPTION_CIPHER, iv: iv }, key, plainBytes)
+        );
+
+        return {
+          format: ENCRYPTED_STATE_FORMAT,
+          version: ENCRYPTED_STATE_VERSION,
+          mode: serializableState && serializableState.mode === "shared" ? "shared" : "editor",
+          appVersion: APP_VERSION,
+          kdf: ENCRYPTION_KDF,
+          cipher: ENCRYPTION_CIPHER,
+          iterations: ENCRYPTION_ITERATIONS,
+          salt: bytesToBase64(salt),
+          iv: bytesToBase64(iv),
+          payload: bytesToBase64(encryptedBytes)
+        };
+      }
+
+      async function decryptEncryptedStatePayload(payload, password) {
+        if (!isEncryptionSupported()) {
+          throw new Error("Web Crypto is not available.");
+        }
+
+        if (!isEncryptedStatePayload(payload) || payload.kdf !== ENCRYPTION_KDF || payload.cipher !== ENCRYPTION_CIPHER) {
+          throw new Error("Unsupported encrypted state payload.");
+        }
+
+        const iterations = Number.isFinite(payload.iterations) ? payload.iterations : ENCRYPTION_ITERATIONS;
+        const salt = base64ToBytes(payload.salt);
+        const iv = base64ToBytes(payload.iv);
+        const encryptedBytes = base64ToBytes(payload.payload);
+        const key = await derivePasswordKey(password, salt, iterations, ["decrypt"]);
+        const plainBuffer = await window.crypto.subtle.decrypt({ name: ENCRYPTION_CIPHER, iv: iv }, key, encryptedBytes);
+        const parsed = JSON.parse(new TextDecoder().decode(plainBuffer));
+        return normalizeEmbeddedState(parsed);
+      }
+
+      async function derivePasswordKey(password, salt, iterations, keyUsages) {
+        const keyMaterial = await window.crypto.subtle.importKey(
+          "raw",
+          new TextEncoder().encode(password),
+          "PBKDF2",
+          false,
+          ["deriveKey"]
+        );
+
+        return window.crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: iterations,
+            hash: "SHA-256"
+          },
+          keyMaterial,
+          { name: ENCRYPTION_CIPHER, length: 256 },
+          false,
+          keyUsages
+        );
+      }
+
+      function bytesToBase64(bytes) {
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let index = 0; index < bytes.length; index += chunkSize) {
+          const chunk = bytes.subarray(index, index + chunkSize);
+          binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+      }
+
+      function base64ToBytes(base64) {
+        const binary = atob(String(base64 || "").replace(/\s+/g, ""));
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index += 1) {
+          bytes[index] = binary.charCodeAt(index);
+        }
+        return bytes;
+      }
+
+      async function unlockEmbeddedEncryptedState() {
+        if (!encryptedStateLocked || !encryptedStatePayload) {
+          return;
+        }
+
+        if (!isEncryptionSupported()) {
+          window.alert("This browser cannot unlock password-protected MindLite files because Web Crypto is not available.");
+          updateDocumentIdentityUi();
+          updateToolbar();
+          return;
+        }
+
+        while (encryptedStateLocked && encryptedStatePayload) {
+          const password = await requestPassword({
+            title: "Unlock mind map",
+            message: "Enter the password to load this saved mind map.",
+            submitLabel: "Unlock",
+            autocomplete: "current-password"
+          });
+
+          if (password === null) {
+            updateDocumentIdentityUi();
+            updateToolbar();
+            return;
+          }
+
+          try {
+            const nextState = await decryptEncryptedStatePayload(encryptedStatePayload, password);
+            encryptedStateLocked = false;
+            encryptedStatePayload = null;
+            applyLoadedState(nextState);
+            return;
+          } catch (error) {
+            console.error("Unable to unlock encrypted mind map data.", error);
+            window.alert("Unable to unlock this mind map. Check the password and try again.");
+          }
+        }
+      }
+
+      async function saveWorkingCopyWithPassword() {
+        if (isSharedView()) {
+          return;
+        }
+
+        if (!isEncryptionSupported()) {
+          window.alert("This browser cannot create password-protected MindLite files because Web Crypto is not available.");
+          return;
+        }
+
+        const password = await requestPassword({
+          title: "Save with password",
+          message: "Only the mind map data is encrypted. The MindLite app code stays visible.",
+          submitLabel: "Save",
+          confirm: true
+        });
+        if (password === null) {
+          return;
+        }
+
+        if (savePasswordButton) {
+          savePasswordButton.disabled = true;
+        }
+
+        try {
+          const html = await createEncryptedHtmlExportSnapshot("editor", password);
+          if (!html) {
+            return;
+          }
+
+          downloadHtmlFile(html, getEditableSaveFileNameHint());
+        } catch (error) {
+          console.error("Unable to save the encrypted working copy.", error);
+          window.alert("Unable to save the encrypted working copy.");
+        } finally {
+          if (savePasswordButton) {
+            savePasswordButton.disabled = false;
+          }
+        }
+      }
+
+      async function exportAsHtmlWithPassword(targetMode) {
+        if (isSharedView()) {
+          return;
+        }
+
+        if (!isEncryptionSupported()) {
+          window.alert("This browser cannot create password-protected MindLite files because Web Crypto is not available.");
+          return;
+        }
+
+        const exportMode = targetMode === "shared" ? "shared" : "editor";
+        const password = await requestPassword({
+          title: exportMode === "shared" ? "Share HTML with password" : "Save with password",
+          message: "Only the mind map data is encrypted. The MindLite app code stays visible.",
+          submitLabel: exportMode === "shared" ? "Share" : "Save",
+          confirm: true
+        });
+        if (password === null) {
+          return;
+        }
+
+        if (shareHtmlPasswordButton) {
+          shareHtmlPasswordButton.disabled = true;
+        }
+
+        try {
+          const html = await createEncryptedHtmlExportSnapshot(exportMode, password);
+          if (!html) {
+            return;
+          }
+
+          const fileName =
+            exportMode === "shared"
+              ? createTimestampedFileName("share-protected")
+              : getEditableSaveFileNameHint();
+
+          downloadHtmlFile(html, fileName);
+        } catch (error) {
+          console.error("Unable to export encrypted HTML.", error);
+          window.alert("Unable to export encrypted HTML.");
+        } finally {
+          if (shareHtmlPasswordButton) {
+            shareHtmlPasswordButton.disabled = false;
+          }
+        }
+      }
+
       function saveWorkingCopy() {
         if (isSharedView()) {
           return;
@@ -7800,6 +8340,51 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         syncEmbeddedState();
 
         return html;
+      }
+
+      async function createEncryptedHtmlExportSnapshot(targetMode, password) {
+        if (isSharedView()) {
+          return "";
+        }
+
+        const exportMode = targetMode === "shared" ? "shared" : "editor";
+        const activeElement = document.activeElement;
+        if (activeElement && typeof activeElement.blur === "function") {
+          activeElement.blur();
+        }
+
+        const previousMode = state.mode;
+        const previousSelectionId = selectionId;
+        const previousSelectionKind = selectionKind;
+        hideSaveMenu();
+        hideReferenceMenu();
+        closeLinkEditor();
+        closeLinkDropMenu();
+        hideTextColorMenu();
+        hideTextLayoutMenu();
+        closeImageLightbox();
+        closeAttachmentPanel();
+        closeReferenceEditor();
+        state.mode = exportMode;
+        applyViewMode();
+        hideContextMenu();
+        if (exportMode === "shared") {
+          clearSelection();
+        }
+        renderAll();
+        syncEmbeddedState();
+
+        try {
+          const encryptedPayload = await createEncryptedStatePayload(getSerializableState(), password);
+          return createExportHtml(exportMode, encryptedPayload);
+        } finally {
+          state.mode = previousMode;
+          applyViewMode();
+          selectionId = previousSelectionId;
+          selectionKind = previousSelectionId ? previousSelectionKind : null;
+          renderAll();
+          syncEmbeddedState();
+        }
       }
 
       function exportAsHtml(targetMode) {
@@ -8603,9 +9188,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return escapeXmlText(value).replace(/"/g, "&quot;");
       }
 
-      function createExportHtml(exportMode) {
+      function createExportHtml(exportMode, embeddedStatePayload) {
         if (exportMode !== "shared") {
           const clone = document.documentElement.cloneNode(true);
+          if (embeddedStatePayload) {
+            setEmbeddedStatePayload(clone, embeddedStatePayload);
+            stripEncryptedExportStateDom(clone);
+          }
           const statusMark = clone.querySelector("#toolbar-status-mark");
           if (statusMark) {
             statusMark.remove();
@@ -8614,8 +9203,74 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         const clone = document.documentElement.cloneNode(true);
+        if (embeddedStatePayload) {
+          setEmbeddedStatePayload(clone, embeddedStatePayload);
+          stripEncryptedExportStateDom(clone);
+        }
         stripSharedExportUi(clone);
         return "<!DOCTYPE html>\n" + clone.outerHTML;
+      }
+
+      function setEmbeddedStatePayload(root, payload) {
+        const script = root && root.querySelector ? root.querySelector("#mindmap-data") : stateScript;
+        if (!script) {
+          return;
+        }
+        script.textContent = stringifyEmbeddedStatePayload(payload);
+      }
+
+      function stringifyEmbeddedStatePayload(payload) {
+        return JSON.stringify(payload, null, 2).replace(SCRIPT_ESCAPE_PATTERN, "<\\/" + "script");
+      }
+
+      function stripEncryptedExportStateDom(root) {
+        if (!root) {
+          return;
+        }
+
+        const nodeLayerClone = root.querySelector("#node-layer");
+        if (nodeLayerClone) {
+          nodeLayerClone.textContent = "";
+        }
+
+        const linkLayerClone = root.querySelector("#link-layer");
+        if (linkLayerClone) {
+          Array.from(linkLayerClone.childNodes).forEach((child) => child.remove());
+        }
+
+        const referenceListClone = root.querySelector("#reference-list");
+        if (referenceListClone) {
+          referenceListClone.textContent = "";
+        }
+
+        const attachmentListClone = root.querySelector("#attachment-panel-direct-list");
+        if (attachmentListClone) {
+          attachmentListClone.textContent = "";
+        }
+
+        const attachmentTitleClone = root.querySelector("#attachment-panel-title");
+        if (attachmentTitleClone) {
+          attachmentTitleClone.textContent = "0";
+          attachmentTitleClone.title = "0 files attached";
+          attachmentTitleClone.setAttribute("aria-label", "0 files attached");
+        }
+
+        const lightboxImageClone = root.querySelector("#image-lightbox-image");
+        if (lightboxImageClone) {
+          lightboxImageClone.removeAttribute("src");
+        }
+
+        root.querySelectorAll("textarea").forEach((textarea) => {
+          textarea.value = "";
+          textarea.textContent = "";
+        });
+
+        root.querySelectorAll("input").forEach((input) => {
+          if (input.type !== "file") {
+            input.value = "";
+            input.removeAttribute("value");
+          }
+        });
       }
 
       function createPdfPrintHtml(size) {
@@ -9252,67 +9907,72 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function syncEmbeddedState() {
-        stateScript.textContent = JSON.stringify(
-          {
-            mode: state.mode === "shared" ? "shared" : "editor",
-            viewport: {
-              x: round(state.viewport.x),
-              y: round(state.viewport.y),
-              scale: normalizeScale(state.viewport.scale)
-            },
-            nodes: state.nodes.map((node) => ({
-              id: node.id,
-              type: node.type === "image" ? "image" : "text",
-              parentId: node.parentId,
-              detached: Boolean(node.detached),
-              text: node.text,
-              imageData: node.type === "image" ? normalizeImageData(node.imageData) : "",
-              attachments: getNodeAttachments(node).map((attachment) => ({
-                id: attachment.id,
-                kind: attachment.kind === "url" ? "url" : "file",
-                name: attachment.name,
-                type: attachment.type,
-                data: attachment.data,
-                size: Number.isFinite(attachment.size) ? attachment.size : 0,
-                url: attachment.kind === "url" ? normalizeLinkUrl(attachment.url) : ""
-              })),
-              width: round(node.width),
-              height: round(node.height),
-              fontFamily: normalizeFontFamily(node.fontFamily),
-              fontWeight: normalizeFontWeight(node.fontWeight),
-              fontStyle: normalizeFontStyle(node.fontStyle),
-              fontSize: normalizeFontSize(node.fontSize, node.parentId === null),
-              textColor: normalizeTextColor(node.textColor),
-              textAlign: normalizeTextAlign(node.textAlign),
-              textVAlign: normalizeTextVAlign(node.textVAlign),
-              referenceText: typeof node.referenceText === "string" ? node.referenceText : "",
-              referenceOrder: Number.isFinite(node.referenceOrder) ? node.referenceOrder : null,
-              collapsed: Boolean(node.collapsed),
-              order: node.order,
-              x: round(node.x),
-              y: round(node.y),
-              offsetX: round(node.offsetX),
-              offsetY: round(node.offsetY)
-            })),
-            links: state.links.map((link) => ({
-              id: link.id,
-              url: normalizeLinkUrl(link.url),
-              label: normalizeCanvasLinkLabel(link.label, link.url),
-              fontFamily: normalizeFontFamily(link.fontFamily),
-              fontWeight: normalizeFontWeight(link.fontWeight),
-              fontStyle: normalizeFontStyle(link.fontStyle),
-              fontSize: normalizeFontSize(link.fontSize, false),
-              x: round(link.x),
-              y: round(link.y),
-              mode: link.mode === "appended" ? "appended" : "floating",
-              hostNodeId: link.mode === "appended" ? link.hostNodeId : null,
-              order: Number.isFinite(link.order) ? link.order : 0
-            }))
-          },
-          null,
-          2
-        ).replace(SCRIPT_ESCAPE_PATTERN, "<\\/" + "script");
+        if (encryptedStateLocked) {
+          updateDocumentIdentityUi();
+          return;
+        }
+
+        stateScript.textContent = stringifyEmbeddedStatePayload(getSerializableState());
         updateDocumentIdentityUi();
+      }
+
+      function getSerializableState() {
+        return {
+          mode: state.mode === "shared" ? "shared" : "editor",
+          viewport: {
+            x: round(state.viewport.x),
+            y: round(state.viewport.y),
+            scale: normalizeScale(state.viewport.scale)
+          },
+          nodes: state.nodes.map((node) => ({
+            id: node.id,
+            type: node.type === "image" ? "image" : "text",
+            parentId: node.parentId,
+            detached: Boolean(node.detached),
+            text: node.text,
+            imageData: node.type === "image" ? normalizeImageData(node.imageData) : "",
+            attachments: getNodeAttachments(node).map((attachment) => ({
+              id: attachment.id,
+              kind: attachment.kind === "url" ? "url" : "file",
+              name: attachment.name,
+              type: attachment.type,
+              data: attachment.data,
+              size: Number.isFinite(attachment.size) ? attachment.size : 0,
+              url: attachment.kind === "url" ? normalizeLinkUrl(attachment.url) : ""
+            })),
+            width: round(node.width),
+            height: round(node.height),
+            fontFamily: normalizeFontFamily(node.fontFamily),
+            fontWeight: normalizeFontWeight(node.fontWeight),
+            fontStyle: normalizeFontStyle(node.fontStyle),
+            fontSize: normalizeFontSize(node.fontSize, node.parentId === null),
+            textColor: normalizeTextColor(node.textColor),
+            textAlign: normalizeTextAlign(node.textAlign),
+            textVAlign: normalizeTextVAlign(node.textVAlign),
+            referenceText: typeof node.referenceText === "string" ? node.referenceText : "",
+            referenceOrder: Number.isFinite(node.referenceOrder) ? node.referenceOrder : null,
+            collapsed: Boolean(node.collapsed),
+            order: node.order,
+            x: round(node.x),
+            y: round(node.y),
+            offsetX: round(node.offsetX),
+            offsetY: round(node.offsetY)
+          })),
+          links: state.links.map((link) => ({
+            id: link.id,
+            url: normalizeLinkUrl(link.url),
+            label: normalizeCanvasLinkLabel(link.label, link.url),
+            fontFamily: normalizeFontFamily(link.fontFamily),
+            fontWeight: normalizeFontWeight(link.fontWeight),
+            fontStyle: normalizeFontStyle(link.fontStyle),
+            fontSize: normalizeFontSize(link.fontSize, false),
+            x: round(link.x),
+            y: round(link.y),
+            mode: link.mode === "appended" ? "appended" : "floating",
+            hostNodeId: link.mode === "appended" ? link.hostNodeId : null,
+            order: Number.isFinite(link.order) ? link.order : 0
+          }))
+        };
       }
 
       function createSvgElement(tagName) {
@@ -9632,6 +10292,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if (saveCurrentButton) {
           saveCurrentButton.disabled = isSharedView();
           saveCurrentButton.title = "Save current working HTML";
+        }
+        if (savePasswordButton) {
+          savePasswordButton.disabled = isSharedView();
+          savePasswordButton.title = "Save encrypted working HTML";
+        }
+        if (shareHtmlPasswordButton) {
+          shareHtmlPasswordButton.disabled = isSharedView();
+          shareHtmlPasswordButton.title = "Export encrypted read-only HTML";
         }
         updateReferenceMenu();
       }

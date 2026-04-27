@@ -4,7 +4,7 @@ MindLite is a self-contained browser-based mind mapping app distributed as a sin
 
 The project currently ships as [`MindLite.html`](./MindLite.html) with no build step, no package manager, and no external runtime dependencies. Open the file in a modern desktop browser and start working.
 
-Current release: `v0.2.2`
+Current release: `v0.3.0`
 
 ## Core Features
 
@@ -12,6 +12,7 @@ Current release: `v0.2.2`
 - Supports moving, resizing, folding, and reattaching branches
 - Supports text styling for nodes and hyperlinks
 - Saves editable mind maps as standalone HTML files
+- Saves encrypted working copies and encrypted shared HTML copies with a password
 - Exports read-only shareable HTML, landscape PDF output, and PDF ZIP packages with attachments
 - Lets you pin mind maps by their central nodes and jump back to them from the toolbar
 - Supports pasting screenshots or images directly onto the canvas
@@ -31,8 +32,10 @@ Current release: `v0.2.2`
 ## Editing and Sharing
 
 - `Save` writes a standalone working copy with the current mind map state embedded in the file.
+- `Save with password` writes a standalone working copy whose mind map payload is encrypted with the password.
 - The reset icon restores the current editable file back to the blank app state.
 - `Share As -> HTML` exports a read-only HTML version for sharing.
+- `Share As -> HTML with password` exports a read-only HTML version with the mind map payload encrypted.
 - `Share As -> PDF` opens a print-ready landscape export flow.
 - `Share As -> ZIP` exports a PDF package with `mindmap.pdf`, attached files, and attached/appended URL records.
 - Press `Del` to remove a selected node or link.
