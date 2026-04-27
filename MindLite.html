@@ -1135,6 +1135,7 @@
     body.is-shared-view #add-root-button,
     body.is-shared-view #save-controls,
     body.is-shared-view #link-controls,
+    body.is-shared-view #clear-button,
     body.is-shared-view #help-toggle-button,
     body.is-shared-view #text-style-controls,
     body.is-shared-view #text-panel,
@@ -9227,6 +9228,20 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if (!root) {
           return;
         }
+
+        [
+          "#add-root-button",
+          "#link-controls",
+          "#clear-button",
+          "#save-controls",
+          "#help-toggle-button",
+          "#text-style-controls"
+        ].forEach((selector) => {
+          const element = root.querySelector(selector);
+          if (element) {
+            element.hidden = true;
+          }
+        });
 
         const nodeLayerClone = root.querySelector("#node-layer");
         if (nodeLayerClone) {
