@@ -2,12 +2,14 @@
 
 All notable changes to MindLite are documented in this file.
 
-## [0.3.0] - 2026-04-27
+## [0.3.0] - 2026-04-28
 
 ### Added
 
 - Added password-protected HTML saving option that encrypt the embedded mind map payload while keeping the app code visible.
 - Added password-protected sharing option for read-only encrypted HTML copies.
+- Added table creation with resizable and editable cells.
+- Added 6 pt, 8 pt, and 10 pt options to the font size toolbar.
 
 ## [0.2.2] - 2026-04-26
 

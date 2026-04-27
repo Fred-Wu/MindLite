@@ -10,7 +10,8 @@ Current release: `v0.3.0`
 
 - Creates a central topic and child nodes on an infinite canvas
 - Supports moving, resizing, folding, and reattaching branches
-- Supports text styling for nodes and hyperlinks
+- Supports text styling for nodes, table cells, and hyperlinks
+- Adds editable table nodes with row/column inputs
 - Saves editable mind maps as standalone HTML files
 - Saves encrypted working copies and encrypted shared HTML copies with a password
 - Exports read-only shareable HTML, landscape PDF output, and PDF ZIP packages with attachments
@@ -19,15 +20,6 @@ Current release: `v0.3.0`
 - Supports attaching PDF, Word, PowerPoint, Markdown, Quarto, and RTF documents to nodes
 - Adds hyperlinks with custom names that can float on the canvas, attach into a node file list, or append under a node
 - Renders inline LaTeX with the bundled KaTeX runtime
-
-## Run Locally
-
-1. Open `MindLite.html` in a browser.
-2. Click the root button to create the central node.
-3. Use the `+` control on a node to add child nodes.
-4. Drag empty canvas space to pan.
-5. Use the zoom controls, or hold `Ctrl` and scroll, to zoom.
-6. Click the hyperlink toolbar button to add a URL with a custom name.
 
 ## Editing and Sharing
 
@@ -39,8 +31,9 @@ Current release: `v0.3.0`
 - `Share As -> PDF` opens a print-ready landscape export flow.
 - `Share As -> ZIP` exports a PDF package with `mindmap.pdf`, attached files, and attached/appended URL records.
 - Press `Del` to remove a selected node or link.
+- Table cells expand for wrapped or multiline text. Click into a cell to style only that cell, drag grid lines to resize individual rows or columns, drag the bottom-right resize handle to scale the whole table, or double-click it to autofit.
 - Paste an image or screenshot onto the canvas to create an image node.
-- Drag a detached node onto another node to attach it as a child.
+- Drag a detached text, image, or table node onto a text node to attach it as a child.
 - Drag supported files onto a node, or use the attachment button, to store file attachments inside the exported document.
 - In shared HTML and editor mode, `Ctrl+click` or `Cmd+click` opens hyperlinks and attached URL rows in a new tab or window; plain click does not open them.
 - Drag a hyperlink onto a node to choose whether it should attach into the file list or append under the node.

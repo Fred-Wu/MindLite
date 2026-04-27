@@ -304,14 +304,13 @@
       border-left: 1px solid rgba(58, 50, 43, 0.14);
     }
 
-    .toolbar-style-segment:hover:not(:disabled):not(.is-disabled),
+    .toolbar-style-segment:hover:not(:disabled),
     .toolbar-style-segment:focus-visible:not(:disabled) {
       background: rgba(58, 50, 43, 0.08);
       outline: none;
     }
 
-    .toolbar-style-segment:disabled,
-    .toolbar-style-segment.is-disabled {
+    .toolbar-style-segment:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
@@ -830,6 +829,10 @@
       position: relative;
     }
 
+    .toolbar-table-wrap {
+      position: relative;
+    }
+
     .toolbar-link-button {
       display: inline-flex;
       align-items: center;
@@ -844,6 +847,11 @@
     .toolbar-link-button:focus-visible,
     .toolbar-link-button.is-open {
       color: var(--ink) !important;
+    }
+
+    .toolbar-table-button.is-open {
+      border-color: rgba(58, 50, 43, 0.32);
+      background: rgba(255, 255, 255, 0.92);
     }
 
     .toolbar-link-button.is-open {
@@ -867,10 +875,25 @@
       top: calc(100% + 8px);
       left: 50%;
       z-index: 40;
-      width: 220px;
-      padding: 10px;
+      width: 188px;
+      padding: 8px;
       border: 1px solid rgba(58, 50, 43, 0.12);
-      border-radius: 14px;
+      border-radius: 12px;
+      background: rgba(255, 250, 240, 0.98);
+      box-shadow: 0 18px 36px rgba(69, 52, 33, 0.16);
+      backdrop-filter: blur(10px);
+      transform: translateX(-50%);
+    }
+
+    .toolbar-table-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      z-index: 40;
+      width: 150px;
+      padding: 8px;
+      border: 1px solid rgba(58, 50, 43, 0.12);
+      border-radius: 12px;
       background: rgba(255, 250, 240, 0.98);
       box-shadow: 0 18px 36px rgba(69, 52, 33, 0.16);
       backdrop-filter: blur(10px);
@@ -881,15 +904,35 @@
       display: none;
     }
 
+    .toolbar-table-menu[hidden] {
+      display: none;
+    }
+
     .toolbar-link-fields {
       display: grid;
-      gap: 8px;
+      gap: 6px;
+    }
+
+    .toolbar-table-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
     }
 
     .toolbar-link-field {
       display: grid;
-      gap: 4px;
-      font-size: 0.64rem;
+      gap: 3px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: rgba(31, 26, 21, 0.6);
+    }
+
+    .toolbar-table-field {
+      display: grid;
+      gap: 3px;
+      font-size: 0.58rem;
       font-weight: 700;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -900,17 +943,41 @@
       width: 100%;
       appearance: none;
       border: 1px solid rgba(58, 50, 43, 0.14);
-      border-radius: 8px;
+      border-radius: 7px;
       background: rgba(255, 255, 255, 0.9);
       color: var(--ink);
-      padding: 7px 8px;
+      padding: 4px 6px;
       font: inherit;
-      font-size: 0.76rem;
-      line-height: 1.25;
+      font-size: 0.68rem;
+      line-height: 1.15;
       outline: none;
     }
 
+    .toolbar-table-input {
+      width: 100%;
+      appearance: textfield;
+      border: 1px solid rgba(58, 50, 43, 0.14);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--ink);
+      padding: 4px 6px;
+      font: inherit;
+      font-size: 0.68rem;
+      line-height: 1.15;
+      outline: none;
+    }
+
+    .toolbar-table-input::-webkit-outer-spin-button,
+    .toolbar-table-input::-webkit-inner-spin-button {
+      margin: 0;
+    }
+
     .toolbar-link-input:focus {
+      border-color: rgba(15, 118, 110, 0.34);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .toolbar-table-input:focus {
       border-color: rgba(15, 118, 110, 0.34);
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
     }
@@ -923,8 +990,15 @@
     .toolbar-link-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 6px;
-      margin-top: 9px;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .toolbar-table-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+      margin-top: 7px;
     }
 
     .toolbar-link-actions button {
@@ -933,9 +1007,23 @@
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.84);
       color: var(--ink);
-      padding: 4px 9px;
+      padding: 3px 7px;
       font: inherit;
-      font-size: 0.7rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      cursor: pointer;
+      transform: none !important;
+    }
+
+    .toolbar-table-actions button {
+      appearance: none;
+      border: 1px solid rgba(58, 50, 43, 0.14);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--ink);
+      padding: 3px 7px;
+      font: inherit;
+      font-size: 0.62rem;
       font-weight: 700;
       cursor: pointer;
       transform: none !important;
@@ -945,7 +1033,16 @@
       border-color: rgba(58, 50, 43, 0.28);
     }
 
+    .toolbar-table-actions button:hover {
+      border-color: rgba(58, 50, 43, 0.28);
+    }
+
     .toolbar-link-save {
+      background: rgba(37, 99, 235, 0.12) !important;
+      color: #1d4ed8 !important;
+    }
+
+    .toolbar-table-create {
       background: rgba(37, 99, 235, 0.12) !important;
       color: #1d4ed8 !important;
     }
@@ -1133,13 +1230,12 @@
     }
 
     body.is-shared-view #add-root-button,
+    body.is-shared-view #table-controls,
     body.is-shared-view #save-controls,
     body.is-shared-view #link-controls,
     body.is-shared-view #clear-button,
     body.is-shared-view #help-toggle-button,
     body.is-shared-view #text-style-controls,
-    body.is-shared-view #text-panel,
-    body.is-shared-view #context-menu,
     body.is-shared-view #reference-editor,
     body.is-shared-view #link-drop-menu,
     body.is-shared-view .node-add,
@@ -1175,6 +1271,13 @@
     body.is-node-dragging,
     body.is-node-dragging * {
       cursor: grabbing !important;
+    }
+
+    .workspace.is-table-grid-resizing,
+    .workspace.is-table-grid-resizing *,
+    body.is-table-grid-resizing,
+    body.is-table-grid-resizing * {
+      cursor: crosshair !important;
     }
 
     .workspace:focus-visible {
@@ -1660,6 +1763,189 @@
       min-height: 100px;
     }
 
+    .node.is-table {
+      --node-pad-top: 0px;
+      --node-pad-right: 0px;
+      --node-pad-bottom: 0px;
+      --node-pad-left: 0px;
+      padding: var(--node-pad-top) var(--node-pad-right) var(--node-pad-bottom) var(--node-pad-left);
+      min-width: 120px;
+      min-height: 68px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .node.is-table::before {
+      display: none;
+    }
+
+    .node.is-table.selected {
+      border-color: transparent;
+      box-shadow: 0 0 0 8px color-mix(in srgb, var(--branch-color) 20%, transparent);
+    }
+
+    .node-table-wrap {
+      position: absolute;
+      inset: 0;
+      min-width: 0;
+      min-height: 0;
+      overflow: visible;
+      cursor: default;
+    }
+
+    .node-table-add {
+      appearance: none;
+      position: absolute;
+      z-index: 3;
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--branch-color) 58%, rgba(58, 50, 43, 0.22));
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: color-mix(in srgb, var(--branch-color) 82%, var(--ink));
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(31, 26, 21, 0.1);
+      transition: background 120ms ease, color 120ms ease, transform 120ms ease, opacity 120ms ease;
+    }
+
+    .node-table-add:hover:not(:disabled),
+    .node-table-add:focus-visible:not(:disabled) {
+      color: color-mix(in srgb, var(--branch-color) 96%, var(--ink));
+      background: rgba(255, 255, 255, 0.98);
+      outline: none;
+      transform: scale(1.04);
+    }
+
+    .node-table-add:disabled {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    .node-table-add-column {
+      top: -9px;
+      right: -9px;
+    }
+
+    .node-table-add-row {
+      left: -9px;
+      bottom: -9px;
+    }
+
+    .node-table-remove-column {
+      top: -9px;
+      left: -9px;
+    }
+
+    .node-table-remove-row {
+      right: -9px;
+      bottom: -9px;
+    }
+
+    body.is-shared-view .node-table-add,
+    body.is-shared-view .node-table-resize-handle {
+      display: none;
+    }
+
+    .node-table-scroll {
+      position: absolute;
+      inset: 0;
+      min-height: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .node.is-table.selected .node-table {
+      outline: 2px solid color-mix(in srgb, var(--branch-color) 78%, rgba(58, 50, 43, 0.2));
+      outline-offset: 0;
+    }
+
+    .node-table {
+      width: 100%;
+      height: 100%;
+      min-width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font: inherit;
+      color: inherit;
+      text-align: inherit;
+    }
+
+    .node-table-resize-handle {
+      position: absolute;
+      z-index: 2;
+      background: transparent;
+      transition: background 120ms ease;
+    }
+
+    .node-table-column-handle {
+      top: 0;
+      bottom: 0;
+      width: 9px;
+      margin-left: -4px;
+      cursor: crosshair;
+    }
+
+    .node-table-row-handle {
+      left: 0;
+      right: 0;
+      height: 9px;
+      margin-top: -4px;
+      cursor: crosshair;
+    }
+
+    .node.is-table.selected .node-table-resize-handle:hover {
+      background: color-mix(in srgb, var(--branch-color) 18%, transparent);
+    }
+
+    .node-table-cell-wrap {
+      position: relative;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--branch-color) 24%, rgba(58, 50, 43, 0.13));
+      background: rgba(255, 255, 255, 0.78);
+      vertical-align: top;
+    }
+
+    .node-table-cell {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: auto;
+      height: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 6px 7px;
+      box-sizing: border-box;
+      border: 0;
+      outline: none;
+      resize: none;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: inherit;
+      line-height: 1.25;
+      overflow: hidden;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .node-table-cell:focus {
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--branch-color) 58%, rgba(37, 99, 235, 0.2));
+    }
+
+    body.is-shared-view .node-table-cell {
+      cursor: default;
+    }
+
     .node-image-frame {
       position: relative;
       width: 100%;
@@ -1827,6 +2113,7 @@
       width: 18px;
       height: 18px;
       margin: 0 3px;
+      border: 0;
       border-radius: 999px;
       background: var(--branch-color, #16a34a);
       color: #ffffff;
@@ -1835,6 +2122,16 @@
       line-height: 1;
       vertical-align: -3px;
       box-shadow: 0 6px 14px rgba(22, 163, 74, 0.18);
+    }
+
+    .help-inline-table-control {
+      width: 20px;
+      height: 20px;
+      border: 1px solid color-mix(in srgb, var(--branch-color, #16a34a) 58%, rgba(58, 50, 43, 0.22));
+      background: rgba(255, 255, 255, 0.92);
+      color: color-mix(in srgb, var(--branch-color, #16a34a) 82%, var(--ink));
+      font-size: 0.95rem;
+      box-shadow: 0 3px 8px rgba(31, 26, 21, 0.1);
     }
 
     .help-inline-node-button {
@@ -1908,37 +2205,6 @@
       font-size: 1.04em;
       line-height: 1;
       vertical-align: -1px;
-    }
-
-    .context-menu {
-      position: absolute;
-      z-index: 3;
-      min-width: 160px;
-      padding: 8px;
-      border: 1px solid rgba(58, 50, 43, 0.12);
-      border-radius: 14px;
-      background: rgba(255, 250, 240, 0.96);
-      box-shadow: 0 12px 28px rgba(69, 52, 33, 0.18);
-      backdrop-filter: blur(10px);
-    }
-
-    .context-menu button {
-      display: block;
-      width: 100%;
-      appearance: none;
-      border: 0;
-      border-radius: 10px;
-      background: rgba(231, 76, 60, 0.12);
-      color: #9f2216;
-      padding: 10px 12px;
-      text-align: left;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .context-menu button:hover {
-      background: rgba(231, 76, 60, 0.18);
     }
 
     .reference-editor {
@@ -2313,197 +2579,6 @@
       background: rgba(31, 26, 21, 1);
     }
 
-    .text-panel {
-      position: absolute;
-      top: 22px;
-      right: 24px;
-      z-index: 3;
-      width: 214px;
-      padding: 12px 11px 11px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      border-radius: 18px;
-      background: rgba(37, 35, 32, 0.97);
-      color: rgba(245, 241, 234, 0.96);
-      box-shadow: 0 24px 48px rgba(14, 11, 8, 0.36);
-      backdrop-filter: blur(16px);
-    }
-
-    .text-panel-title {
-      margin: 0 0 10px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-    }
-
-    .text-panel-section {
-      margin-bottom: 12px;
-    }
-
-    .text-panel-section:last-child {
-      margin-bottom: 0;
-    }
-
-    .text-panel-label {
-      margin: 0 0 8px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: rgba(245, 241, 234, 0.92);
-    }
-
-    .text-panel-group {
-      display: flex;
-      align-items: stretch;
-      border-radius: 15px;
-      background: rgba(73, 70, 66, 0.56);
-      overflow: hidden;
-    }
-
-    .text-panel-group button {
-      flex: 1;
-      appearance: none;
-      border: 0;
-      border-right: 1px solid rgba(255, 255, 255, 0.09);
-      background: transparent;
-      color: rgba(245, 241, 234, 0.8);
-      padding: 10px 6px;
-      font: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 120ms ease, color 120ms ease;
-    }
-
-    .text-panel-group button:last-child {
-      border-right: 0;
-    }
-
-    .text-panel-group button.is-active {
-      background: rgba(118, 113, 107, 0.86);
-      color: #ffffff;
-    }
-
-    .text-panel-group button:hover {
-      background: rgba(118, 113, 107, 0.32);
-      color: #ffffff;
-    }
-
-    .text-panel-fonts button {
-      font-size: 0.72rem;
-      letter-spacing: 0.02em;
-    }
-
-    .text-panel-size-row {
-      display: grid;
-      grid-template-columns: 38px 1fr 38px;
-      gap: 6px;
-      align-items: stretch;
-    }
-
-    .text-panel-step {
-      appearance: none;
-      border: 0;
-      border-radius: 12px;
-      background: rgba(73, 70, 66, 0.56);
-      color: rgba(245, 241, 234, 0.86);
-      font: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .text-panel-step:hover {
-      background: rgba(118, 113, 107, 0.32);
-      color: #ffffff;
-    }
-
-    .text-panel-size-box {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      padding: 0 11px;
-      border-radius: 12px;
-      background: rgba(73, 70, 66, 0.56);
-    }
-
-    .text-panel-size-suffix {
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: rgba(245, 241, 234, 0.72);
-    }
-
-    .text-panel input {
-      width: 100%;
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: rgba(245, 241, 234, 0.96);
-      padding: 0;
-      font: inherit;
-      font-size: 0.92rem;
-      font-weight: 700;
-      outline: none;
-    }
-
-    .text-panel input[type="number"] {
-      font-variant-numeric: tabular-nums;
-    }
-
-    .text-panel input[type="number"]::-webkit-outer-spin-button,
-    .text-panel input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    .text-panel-color-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .text-panel-color {
-      position: relative;
-      width: 36px;
-      height: 36px;
-      border: 0;
-      border-radius: 12px;
-      background: rgba(73, 70, 66, 0.56);
-      cursor: pointer;
-      transition: transform 120ms ease, box-shadow 120ms ease;
-    }
-
-    .text-panel-color::before {
-      content: "";
-      position: absolute;
-      inset: 6px;
-      border-radius: 999px;
-      background: var(--swatch-color, #ffffff);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
-    }
-
-    .text-panel-color.is-active {
-      box-shadow: 0 0 0 2px rgba(112, 143, 255, 0.9);
-    }
-
-    .text-panel-color:hover {
-      transform: translateY(-1px);
-    }
-
-    .text-panel-color.custom::before {
-      border-radius: 8px;
-      background:
-        linear-gradient(135deg, #1b1b1b 0 50%, #ffffff 50% 100%);
-    }
-
-    .text-panel-color input[type="color"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
     @media (max-width: 860px) {
       body {
         padding: 14px;
@@ -2523,13 +2598,6 @@
         bottom: 12px;
         width: min(280px, calc(100% - 24px));
         padding: 14px;
-      }
-
-      .text-panel {
-        top: auto;
-        right: 14px;
-        bottom: 18px;
-        width: min(214px, calc(100% - 28px));
       }
 
       .zoom-controls {
@@ -2576,6 +2644,33 @@
           <rect x="15" y="17" width="6" height="5" rx="0.8"></rect>
         </svg>
       </button>
+      <div id="table-controls" class="toolbar-table-wrap">
+        <button id="table-button" class="toolbar-icon-button toolbar-table-button" type="button" aria-label="Add table" title="Add table">
+          <svg class="toolbar-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="14" rx="1.2"></rect>
+            <path d="M4 9.7 H 20"></path>
+            <path d="M4 14.3 H 20"></path>
+            <path d="M9.3 5 V 19"></path>
+            <path d="M14.7 5 V 19"></path>
+          </svg>
+        </button>
+        <div id="table-menu" class="toolbar-table-menu" hidden>
+          <div class="toolbar-table-fields">
+            <label class="toolbar-table-field" for="table-rows-input">
+              Rows
+              <input id="table-rows-input" class="toolbar-table-input" type="number" min="1" max="12" value="2" inputmode="numeric">
+            </label>
+            <label class="toolbar-table-field" for="table-columns-input">
+              Columns
+              <input id="table-columns-input" class="toolbar-table-input" type="number" min="1" max="8" value="2" inputmode="numeric">
+            </label>
+          </div>
+          <div class="toolbar-table-actions">
+            <button id="table-cancel-button" type="button">Cancel</button>
+            <button id="table-create-button" class="toolbar-table-create" type="button">Create</button>
+          </div>
+        </div>
+      </div>
       <div id="link-controls" class="toolbar-link-wrap">
         <button id="link-button" class="toolbar-icon-button toolbar-link-button" type="button" aria-label="Add hyperlink" title="Add hyperlink">
           <svg class="toolbar-link-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -2677,6 +2772,9 @@
           </button>
         </div>
         <select id="font-size-select" class="toolbar-style-picker" aria-label="Text size">
+          <option value="6">6 pt</option>
+          <option value="8">8 pt</option>
+          <option value="10">10 pt</option>
           <option value="12">12 pt</option>
           <option value="14">14 pt</option>
           <option value="16">16 pt</option>
@@ -2821,9 +2919,6 @@
     <div id="workspace" class="workspace" tabindex="0" aria-label="Mind map canvas">
       <svg id="link-layer" aria-hidden="true"></svg>
       <div id="node-layer"></div>
-      <div id="context-menu" class="context-menu" hidden>
-        <button id="context-delete-button" type="button">Delete</button>
-      </div>
       <div id="link-drop-menu" class="link-drop-menu" hidden>
         <div class="link-drop-menu-title">Drop Link Onto Node</div>
         <div class="link-drop-menu-actions">
@@ -2886,6 +2981,40 @@
             </p>
           </section>
           <section class="help-panel-section">
+            <h3>Create Tables</h3>
+            <p>
+              Click
+              <span class="help-inline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="4" y="5" width="16" height="14" rx="1.2"></rect>
+                  <path d="M4 9.7 H 20"></path>
+                  <path d="M4 14.3 H 20"></path>
+                  <path d="M9.3 5 V 19"></path>
+                  <path d="M14.7 5 V 19"></path>
+                </svg>
+              </span>
+              to choose row and column counts, then create a table on the canvas. Drag the table onto a text node to attach it as a child. Use the corner
+              <span class="help-inline-plus help-inline-table-control" aria-hidden="true">+</span>
+              /
+              <span class="help-inline-plus help-inline-table-control" aria-hidden="true">−</span>
+              controls to add or remove rows and columns. Drag table grid lines to resize rows or columns; the bottom-right handle scales the whole table, and double-clicking it autofits content.
+            </p>
+          </section>
+          <section class="help-panel-section">
+            <h3>Hyperlinks</h3>
+            <p>
+              Click
+              <span class="help-inline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M10.2 13.8 L 13.8 10.2"></path>
+                  <path d="M8 15.9 L 6.8 17.1 A 3.2 3.2 0 1 1 2.3 12.6 L 4.6 10.3"></path>
+                  <path d="M15.4 13.7 L 17.7 11.4 A 3.2 3.2 0 1 0 13.2 6.9 L 12 8.1"></path>
+                </svg>
+              </span>
+              to add a URL with a custom name. Drag the hyperlink anywhere on the canvas, or drop it onto a node to attach it to the file list or append it beneath the node.
+            </p>
+          </section>
+          <section class="help-panel-section">
             <h3>Save and Share</h3>
             <p>
               Click
@@ -2896,14 +3025,7 @@
                   <rect x="8" y="13" width="8" height="5.5" rx="0.8"></rect>
                 </svg>
               </span>
-              to save the current working HTML file. Use
-              <span class="help-inline-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M7 7.5 A 7 7 0 1 1 5.8 16.1"></path>
-                  <path d="M7 3.8 V 7.5 H 10.7"></path>
-                </svg>
-              </span>
-              to restore the file back to the blank app. Use <strong>Share As</strong> to export a landscape PDF, a read-only HTML file, or a ZIP package with a PDF and attachments.
+              to save the current working HTML file. Use <strong>Share As</strong> to export a landscape PDF, a read-only HTML file, or a ZIP package with a PDF and attachments.
               Choose <strong>Save with password</strong> or <strong>HTML with password</strong> to encrypt the mind map data inside the saved HTML.
             </p>
           </section>
@@ -2930,8 +3052,21 @@
             </p>
           </section>
           <section class="help-panel-section">
-            <h3>Pan, Zoom, Delete</h3>
-            <p>Drag empty canvas space to pan. Use the toolbar zoom controls, or hold <span class="help-inline-key" aria-hidden="true">Ctrl</span> and scroll the mouse wheel, to zoom. To remove a selected node or link, press <span class="help-inline-key" aria-hidden="true">Del</span>.</p>
+            <h3>Style Text</h3>
+            <p>Select a text node, table, or hyperlink, then use the toolbar font, size, bold, italic, color, and alignment controls to update it.</p>
+          </section>
+          <section class="help-panel-section">
+            <h3>Zoom and Reset</h3>
+            <p>
+              Use the toolbar zoom controls, or hold <span class="help-inline-key" aria-hidden="true">Ctrl</span> and scroll the mouse wheel, to zoom. Click
+              <span class="help-inline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 7.5 A 7 7 0 1 1 5.8 16.1"></path>
+                  <path d="M7 3.8 V 7.5 H 10.7"></path>
+                </svg>
+              </span>
+              to restore the file back to the blank app.
+            </p>
           </section>
           <section class="help-panel-section">
             <h3>Move, Resize, Fold</h3>
@@ -2946,7 +3081,11 @@
               </span>
               to fold or unfold child branches.
             </p>
-            <p>Drag a detached node onto another node to attach it as a child.</p>
+            <p>Drag a detached text, image, or table node onto a text node to attach it as a child.</p>
+          </section>
+          <section class="help-panel-section">
+            <h3>Pan and Delete</h3>
+            <p>Drag empty canvas space to pan. To remove a selected node or link, press <span class="help-inline-key" aria-hidden="true">Del</span>.</p>
           </section>
           <section class="help-panel-section">
             <h3>Paste Images</h3>
@@ -2967,20 +3106,6 @@
                 </svg>
               </span>
               on a node to choose files. Open nodes show only their own files; folded nodes roll child files into the same count and list.
-            </p>
-          </section>
-          <section class="help-panel-section">
-            <h3>Hyperlinks</h3>
-            <p>
-              Click
-              <span class="help-inline-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M10.2 13.8 L 13.8 10.2"></path>
-                  <path d="M8 15.9 L 6.8 17.1 A 3.2 3.2 0 1 1 2.3 12.6 L 4.6 10.3"></path>
-                  <path d="M15.4 13.7 L 17.7 11.4 A 3.2 3.2 0 1 0 13.2 6.9 L 12 8.1"></path>
-                </svg>
-              </span>
-              to add a URL with a custom name. Drag the hyperlink anywhere on the canvas, or drop it onto a node to attach it to the file list or append it beneath the node.
             </p>
           </section>
           <section class="help-panel-section">
@@ -3025,6 +3150,20 @@
       const MIN_IMAGE_NODE_HEIGHT = 100;
       const MAX_IMAGE_NODE_WIDTH = 640;
       const MAX_IMAGE_NODE_HEIGHT = 480;
+      const MIN_TABLE_NODE_WIDTH = 120;
+      const MIN_TABLE_NODE_HEIGHT = 68;
+      const MAX_TABLE_NODE_WIDTH = 760;
+      const MAX_TABLE_NODE_HEIGHT = 520;
+      const DEFAULT_TABLE_ROWS = 2;
+      const DEFAULT_TABLE_COLUMNS = 2;
+      const MAX_TABLE_ROWS = 12;
+      const MAX_TABLE_COLUMNS = 8;
+      const TABLE_CELL_WIDTH = 92;
+      const TABLE_ROW_HEIGHT = 34;
+      const MIN_TABLE_COLUMN_WIDTH = 48;
+      const MIN_TABLE_ROW_HEIGHT = 30;
+      const TABLE_CELL_PADDING_X = 7;
+      const TABLE_CELL_PADDING_Y = 6;
       const HORIZONTAL_GAP = 120;
       const VERTICAL_GAP = 30;
       const APPENDED_LINK_INSET_X = 8;
@@ -3036,7 +3175,7 @@
       const ROOT_COLOR = "#16a34a";
       const BRANCH_COLORS = ["#e74c3c", "#f39c12", "#16a34a", "#2563eb", "#8b5cf6", "#ec4899"];
       const HUMAN_FONT_FAMILY = "\"Gill Sans\", \"Trebuchet MS\", sans-serif";
-const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
+      const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const DEFAULT_TEXT_FONT_WEIGHT = "normal";
       const DEFAULT_TEXT_FONT_STYLE = "normal";
       const DEFAULT_TEXT_COLOR = "#1f1a15";
@@ -3046,7 +3185,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const DEFAULT_NEW_NODE_TEXT_V_ALIGN = "middle";
       const DEFAULT_ROOT_FONT_SIZE = 16;
       const DEFAULT_CHILD_FONT_SIZE = 16;
-      const MIN_TEXT_SIZE = 12;
+      const MIN_TEXT_SIZE = 6;
       const MAX_TEXT_SIZE = 48;
       const MIN_SCALE = 0.45;
       const MAX_SCALE = 2.4;
@@ -3116,6 +3255,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const toolbarWordmarkWrap = document.getElementById("toolbar-wordmark-wrap");
       const toolbarVersion = document.getElementById("toolbar-version");
       const addRootButton = document.getElementById("add-root-button");
+      const tableControls = document.getElementById("table-controls");
+      const tableButton = document.getElementById("table-button");
+      const tableMenu = document.getElementById("table-menu");
+      const tableRowsInput = document.getElementById("table-rows-input");
+      const tableColumnsInput = document.getElementById("table-columns-input");
+      const tableCreateButton = document.getElementById("table-create-button");
+      const tableCancelButton = document.getElementById("table-cancel-button");
       const linkControls = document.getElementById("link-controls");
       const linkButton = document.getElementById("link-button");
       const linkEditor = document.getElementById("link-editor");
@@ -3154,8 +3300,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       const textColorInput = document.getElementById("text-color-input");
       const textLayoutButton = document.getElementById("text-layout-button");
       const textLayoutMenu = document.getElementById("text-layout-menu");
-      const contextMenu = document.getElementById("context-menu");
-      const contextDeleteButton = document.getElementById("context-delete-button");
       const linkDropMenu = document.getElementById("link-drop-menu");
       const linkDropAttachButton = document.getElementById("link-drop-attach-button");
       const linkDropAppendButton = document.getElementById("link-drop-append-button");
@@ -3177,6 +3321,16 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         attachmentFileInput.setAttribute("accept", ATTACHMENT_ACCEPT_ATTRIBUTE);
       }
 
+      if (tableRowsInput) {
+        tableRowsInput.setAttribute("min", "1");
+        tableRowsInput.setAttribute("max", String(MAX_TABLE_ROWS));
+      }
+
+      if (tableColumnsInput) {
+        tableColumnsInput.setAttribute("min", "1");
+        tableColumnsInput.setAttribute("max", String(MAX_TABLE_COLUMNS));
+      }
+
       let encryptedStatePayload = null;
       let encryptedStateLocked = false;
       const state = parseInitialState();
@@ -3190,7 +3344,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       let attachmentCounter = getNextAttachmentCounter(state.nodes);
       let focusAfterRenderId = null;
       let focusAfterRenderSelection = null;
-      let contextMenuTarget = null;
+      let focusAfterRenderTableCell = null;
+      let activeTableCellStyleTarget = null;
       let attachTargetId = null;
       let attachmentDropTargetId = null;
       let editingNodeId = null;
@@ -3198,6 +3353,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       let lastWorkspacePointer = null;
       let clipboardReadFallbackTimer = 0;
       let textRelayoutFrame = 0;
+      let tableRelayoutFrame = 0;
+      let tableAutosizeFrame = 0;
       let zoomRepeatDelayTimer = 0;
       let zoomRepeatIntervalTimer = 0;
       let zoomRepeatDidRun = false;
@@ -3224,10 +3381,64 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             return;
           }
 
+          closeTableMenu();
           const node = createRootNode();
           focusNodeEditor(node.id);
         });
       }
+
+      if (tableButton) {
+        tableButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (isSharedView() || !tableMenu) {
+            return;
+          }
+
+          hideSaveMenu();
+          hideReferenceMenu();
+          hideTextColorMenu();
+          hideTextLayoutMenu();
+          closeLinkEditor();
+          closeLinkDropMenu();
+          const nextHidden = !tableMenu.hidden;
+          if (nextHidden) {
+            closeTableMenu();
+            return;
+          }
+          openTableMenu();
+        });
+      }
+
+      if (tableCreateButton) {
+        tableCreateButton.addEventListener("click", () => {
+          commitTableMenu();
+        });
+      }
+
+      if (tableCancelButton) {
+        tableCancelButton.addEventListener("click", () => {
+          closeTableMenu();
+        });
+      }
+
+      [tableRowsInput, tableColumnsInput].forEach((input) => {
+        if (!input) {
+          return;
+        }
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            commitTableMenu();
+            return;
+          }
+
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeTableMenu();
+          }
+        });
+      });
 
       if (linkButton) {
         linkButton.addEventListener("click", (event) => {
@@ -3240,6 +3451,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           hideReferenceMenu();
           hideTextColorMenu();
           hideTextLayoutMenu();
+          closeTableMenu();
           closeLinkDropMenu();
           const nextHidden = !linkEditor.hidden;
           if (nextHidden) {
@@ -3340,6 +3552,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           hideReferenceMenu();
           hideTextColorMenu();
           hideTextLayoutMenu();
+          closeTableMenu();
           const nextHidden = !saveMenu.hidden;
           saveMenu.hidden = nextHidden;
           saveButton.classList.toggle("is-open", !nextHidden);
@@ -3410,6 +3623,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           updateReferenceMenu();
           hideTextColorMenu();
           hideTextLayoutMenu();
+          closeTableMenu();
           const nextHidden = !referenceMenu.hidden;
           referenceMenu.hidden = nextHidden;
           referenceButton.classList.toggle("is-open", !nextHidden);
@@ -3491,7 +3705,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         fontSizeSelect.addEventListener("change", () => {
           const target = getTextStyleTarget();
           updateSelectedTextStyle({
-            fontSize: normalizeFontSize(fontSizeSelect.value, Boolean(target && target.kind === "node" && target.record.parentId === null))
+            fontSize: normalizeFontSize(fontSizeSelect.value, Boolean(target && target.kind === "node" && target.record.type === "text" && target.record.parentId === null))
           });
         });
       }
@@ -3554,6 +3768,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           hideSaveMenu();
           hideReferenceMenu();
           hideTextLayoutMenu();
+          closeTableMenu();
           const nextHidden = !textColorMenu.hidden;
           textColorMenu.hidden = nextHidden;
           textColorButton.classList.toggle("is-open", !nextHidden);
@@ -3588,6 +3803,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           hideSaveMenu();
           hideReferenceMenu();
           hideTextColorMenu();
+          closeTableMenu();
           const nextHidden = !textLayoutMenu.hidden;
           textLayoutMenu.hidden = nextHidden;
           textLayoutButton.classList.toggle("is-open", !nextHidden);
@@ -3689,7 +3905,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         clearSelection();
         interaction = null;
         attachTargetId = null;
-        hideContextMenu();
         applySelectionState();
         focusWorkspaceSurface();
         interaction = {
@@ -3703,7 +3918,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       workspace.addEventListener("contextmenu", (event) => {
         const target = event.target;
         if (target === workspace || target === linkLayer || target === nodeLayer) {
-          hideContextMenu();
         }
       });
 
@@ -3787,6 +4001,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           hideSaveMenu();
         }
 
+        if (tableMenu && tableButton && !tableMenu.hidden && !tableMenu.contains(event.target) && event.target !== tableButton && !tableButton.contains(event.target)) {
+          closeTableMenu();
+        }
+
         if (linkEditor && linkButton && !linkEditor.hidden && !linkEditor.contains(event.target) && event.target !== linkButton && !linkButton.contains(event.target)) {
           closeLinkEditor();
         }
@@ -3828,16 +4046,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         ) {
           closeLinkDropMenu();
         }
-
-        if (!contextMenu || contextMenu.hidden) {
-          return;
-        }
-
-        if (contextMenu.contains(event.target)) {
-          return;
-        }
-
-        hideContextMenu();
       });
 
       window.addEventListener("pointermove", (event) => {
@@ -3911,16 +4119,43 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           return;
         }
 
+        if (interaction.type === "resize-table-column") {
+          if (resizeTableColumnBoundary(node, interaction.boundaryIndex, dx, interaction.origin.table)) {
+            renderAll();
+            syncEmbeddedState();
+          }
+          return;
+        }
+
+        if (interaction.type === "resize-table-row") {
+          if (resizeTableRowBoundary(node, interaction.boundaryIndex, dy, interaction.origin.table)) {
+            renderAll();
+            syncEmbeddedState();
+          }
+          return;
+        }
+
         if (interaction.type === "resize-node") {
           const limits = getNodeSizeLimits(node);
+          let minWidth = limits.minWidth;
           let minHeight = limits.minHeight;
-          if (node.type !== "image") {
+          if (node.type === "text") {
             const activeEditor = nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor');
             if (activeEditor) {
               minHeight = Math.max(minHeight, Math.ceil(measureEditorContentHeight(activeEditor)));
             }
+          } else if (node.type === "table") {
+            const originTable = interaction.origin.table || node.table;
+            const minimumSize = getTableMinimumNodeSize(originTable);
+            const nextWidth = clamp(interaction.origin.width + dx, Math.max(minWidth, minimumSize.width), limits.maxWidth);
+            const nextHeight = clamp(interaction.origin.height + dy, Math.max(minHeight, minimumSize.height), limits.maxHeight);
+            node.table = resizeTableDataToNodeSize(originTable, nextWidth, nextHeight);
+            fitTableNodeToPreferredSize(node);
+            renderAll();
+            syncEmbeddedState();
+            return;
           }
-          node.width = clamp(interaction.origin.width + dx, limits.minWidth, limits.maxWidth);
+          node.width = clamp(interaction.origin.width + dx, minWidth, limits.maxWidth);
           node.height = clamp(interaction.origin.height + dy, minHeight, limits.maxHeight);
 
           renderAll();
@@ -3958,7 +4193,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           if (!completedInteraction.moved) {
             closeLinkDropMenu();
-            hideContextMenu();
             applySelectionState();
             if (completedInteraction.openOnRelease) {
               suppressCanvasLinkClickId = link.id;
@@ -4051,7 +4285,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           clearNodeDragLock();
           clearSelection();
           attachTargetId = null;
-          hideContextMenu();
           applySelectionState();
           return;
         }
@@ -4095,7 +4328,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       window.addEventListener("resize", () => {
         syncSvgSize();
-        hideContextMenu();
         renderAll();
       });
 
@@ -4159,6 +4391,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         attachmentCounter = getNextAttachmentCounter(state.nodes);
         selectionId = null;
         selectionKind = null;
+        focusAfterRenderTableCell = null;
         reconcileCanvasLinksWithNodes();
         syncSvgSize();
         applyViewMode();
@@ -4259,6 +4492,12 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if (addRootButton) {
           addRootButton.hidden = isSharedView();
         }
+        if (tableControls) {
+          tableControls.hidden = isSharedView();
+        }
+        if (tableButton) {
+          tableButton.hidden = isSharedView();
+        }
         if (linkControls) {
           linkControls.hidden = isSharedView();
         }
@@ -4276,6 +4515,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         hideSaveMenu();
         hideReferenceMenu();
+        closeTableMenu();
         closeLinkEditor();
         closeLinkDropMenu();
         closeReferenceEditor();
@@ -4283,25 +4523,47 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if (isSharedView()) {
           hideTextColorMenu();
           hideTextLayoutMenu();
-          hideContextMenu();
         }
       }
 
       function normalizeNode(node, index) {
         const nodeType = normalizeNodeType(node.type, node.imageData);
-        const isRoot = typeof node.parentId !== "string";
-        const fallbackWidth = nodeType === "image" ? 240 : index === 0 ? 240 : 180;
-        const fallbackHeight = nodeType === "image" ? 160 : MIN_NODE_HEIGHT;
+        const isRoot = nodeType === "text" && typeof node.parentId !== "string";
+        const fallbackWidth =
+          nodeType === "image"
+            ? 240
+            : nodeType === "table"
+              ? DEFAULT_TABLE_COLUMNS * TABLE_CELL_WIDTH + 1
+              : index === 0
+                ? 240
+                : 180;
+        const fallbackHeight =
+          nodeType === "image"
+            ? 160
+            : nodeType === "table"
+              ? DEFAULT_TABLE_ROWS * TABLE_ROW_HEIGHT + 1
+              : MIN_NODE_HEIGHT;
         const sizeLimits = getNodeSizeLimits(nodeType);
+        const parentId = typeof node.parentId === "string" ? node.parentId : null;
+        let normalizedTable = nodeType === "table" ? normalizeTableData(node.table) : null;
+        let width = clamp(Number(node.width) || fallbackWidth, sizeLimits.minWidth, sizeLimits.maxWidth);
+        let height = clamp(Number(node.height) || fallbackHeight, sizeLimits.minHeight, sizeLimits.maxHeight);
+        if (normalizedTable) {
+          normalizedTable = resizeTableDataToNodeSize(normalizedTable, width, height);
+          const preferredSize = getTablePreferredNodeSize(normalizedTable);
+          width = preferredSize.width;
+          height = preferredSize.height;
+        }
         return {
           id: typeof node.id === "string" ? node.id : "node-" + (index + 1),
           type: nodeType,
-          parentId: typeof node.parentId === "string" ? node.parentId : null,
-          detached: nodeType === "text" ? Boolean(node.detached) : Boolean(node.parentId === null),
+          parentId: parentId,
+          detached: nodeType === "image" ? Boolean(parentId === null) : nodeType === "table" ? Boolean(node.detached || parentId === null) : Boolean(node.detached),
           text: typeof node.text === "string" ? node.text : "",
           imageData: nodeType === "image" ? normalizeImageData(node.imageData) : "",
-          width: clamp(Number(node.width) || fallbackWidth, sizeLimits.minWidth, sizeLimits.maxWidth),
-          height: clamp(Number(node.height) || fallbackHeight, sizeLimits.minHeight, sizeLimits.maxHeight),
+          table: normalizedTable,
+          width: width,
+          height: height,
           fontFamily: normalizeFontFamily(node.fontFamily),
           fontWeight: normalizeFontWeight(node.fontWeight),
           fontStyle: normalizeFontStyle(node.fontStyle),
@@ -4624,6 +4886,304 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return Array.isArray(node && node.attachments) ? node.attachments : [];
       }
 
+      function createDefaultTableData(rows, columns) {
+        const rowCount = clamp(Math.round(Number(rows) || DEFAULT_TABLE_ROWS), 1, MAX_TABLE_ROWS);
+        const columnCount = clamp(Math.round(Number(columns) || DEFAULT_TABLE_COLUMNS), 1, MAX_TABLE_COLUMNS);
+        return normalizeTableData({
+          rows: rowCount,
+          columns: columnCount,
+          cells: Array.from({ length: rowCount }, () => Array.from({ length: columnCount }, () => "")),
+          columnWidths: Array.from({ length: columnCount }, () => TABLE_CELL_WIDTH),
+          rowHeights: Array.from({ length: rowCount }, () => TABLE_ROW_HEIGHT),
+          cellStyles: Array.from({ length: rowCount }, () => Array.from({ length: columnCount }, () => null))
+        });
+      }
+
+      function normalizeTableData(table) {
+        const sourceCells = Array.isArray(table && table.cells) ? table.cells : [];
+        const sourceColumnWidths = Array.isArray(table && table.columnWidths) ? table.columnWidths : [];
+        const sourceRowHeights = Array.isArray(table && table.rowHeights) ? table.rowHeights : [];
+        const sourceCellStyles = Array.isArray(table && table.cellStyles) ? table.cellStyles : [];
+        const inferredRows = sourceCells.length || DEFAULT_TABLE_ROWS;
+        const inferredColumns = sourceCells.reduce((max, row) => {
+          return Math.max(max, Array.isArray(row) ? row.length : 0);
+        }, 0) || DEFAULT_TABLE_COLUMNS;
+        const rowCount = clamp(Math.round(Number(table && table.rows) || inferredRows), 1, MAX_TABLE_ROWS);
+        const columnCount = clamp(Math.round(Number(table && table.columns) || inferredColumns), 1, MAX_TABLE_COLUMNS);
+        const cells = [];
+
+        for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+          const sourceRow = Array.isArray(sourceCells[rowIndex]) ? sourceCells[rowIndex] : [];
+          const row = [];
+          for (let columnIndex = 0; columnIndex < columnCount; columnIndex += 1) {
+            const value = sourceRow[columnIndex];
+            row.push(typeof value === "string" ? value : value == null ? "" : String(value));
+          }
+          cells.push(row);
+        }
+
+        return {
+          rows: rowCount,
+          columns: columnCount,
+          cells: cells,
+          columnWidths: normalizeTableDimensionValues(
+            sourceColumnWidths,
+            columnCount,
+            TABLE_CELL_WIDTH,
+            MIN_TABLE_COLUMN_WIDTH,
+            getTableMinimumContentWidth(columnCount),
+            getTableContentMaxWidth()
+          ),
+          rowHeights: normalizeTableDimensionValues(
+            sourceRowHeights,
+            rowCount,
+            TABLE_ROW_HEIGHT,
+            MIN_TABLE_ROW_HEIGHT,
+            getTableMinimumContentHeight(rowCount),
+            getTableContentMaxHeight()
+          ),
+          cellStyles: normalizeTableCellStyles(sourceCellStyles, rowCount, columnCount)
+        };
+      }
+
+      function normalizeTableCellStyles(styles, rowCount, columnCount) {
+        return Array.from({ length: rowCount }, (_, rowIndex) => {
+          const sourceRow = Array.isArray(styles[rowIndex]) ? styles[rowIndex] : [];
+          return Array.from({ length: columnCount }, (_, columnIndex) => {
+            return normalizeTableCellStyle(sourceRow[columnIndex]);
+          });
+        });
+      }
+
+      function normalizeTableCellStyle(style) {
+        if (!style || typeof style !== "object") {
+          return null;
+        }
+
+        return {
+          fontFamily: normalizeFontFamily(style.fontFamily),
+          fontWeight: normalizeFontWeight(style.fontWeight),
+          fontStyle: normalizeFontStyle(style.fontStyle),
+          fontSize: normalizeFontSize(style.fontSize, false),
+          textColor: normalizeTextColor(style.textColor),
+          textAlign: normalizeTextAlign(style.textAlign),
+          textVAlign: normalizeTextVAlign(style.textVAlign)
+        };
+      }
+
+      function getDefaultTableCellStyle(node) {
+        return {
+          fontFamily: normalizeFontFamily(node && node.fontFamily),
+          fontWeight: normalizeFontWeight(node && node.fontWeight),
+          fontStyle: normalizeFontStyle(node && node.fontStyle),
+          fontSize: normalizeFontSize(node && node.fontSize, false),
+          textColor: normalizeTextColor(node && node.textColor),
+          textAlign: normalizeTextAlign(node && node.textAlign),
+          textVAlign: normalizeTextVAlign(node && node.textVAlign)
+        };
+      }
+
+      function getTableCellTextStyle(node, table, rowIndex, columnIndex) {
+        const style = table && table.cellStyles && table.cellStyles[rowIndex]
+          ? table.cellStyles[rowIndex][columnIndex]
+          : null;
+        return style || getDefaultTableCellStyle(node);
+      }
+
+      function ensureTableCellTextStyle(node, rowIndex, columnIndex) {
+        if (!node || node.type !== "table") {
+          return null;
+        }
+
+        const table = normalizeTableData(node.table);
+        if (!table.cellStyles[rowIndex] || typeof table.cellStyles[rowIndex][columnIndex] === "undefined") {
+          return null;
+        }
+
+        if (!table.cellStyles[rowIndex][columnIndex]) {
+          table.cellStyles[rowIndex][columnIndex] = getDefaultTableCellStyle(node);
+        }
+        node.table = table;
+        return table.cellStyles[rowIndex][columnIndex];
+      }
+
+      function normalizeTableDimensionValues(values, count, fallback, minSize, minTotal, maxTotal) {
+        const sizeCount = clamp(Math.round(Number(count) || 0), 1, Math.max(MAX_TABLE_ROWS, MAX_TABLE_COLUMNS));
+        const normalizedValues = Array.from({ length: sizeCount }, (_, index) => {
+          const value = Number(values[index]);
+          return clamp(Number.isFinite(value) ? value : fallback, minSize, maxTotal);
+        });
+        const total = sumTableDimensionValues(normalizedValues);
+        const targetMin = Math.max(minSize * sizeCount, Number(minTotal) || 0);
+        const targetMax = Math.max(targetMin, Number(maxTotal) || targetMin);
+
+        if (total < targetMin) {
+          return resizeTableDimensionValuesToTotal(normalizedValues, targetMin, minSize);
+        }
+        if (total > targetMax) {
+          return resizeTableDimensionValuesToTotal(normalizedValues, targetMax, minSize);
+        }
+
+        return normalizedValues.map((value) => round(value));
+      }
+
+      function resizeTableDimensionValuesToTotal(values, targetTotal, minSize) {
+        const sizeCount = values.length || 1;
+        const minimumTotal = minSize * sizeCount;
+        const nextTotal = Math.max(minimumTotal, Number(targetTotal) || minimumTotal);
+        const availableExtra = Math.max(0, nextTotal - minimumTotal);
+        const extras = values.map((value) => Math.max(0, value - minSize));
+        const extraTotal = sumTableDimensionValues(extras);
+        const resizedValues = values.map((value, index) => {
+          if (availableExtra <= 0) {
+            return minSize;
+          }
+          const extra = extraTotal > 0 ? (extras[index] / extraTotal) * availableExtra : availableExtra / sizeCount;
+          return minSize + extra;
+        });
+        const delta = nextTotal - sumTableDimensionValues(resizedValues);
+        resizedValues[resizedValues.length - 1] += delta;
+        return resizedValues.map((value) => round(Math.max(minSize, value)));
+      }
+
+      function sumTableDimensionValues(values) {
+        return values.reduce((sum, value) => sum + (Number.isFinite(value) ? value : 0), 0);
+      }
+
+      function getTableContentMaxWidth() {
+        return Math.max(MIN_TABLE_NODE_WIDTH - 1, MAX_TABLE_NODE_WIDTH - 1);
+      }
+
+      function getTableContentMaxHeight() {
+        return Math.max(MIN_TABLE_NODE_HEIGHT - 1, MAX_TABLE_NODE_HEIGHT - 1);
+      }
+
+      function getTableMinimumContentWidth(columnCount) {
+        return Math.max(MIN_TABLE_COLUMN_WIDTH * columnCount, MIN_TABLE_NODE_WIDTH - 1);
+      }
+
+      function getTableMinimumContentHeight(rowCount) {
+        return Math.max(MIN_TABLE_ROW_HEIGHT * rowCount, MIN_TABLE_NODE_HEIGHT - 1);
+      }
+
+      function getTablePreferredNodeSize(table) {
+        const normalizedTable = normalizeTableData(table);
+        const limits = getNodeSizeLimits("table");
+        const contentWidth = sumTableDimensionValues(normalizedTable.columnWidths);
+        const contentHeight = sumTableDimensionValues(normalizedTable.rowHeights);
+        return {
+          width: clamp(contentWidth + 1, limits.minWidth, limits.maxWidth),
+          height: clamp(contentHeight + 1, limits.minHeight, limits.maxHeight)
+        };
+      }
+
+      function getTableMinimumNodeSize(table) {
+        const normalizedTable = normalizeTableData(table);
+        return {
+          width: getTableMinimumContentWidth(normalizedTable.columns) + 1,
+          height: getTableMinimumContentHeight(normalizedTable.rows) + 1
+        };
+      }
+
+      function resizeTableDataToNodeSize(table, width, height) {
+        const normalizedTable = normalizeTableData(table);
+        const limits = getNodeSizeLimits("table");
+        const minimumSize = getTableMinimumNodeSize(normalizedTable);
+        const nextWidth = clamp(Number(width) || minimumSize.width, minimumSize.width, limits.maxWidth);
+        const nextHeight = clamp(Number(height) || minimumSize.height, minimumSize.height, limits.maxHeight);
+        const contentWidth = clamp(
+          nextWidth - 1,
+          getTableMinimumContentWidth(normalizedTable.columns),
+          getTableContentMaxWidth()
+        );
+        const contentHeight = clamp(
+          nextHeight - 1,
+          getTableMinimumContentHeight(normalizedTable.rows),
+          getTableContentMaxHeight()
+        );
+
+        return normalizeTableData({
+          ...normalizedTable,
+          columnWidths: resizeTableDimensionValuesToTotal(normalizedTable.columnWidths, contentWidth, MIN_TABLE_COLUMN_WIDTH),
+          rowHeights: resizeTableDimensionValuesToTotal(normalizedTable.rowHeights, contentHeight, MIN_TABLE_ROW_HEIGHT)
+        });
+      }
+
+      function cloneTableDataForInteraction(table) {
+        const normalizedTable = normalizeTableData(table);
+        return {
+          rows: normalizedTable.rows,
+          columns: normalizedTable.columns,
+          cells: normalizedTable.cells.map((row) => row.slice()),
+          columnWidths: normalizedTable.columnWidths.slice(),
+          rowHeights: normalizedTable.rowHeights.slice(),
+          cellStyles: normalizedTable.cellStyles.map((row) => row.map((style) => style ? { ...style } : null))
+        };
+      }
+
+      function resizeTableColumnBoundary(node, boundaryIndex, deltaX, sourceTable) {
+        if (!node || node.type !== "table") {
+          return false;
+        }
+
+        const table = normalizeTableData(node.table);
+        const originTable = normalizeTableData(sourceTable || table);
+        const boundary = clamp(Math.round(Number(boundaryIndex) || 0), 1, table.columns);
+        const columnWidths = originTable.columnWidths.slice(0, table.columns);
+        if (boundary < table.columns) {
+          const leftIndex = boundary - 1;
+          const rightIndex = boundary;
+          const pairTotal = originTable.columnWidths[leftIndex] + originTable.columnWidths[rightIndex];
+          const leftWidth = clamp(originTable.columnWidths[leftIndex] + deltaX, MIN_TABLE_COLUMN_WIDTH, pairTotal - MIN_TABLE_COLUMN_WIDTH);
+          columnWidths[leftIndex] = leftWidth;
+          columnWidths[rightIndex] = pairTotal - leftWidth;
+        } else {
+          const columnIndex = table.columns - 1;
+          const otherWidth = sumTableDimensionValues(columnWidths) - originTable.columnWidths[columnIndex];
+          const maxWidth = Math.max(MIN_TABLE_COLUMN_WIDTH, getTableContentMaxWidth() - otherWidth);
+          columnWidths[columnIndex] = clamp(originTable.columnWidths[columnIndex] + deltaX, MIN_TABLE_COLUMN_WIDTH, maxWidth);
+        }
+
+        const previousWidth = node.width;
+        node.table = normalizeTableData({ ...table, columnWidths: columnWidths });
+        fitTableNodeToPreferredSize(node);
+        return Math.abs(previousWidth - node.width) > 0.1 || Math.abs(columnWidths[boundary - 1] - table.columnWidths[boundary - 1]) > 0.1;
+      }
+
+      function resizeTableRowBoundary(node, boundaryIndex, deltaY, sourceTable) {
+        if (!node || node.type !== "table") {
+          return false;
+        }
+
+        const table = normalizeTableData(node.table);
+        const originTable = normalizeTableData(sourceTable || table);
+        const boundary = clamp(Math.round(Number(boundaryIndex) || 0), 1, table.rows);
+        const rowHeights = originTable.rowHeights.slice(0, table.rows);
+        const rowIndex = boundary - 1;
+        const otherHeight = sumTableDimensionValues(rowHeights) - originTable.rowHeights[rowIndex];
+        const maxHeight = Math.max(MIN_TABLE_ROW_HEIGHT, getTableContentMaxHeight() - otherHeight);
+        rowHeights[rowIndex] = clamp(originTable.rowHeights[rowIndex] + deltaY, MIN_TABLE_ROW_HEIGHT, maxHeight);
+
+        const previousHeight = node.height;
+        node.table = normalizeTableData({ ...table, rowHeights: rowHeights });
+        fitTableNodeToPreferredSize(node);
+        return Math.abs(previousHeight - node.height) > 0.1 || Math.abs(rowHeights[boundary - 1] - table.rowHeights[boundary - 1]) > 0.1;
+      }
+
+      function expandTableNodeToFit(node) {
+        if (!node || node.type !== "table") {
+          return false;
+        }
+
+        const preferredSize = getTablePreferredNodeSize(node.table);
+        const nextWidth = Math.max(node.width, preferredSize.width);
+        const nextHeight = Math.max(node.height, preferredSize.height);
+        const changed = Math.abs(nextWidth - node.width) > 1 || Math.abs(nextHeight - node.height) > 1;
+        node.width = nextWidth;
+        node.height = nextHeight;
+        return changed;
+      }
+
       function normalizeCanvasLinkMode(value, hostNodeId) {
         return value === "appended" && typeof hostNodeId === "string" ? "appended" : "floating";
       }
@@ -4925,11 +5485,15 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       function setSelection(nodeId, kind) {
         selectionId = nodeId;
         selectionKind = nodeId ? (kind || "node") : null;
+        if (!activeTableCellStyleTarget || activeTableCellStyleTarget.nodeId !== nodeId || selectionKind !== "node") {
+          activeTableCellStyleTarget = null;
+        }
       }
 
       function clearSelection() {
         selectionId = null;
         selectionKind = null;
+        activeTableCellStyleTarget = null;
       }
 
       function isNodeSelected(nodeId) {
@@ -4962,6 +5526,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         workspace.classList.toggle("is-node-dragging", isActive);
         if (document.body) {
           document.body.classList.toggle("is-node-dragging", isActive);
+        }
+      }
+
+      function setTableGridResizeCursorState(active) {
+        const isActive = Boolean(active);
+        workspace.classList.toggle("is-table-grid-resizing", isActive);
+        if (document.body) {
+          document.body.classList.toggle("is-table-grid-resizing", isActive);
         }
       }
 
@@ -4998,6 +5570,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       function clearNodeDragLock() {
         setNodeDragCursorState(false);
+        setTableGridResizeCursorState(false);
         releaseNodeDragPointerCapture();
       }
 
@@ -5015,7 +5588,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         focusWorkspaceSurface();
         setSelection(nextNode.id, "node");
-        hideContextMenu();
         applySelectionState();
         attachTargetId = null;
         captureNodeDragPointer(event);
@@ -5122,6 +5694,68 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return child;
       }
 
+      function createTableNodeFromToolbar(rows, columns) {
+        if (isSharedView()) {
+          return null;
+        }
+
+        return createTableNodeAt(getPreferredPasteWorldPoint(), null, rows, columns);
+      }
+
+      function createTableNodeAt(worldPoint, parentId, rows, columns) {
+        if (isSharedView()) {
+          return null;
+        }
+
+        const parent = typeof parentId === "string" ? findNode(parentId) : null;
+        const hasParent = Boolean(parent && parent.type === "text");
+        if (parentId && !hasParent) {
+          return null;
+        }
+
+        if (parent) {
+          parent.collapsed = false;
+        }
+
+        const table = createDefaultTableData(rows || DEFAULT_TABLE_ROWS, columns || DEFAULT_TABLE_COLUMNS);
+        const preferredSize = getTablePreferredNodeSize(table);
+        const point = worldPoint || getPreferredPasteWorldPoint();
+        const node = {
+          id: "node-" + nodeCounter++,
+          type: "table",
+          parentId: hasParent ? parent.id : null,
+          detached: !hasParent,
+          text: "",
+          imageData: "",
+          table: table,
+          width: preferredSize.width,
+          height: preferredSize.height,
+          fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontWeight: DEFAULT_TEXT_FONT_WEIGHT,
+          fontStyle: DEFAULT_TEXT_FONT_STYLE,
+          fontSize: DEFAULT_CHILD_FONT_SIZE,
+          textColor: DEFAULT_TEXT_COLOR,
+          textAlign: DEFAULT_TEXT_ALIGN,
+          textVAlign: DEFAULT_TEXT_V_ALIGN,
+          attachments: [],
+          referenceText: "",
+          referenceOrder: null,
+          collapsed: false,
+          order: getNextSiblingOrder(hasParent ? parent.id : null),
+          x: hasParent ? 0 : round(point.x - preferredSize.width / 2),
+          y: hasParent ? 0 : round(point.y - preferredSize.height / 2),
+          offsetX: 0,
+          offsetY: 0
+        };
+
+        state.nodes.push(node);
+        setSelection(node.id, "node");
+        attachTargetId = null;
+        renderAll();
+        syncEmbeddedState();
+        return node;
+      }
+
       function collectSubtreeIds(nodeId, bucket) {
         bucket.add(nodeId);
         for (const node of state.nodes) {
@@ -5158,7 +5792,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         clearSelection();
         attachTargetId = null;
         closeLinkDropMenu();
-        hideContextMenu();
         renderAll();
         syncEmbeddedState();
       }
@@ -5169,7 +5802,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         const node = findNode(nodeId);
-        if (!node || node.type === "image") {
+        if (!node || node.type !== "text") {
           return false;
         }
 
@@ -5211,10 +5844,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         if (interaction && interaction.id === node.id) {
           interaction = null;
-        }
-
-        if (contextMenuTarget && contextMenuTarget.id === node.id) {
-          hideContextMenu();
         }
 
         renderAll();
@@ -5362,6 +5991,22 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             }
           });
         }
+
+        if (focusAfterRenderTableCell) {
+          const target = focusAfterRenderTableCell;
+          focusAfterRenderTableCell = null;
+          requestAnimationFrame(() => {
+            const input = getTableCellInput(target.nodeId, target.rowIndex, target.columnIndex);
+            if (input) {
+              input.focus();
+              if (target.selectionOffsets) {
+                restoreEditorSelection(input, target.selectionOffsets);
+              }
+            }
+          });
+        }
+
+        scheduleRenderedTableContentFit();
       }
 
       function renderLinks() {
@@ -5439,14 +6084,12 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             blurActiveNodeEditor();
             focusWorkspaceSurface();
             setSelection(node.id, "branch");
-            hideContextMenu();
             applySelectionState();
           });
 
           hit.addEventListener("contextmenu", (event) => {
             event.preventDefault();
             event.stopPropagation();
-            hideContextMenu();
           });
 
           linkLayer.appendChild(path);
@@ -5485,10 +6128,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           const hasChildren = state.nodes.some((childNode) => childNode.parentId === node.id);
           const attachmentCount = getAttachmentBadgeCount(node.id);
           const isImageNode = node.type === "image";
+          const isTableNode = node.type === "table";
+          const isTextNode = node.type === "text";
           const nodeEl = document.createElement("article");
           nodeEl.className =
             "node" +
             (isImageNode ? " is-image" : "") +
+            (isTableNode ? " is-table" : "") +
             (isCentralNodeRecord(node) ? " root" : "") +
             (attachTargetId === node.id ? " attach-target" : "") +
             (attachmentDropTargetId === node.id ? " file-drop-target" : "") +
@@ -5514,7 +6160,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           shell.className = "node-shell";
 
           let pinButton = null;
-          if (!isSharedView() && isCentralNodeRecord(node) && !isImageNode) {
+          if (!isSharedView() && isCentralNodeRecord(node) && isTextNode) {
             pinButton = document.createElement("button");
             pinButton.type = "button";
             pinButton.className = "node-pin";
@@ -5534,6 +6180,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           }
 
           let editor = null;
+          let tableWrap = null;
           if (isImageNode) {
             const imageFrame = document.createElement("div");
             imageFrame.className = "node-image-frame";
@@ -5550,6 +6197,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               event.stopPropagation();
               openImageLightbox(node.imageData);
             });
+          } else if (isTableNode) {
+            tableWrap = renderTableNodeContent(node);
+            shell.appendChild(tableWrap);
           } else {
             const textWrap = document.createElement("div");
             textWrap.className = "node-text-wrap";
@@ -5589,7 +6239,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
                 editingNodeId = node.id;
                 syncNodeTextPreview(textWrap, editor, preview, node);
                 setSelection(node.id, "node");
-                hideContextMenu();
                 applySelectionState();
                 requestAnimationFrame(() => {
                   editor.focus();
@@ -5600,7 +6249,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           }
 
           let addButton = null;
-          if (!isSharedView() && !isImageNode) {
+          if (!isSharedView() && isTextNode) {
             addButton = document.createElement("button");
             addButton.type = "button";
             addButton.className = "node-add";
@@ -5609,7 +6258,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           }
 
           let attachmentButton = null;
-          if (!isSharedView() || attachmentCount) {
+          if (!isTableNode && (!isSharedView() || attachmentCount)) {
             attachmentButton = document.createElement("button");
             attachmentButton.type = "button";
             attachmentButton.className = "node-attachment" + (attachmentCount ? "" : " is-empty");
@@ -5634,7 +6283,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           if (!isSharedView()) {
             resizeHandle = document.createElement("div");
             resizeHandle.className = "node-resize";
-            resizeHandle.title = isImageNode ? "Resize image" : "Resize node";
+            resizeHandle.title = isImageNode ? "Resize image" : isTableNode ? "Resize table" : "Resize node";
           }
 
           nodeEl.appendChild(shell);
@@ -5665,6 +6314,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               event.target === attachmentButton ||
               event.target === pinButton ||
               event.target === foldButton ||
+              (tableWrap && tableWrap.contains(event.target)) ||
               (editor && editor.contains(event.target))
             ) {
               return;
@@ -5679,13 +6329,11 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
           nodeEl.addEventListener("contextmenu", (event) => {
             if (editor && (event.target === editor || editor.contains(event.target))) {
-              hideContextMenu();
               return;
             }
 
             event.preventDefault();
             event.stopPropagation();
-            hideContextMenu();
           });
 
           if (foldButton) {
@@ -5699,7 +6347,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               event.stopPropagation();
               setSelection(node.id, "node");
               node.collapsed = !node.collapsed;
-              hideContextMenu();
               renderAll();
               syncEmbeddedState();
             });
@@ -5719,7 +6366,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               }
               focusWorkspaceSurface();
               setSelection(node.id, "node");
-              hideContextMenu();
               hideReferenceMenu();
               applySelectionState();
               editNodeReference(node.id);
@@ -5738,7 +6384,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               }
               focusWorkspaceSurface();
               setSelection(node.id, "node");
-              hideContextMenu();
               hideReferenceMenu();
               applySelectionState();
               editNodeReference(node.id);
@@ -5760,7 +6405,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               }
               focusWorkspaceSurface();
               setSelection(node.id, "node");
-              hideContextMenu();
               hideReferenceMenu();
               closeReferenceEditor();
               applySelectionState();
@@ -5790,16 +6434,31 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               }
               focusWorkspaceSurface();
               setSelection(node.id, "node");
-              hideContextMenu();
               applySelectionState();
               attachTargetId = null;
               interaction = {
                 type: "resize-node",
                 id: node.id,
                 startPoint: toWorldPoint(event.clientX, event.clientY),
-                origin: { width: node.width, height: node.height }
+                origin: {
+                  width: node.width,
+                  height: node.height,
+                  table: isTableNode ? cloneTableDataForInteraction(node.table) : null
+                }
               };
             });
+
+            if (isTableNode) {
+              resizeHandle.addEventListener("dblclick", (event) => {
+                if (isSharedView()) {
+                  return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+                autoFitTableNode(node.id);
+              });
+            }
           }
 
           if (addButton) {
@@ -5815,7 +6474,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
                 return;
               }
               focusWorkspaceSurface();
-              hideContextMenu();
               const child = createChildNode(node.id);
               if (!child) {
                 return;
@@ -5832,7 +6490,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
                 const preview = textWrap ? textWrap.querySelector(".node-preview") : null;
                 syncNodeTextPreview(textWrap, editor, preview, node);
                 setSelection(node.id, "node");
-                hideContextMenu();
                 applySelectionState();
               });
 
@@ -5886,6 +6543,680 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             applyNodeTextStyles(editor, node);
           }
         });
+      }
+
+      function renderTableNodeContent(node) {
+        node.table = normalizeTableData(node.table);
+        const tableWrap = document.createElement("div");
+        tableWrap.className = "node-table-wrap";
+
+        tableWrap.addEventListener("pointerdown", (event) => {
+          event.stopPropagation();
+          if (isSharedView()) {
+            return;
+          }
+          activeTableCellStyleTarget = null;
+          setSelection(node.id, "node");
+          applySelectionState();
+        });
+
+        if (!isSharedView()) {
+          const columnButton = document.createElement("button");
+          columnButton.type = "button";
+          columnButton.className = "node-table-add node-table-add-column";
+          columnButton.textContent = "+";
+          columnButton.title = "Add column";
+          columnButton.setAttribute("aria-label", "Add column");
+          columnButton.disabled = node.table.columns >= MAX_TABLE_COLUMNS;
+          columnButton.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          });
+          columnButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            addTableColumn(node.id);
+          });
+
+          const removeColumnButton = document.createElement("button");
+          removeColumnButton.type = "button";
+          removeColumnButton.className = "node-table-add node-table-remove-column";
+          removeColumnButton.textContent = "−";
+          removeColumnButton.title = "Remove column";
+          removeColumnButton.setAttribute("aria-label", "Remove column");
+          removeColumnButton.disabled = node.table.columns <= 1;
+          removeColumnButton.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          });
+          removeColumnButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            removeTableColumn(node.id);
+          });
+
+          const rowButton = document.createElement("button");
+          rowButton.type = "button";
+          rowButton.className = "node-table-add node-table-add-row";
+          rowButton.textContent = "+";
+          rowButton.title = "Add row";
+          rowButton.setAttribute("aria-label", "Add row");
+          rowButton.disabled = node.table.rows >= MAX_TABLE_ROWS;
+          rowButton.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          });
+          rowButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            addTableRow(node.id);
+          });
+
+          const removeRowButton = document.createElement("button");
+          removeRowButton.type = "button";
+          removeRowButton.className = "node-table-add node-table-remove-row";
+          removeRowButton.textContent = "−";
+          removeRowButton.title = "Remove row";
+          removeRowButton.setAttribute("aria-label", "Remove row");
+          removeRowButton.disabled = node.table.rows <= 1;
+          removeRowButton.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          });
+          removeRowButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            removeTableRow(node.id);
+          });
+
+          tableWrap.appendChild(columnButton);
+          tableWrap.appendChild(removeColumnButton);
+          tableWrap.appendChild(rowButton);
+          tableWrap.appendChild(removeRowButton);
+        }
+
+        const scroll = document.createElement("div");
+        scroll.className = "node-table-scroll";
+        const table = document.createElement("table");
+        table.className = "node-table";
+        table.style.width = round(sumTableDimensionValues(node.table.columnWidths) + 1) + "px";
+        table.style.height = round(sumTableDimensionValues(node.table.rowHeights) + 1) + "px";
+
+        const colgroup = document.createElement("colgroup");
+        node.table.columnWidths.forEach((width) => {
+          const col = document.createElement("col");
+          col.style.width = round(width) + "px";
+          colgroup.appendChild(col);
+        });
+        table.appendChild(colgroup);
+
+        for (let rowIndex = 0; rowIndex < node.table.rows; rowIndex += 1) {
+          const row = document.createElement("tr");
+          row.style.height = round(node.table.rowHeights[rowIndex]) + "px";
+          for (let columnIndex = 0; columnIndex < node.table.columns; columnIndex += 1) {
+            const cell = document.createElement("td");
+            cell.className = "node-table-cell-wrap";
+            const cellStyle = getTableCellTextStyle(node, node.table, rowIndex, columnIndex);
+            cell.style.verticalAlign = cellStyle.textVAlign;
+            const input = document.createElement("textarea");
+            input.className = "node-table-cell";
+            input.rows = 1;
+            input.spellcheck = false;
+            input.value = node.table.cells[rowIndex][columnIndex] || "";
+            input.dataset.row = String(rowIndex);
+            input.dataset.column = String(columnIndex);
+            applyTableCellTextStyles(input, cellStyle);
+            input.readOnly = isSharedView();
+            if (isSharedView()) {
+              input.tabIndex = -1;
+              input.setAttribute("aria-readonly", "true");
+            }
+
+            if (!isSharedView()) {
+              input.addEventListener("focus", () => {
+                setActiveTableCellStyleTarget(node.id, rowIndex, columnIndex);
+                setSelection(node.id, "node");
+                applySelectionState();
+                updateTextControls();
+              });
+              input.addEventListener("pointerdown", (event) => {
+                event.stopPropagation();
+                setActiveTableCellStyleTarget(node.id, rowIndex, columnIndex);
+              });
+              input.addEventListener("input", () => {
+                updateTableCell(node.id, rowIndex, columnIndex, input.value || "", input);
+              });
+              input.addEventListener("scroll", () => {
+                input.scrollLeft = 0;
+                input.scrollTop = 0;
+              });
+            }
+
+            cell.appendChild(input);
+            row.appendChild(cell);
+          }
+          table.appendChild(row);
+        }
+
+        scroll.appendChild(table);
+        tableWrap.appendChild(scroll);
+        if (!isSharedView()) {
+          renderTableResizeHandles(tableWrap, node);
+        }
+        return tableWrap;
+      }
+
+      function renderTableResizeHandles(tableWrap, node) {
+        const table = normalizeTableData(node.table);
+        let x = 0;
+        for (let columnIndex = 0; columnIndex < table.columns; columnIndex += 1) {
+          x += table.columnWidths[columnIndex];
+          const handle = document.createElement("div");
+          handle.className = "node-table-resize-handle node-table-column-handle";
+          handle.style.left = round(x) + "px";
+          handle.title = columnIndex === table.columns - 1 ? "Resize table edge" : "Resize columns";
+          handle.setAttribute("aria-hidden", "true");
+          handle.addEventListener("pointerdown", (event) => {
+            activeTableCellStyleTarget = null;
+            beginTableBoundaryResize(node, event, "resize-table-column", columnIndex + 1);
+          });
+          tableWrap.appendChild(handle);
+        }
+
+        let y = 0;
+        for (let rowIndex = 0; rowIndex < table.rows; rowIndex += 1) {
+          y += table.rowHeights[rowIndex];
+          const handle = document.createElement("div");
+          handle.className = "node-table-resize-handle node-table-row-handle";
+          handle.style.top = round(y) + "px";
+          handle.title = rowIndex === table.rows - 1 ? "Resize table edge" : "Resize rows";
+          handle.setAttribute("aria-hidden", "true");
+          handle.addEventListener("pointerdown", (event) => {
+            activeTableCellStyleTarget = null;
+            beginTableBoundaryResize(node, event, "resize-table-row", rowIndex + 1);
+          });
+          tableWrap.appendChild(handle);
+        }
+      }
+
+      function beginTableBoundaryResize(node, event, type, boundaryIndex) {
+        if (event.button !== 0 || isSharedView()) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        blurActiveNodeEditor();
+        const nextNode = findNode(node.id);
+        if (!nextNode || nextNode.type !== "table") {
+          return;
+        }
+
+        focusWorkspaceSurface();
+        setSelection(nextNode.id, "node");
+        applySelectionState();
+        attachTargetId = null;
+        captureNodeDragPointer(event);
+        setTableGridResizeCursorState(true);
+        interaction = {
+          type: type,
+          id: nextNode.id,
+          boundaryIndex: boundaryIndex,
+          startPoint: toWorldPoint(event.clientX, event.clientY),
+          origin: {
+            table: cloneTableDataForInteraction(nextNode.table)
+          }
+        };
+      }
+
+      function updateTableCell(nodeId, rowIndex, columnIndex, value, input) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const table = normalizeTableData(node.table);
+        if (!table.cells[rowIndex] || typeof table.cells[rowIndex][columnIndex] === "undefined") {
+          return;
+        }
+
+        table.cells[rowIndex][columnIndex] = String(value || "");
+        node.table = table;
+        if (input && ensureTableRowHeightFitsInput(table, rowIndex, input)) {
+          node.table = normalizeTableData(table);
+          fitTableNodeToPreferredSize(node);
+          applyRenderedTableNodeSize(node, input);
+          scheduleTableRelayout(node.id, rowIndex, columnIndex, input);
+        }
+        updateTableCellVerticalAlignment(input, getTableCellTextStyle(node, table, rowIndex, columnIndex));
+        syncEmbeddedState();
+      }
+
+      function measureTableCellContentHeight(input) {
+        if (!input) {
+          return MIN_TABLE_ROW_HEIGHT;
+        }
+
+        const styles = window.getComputedStyle(input);
+        const cell = input.closest(".node-table-cell-wrap");
+        const measure = document.createElement("div");
+        measure.style.position = "fixed";
+        measure.style.left = "-10000px";
+        measure.style.top = "-10000px";
+        measure.style.visibility = "hidden";
+        measure.style.pointerEvents = "none";
+        measure.style.boxSizing = "border-box";
+        measure.style.display = "block";
+        measure.style.width = Math.max(MIN_TABLE_COLUMN_WIDTH, input.clientWidth || (cell ? cell.clientWidth : 0)) + "px";
+        measure.style.minHeight = "0";
+        measure.style.padding = TABLE_CELL_PADDING_Y + "px " + TABLE_CELL_PADDING_X + "px";
+        measure.style.fontFamily = styles.fontFamily;
+        measure.style.fontWeight = styles.fontWeight;
+        measure.style.fontStyle = styles.fontStyle;
+        measure.style.fontSize = styles.fontSize;
+        measure.style.lineHeight = styles.lineHeight;
+        measure.style.whiteSpace = "pre-wrap";
+        measure.style.overflowWrap = "anywhere";
+        measure.style.wordBreak = "break-word";
+        measure.textContent = input.value || "";
+        document.body.appendChild(measure);
+        const contentHeight = Math.ceil(measure.scrollHeight + 2);
+        measure.remove();
+        return Math.max(MIN_TABLE_ROW_HEIGHT, contentHeight);
+      }
+
+      function getMaxTableRowHeight(table, rowIndex) {
+        const otherHeight = table.rowHeights.reduce((sum, height, index) => {
+          return index === rowIndex ? sum : sum + height;
+        }, 0);
+        return Math.max(MIN_TABLE_ROW_HEIGHT, getTableContentMaxHeight() - otherHeight);
+      }
+
+      function ensureTableRowHeightFitsInput(table, rowIndex, input) {
+        if (!table || !table.rowHeights || !Number.isFinite(table.rowHeights[rowIndex])) {
+          return false;
+        }
+
+        const requiredHeight = measureTableCellContentHeight(input);
+        const currentHeight = table.rowHeights[rowIndex];
+        if (requiredHeight <= currentHeight + 1) {
+          return false;
+        }
+
+        table.rowHeights[rowIndex] = clamp(requiredHeight, MIN_TABLE_ROW_HEIGHT, getMaxTableRowHeight(table, rowIndex));
+        return table.rowHeights[rowIndex] > currentHeight + 1;
+      }
+
+      function applyRenderedTableNodeSize(node, input) {
+        if (!node || node.type !== "table" || !input) {
+          return;
+        }
+
+        const nodeElement = input.closest(".node");
+        if (nodeElement) {
+          nodeElement.style.width = node.width + "px";
+          nodeElement.style.height = node.height + "px";
+        }
+
+        const table = normalizeTableData(node.table);
+        const tableElement = input.closest(".node-table");
+        if (tableElement) {
+          tableElement.style.width = round(sumTableDimensionValues(table.columnWidths) + 1) + "px";
+          tableElement.style.height = round(sumTableDimensionValues(table.rowHeights) + 1) + "px";
+        }
+
+        const rowElement = input.closest("tr");
+        const rowIndex = Number(input.dataset.row);
+        if (rowElement && Number.isFinite(rowIndex) && Number.isFinite(table.rowHeights[rowIndex])) {
+          rowElement.style.height = round(table.rowHeights[rowIndex]) + "px";
+        }
+
+        updateTableCellVerticalAlignment(input, getTableCellTextStyle(node, table, rowIndex, Number(input.dataset.column)));
+        input.scrollTop = 0;
+      }
+
+      function normalizeTableCellAutoFitText(value) {
+        return String(value || "")
+          .replace(/\r\n?/g, "\n")
+          .split("\n")
+          .filter((line) => line.trim())
+          .join("\n");
+      }
+
+      function resetTableCellVerticalPadding(input) {
+        if (!input) {
+          return;
+        }
+
+        input.style.paddingTop = TABLE_CELL_PADDING_Y + "px";
+        input.style.paddingBottom = TABLE_CELL_PADDING_Y + "px";
+      }
+
+      function updateTableCellVerticalAlignment(input, style) {
+        if (!input) {
+          return;
+        }
+
+        const cell = input.closest(".node-table-cell-wrap");
+        const availableHeight = cell ? Math.max(0, cell.clientHeight) : Math.max(0, input.clientHeight);
+        if (!availableHeight) {
+          resetTableCellVerticalPadding(input);
+          return;
+        }
+
+        const contentHeight = measureTableCellContentHeight(input);
+        const freeSpace = Math.max(0, availableHeight - contentHeight);
+        const textVAlign = normalizeTextVAlign(style && style.textVAlign);
+        const topExtra = textVAlign === "middle" ? Math.floor(freeSpace / 2) : textVAlign === "bottom" ? freeSpace : 0;
+        const bottomExtra = Math.max(0, freeSpace - topExtra);
+        input.style.paddingTop = TABLE_CELL_PADDING_Y + topExtra + "px";
+        input.style.paddingBottom = TABLE_CELL_PADDING_Y + bottomExtra + "px";
+        input.scrollTop = 0;
+      }
+
+      function updateRenderedTableCellAlignment(node, table) {
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const normalizedTable = normalizeTableData(table || node.table);
+        const inputs = nodeLayer.querySelectorAll('[data-node-id="' + node.id + '"] .node-table-cell');
+        inputs.forEach((input) => {
+          const rowIndex = Number(input.dataset.row);
+          const columnIndex = Number(input.dataset.column);
+          if (!Number.isFinite(rowIndex) || !Number.isFinite(columnIndex)) {
+            return;
+          }
+          updateTableCellVerticalAlignment(input, getTableCellTextStyle(node, normalizedTable, rowIndex, columnIndex));
+        });
+      }
+
+      function measureTableCellTextContent(style, value, width, mode) {
+        const measure = document.createElement("div");
+        measure.style.position = "fixed";
+        measure.style.left = "-10000px";
+        measure.style.top = "-10000px";
+        measure.style.visibility = "hidden";
+        measure.style.pointerEvents = "none";
+        measure.style.boxSizing = "border-box";
+        measure.style.display = "inline-block";
+        measure.style.minHeight = "0";
+        measure.style.padding = TABLE_CELL_PADDING_Y + "px " + TABLE_CELL_PADDING_X + "px";
+        measure.style.lineHeight = "1.25";
+        measure.style.whiteSpace = mode === "width" ? "pre" : "pre-wrap";
+        measure.style.overflowWrap = mode === "width" ? "normal" : "anywhere";
+        measure.style.wordBreak = mode === "width" ? "normal" : "break-word";
+        measure.style.width = mode === "height" ? Math.max(MIN_TABLE_COLUMN_WIDTH, width) + "px" : "auto";
+        applyTableCellTextStyles(measure, style);
+        measure.textContent = String(value || "");
+        document.body.appendChild(measure);
+        const size = mode === "width"
+          ? Math.ceil(measure.scrollWidth + 2)
+          : Math.ceil(measure.scrollHeight + 2);
+        measure.remove();
+        return size;
+      }
+
+      function autoFitTableNode(nodeId) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        let table = normalizeTableData(node.table);
+        for (let rowIndex = 0; rowIndex < table.rows; rowIndex += 1) {
+          for (let columnIndex = 0; columnIndex < table.columns; columnIndex += 1) {
+            const input = getTableCellInput(node.id, rowIndex, columnIndex);
+            const value = input ? input.value : table.cells[rowIndex][columnIndex];
+            const normalizedValue = normalizeTableCellAutoFitText(value);
+            table.cells[rowIndex][columnIndex] = normalizedValue;
+            if (input) {
+              input.value = normalizedValue;
+            }
+          }
+        }
+
+        let columnWidths = Array.from({ length: table.columns }, (_, columnIndex) => {
+          let width = MIN_TABLE_COLUMN_WIDTH;
+          for (let rowIndex = 0; rowIndex < table.rows; rowIndex += 1) {
+            const style = getTableCellTextStyle(node, table, rowIndex, columnIndex);
+            width = Math.max(width, measureTableCellTextContent(style, table.cells[rowIndex][columnIndex], 0, "width"));
+          }
+          return clamp(width, MIN_TABLE_COLUMN_WIDTH, getTableContentMaxWidth());
+        });
+        columnWidths = normalizeTableDimensionValues(
+          columnWidths,
+          table.columns,
+          TABLE_CELL_WIDTH,
+          MIN_TABLE_COLUMN_WIDTH,
+          getTableMinimumContentWidth(table.columns),
+          getTableContentMaxWidth()
+        );
+
+        let rowHeights = Array.from({ length: table.rows }, (_, rowIndex) => {
+          let height = MIN_TABLE_ROW_HEIGHT;
+          for (let columnIndex = 0; columnIndex < table.columns; columnIndex += 1) {
+            const style = getTableCellTextStyle(node, table, rowIndex, columnIndex);
+            height = Math.max(
+              height,
+              measureTableCellTextContent(style, table.cells[rowIndex][columnIndex], columnWidths[columnIndex], "height")
+            );
+          }
+          return clamp(height, MIN_TABLE_ROW_HEIGHT, getTableContentMaxHeight());
+        });
+        rowHeights = normalizeTableDimensionValues(
+          rowHeights,
+          table.rows,
+          TABLE_ROW_HEIGHT,
+          MIN_TABLE_ROW_HEIGHT,
+          getTableMinimumContentHeight(table.rows),
+          getTableContentMaxHeight()
+        );
+
+        table = normalizeTableData({ ...table, columnWidths: columnWidths, rowHeights: rowHeights });
+        node.table = table;
+        fitTableNodeToPreferredSize(node);
+        setSelection(node.id, "node");
+        activeTableCellStyleTarget = null;
+        renderAll();
+        syncEmbeddedState();
+      }
+
+      function fitTableRowsToRenderedContent(node) {
+        if (!node || node.type !== "table") {
+          return false;
+        }
+
+        const table = normalizeTableData(node.table);
+        const inputs = nodeLayer.querySelectorAll('[data-node-id="' + node.id + '"] .node-table-cell');
+        let changed = false;
+        inputs.forEach((input) => {
+          const rowIndex = Number(input.dataset.row);
+          if (Number.isFinite(rowIndex) && ensureTableRowHeightFitsInput(table, rowIndex, input)) {
+            changed = true;
+          }
+        });
+        updateRenderedTableCellAlignment(node, table);
+
+        if (!changed) {
+          return false;
+        }
+
+        node.table = normalizeTableData(table);
+        fitTableNodeToPreferredSize(node);
+        return true;
+      }
+
+      function queueTableCellSelectionRestore(nodeId, rowIndex, columnIndex, input) {
+        focusAfterRenderTableCell = {
+          nodeId: nodeId,
+          rowIndex: rowIndex,
+          columnIndex: columnIndex,
+          selectionOffsets: getEditorSelectionOffsets(input)
+        };
+      }
+
+      function scheduleTableRelayout(nodeId, rowIndex, columnIndex, input) {
+        queueTableCellSelectionRestore(nodeId, rowIndex, columnIndex, input);
+        if (tableRelayoutFrame) {
+          return;
+        }
+
+        tableRelayoutFrame = window.requestAnimationFrame(() => {
+          tableRelayoutFrame = 0;
+          renderAll();
+        });
+      }
+
+      function scheduleRenderedTableContentFit() {
+        if (tableAutosizeFrame || !state.nodes.some((node) => node.type === "table")) {
+          return;
+        }
+
+        tableAutosizeFrame = window.requestAnimationFrame(() => {
+          tableAutosizeFrame = 0;
+          let changed = false;
+          state.nodes.forEach((node) => {
+            if (node.type === "table" && fitTableRowsToRenderedContent(node)) {
+              changed = true;
+            }
+          });
+
+          if (changed) {
+            renderAll();
+            if (!isSharedView()) {
+              syncEmbeddedState();
+            }
+          }
+        });
+      }
+
+      function addTableRow(nodeId) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const table = normalizeTableData(node.table);
+        if (table.rows >= MAX_TABLE_ROWS) {
+          return;
+        }
+
+        table.cells.push(Array.from({ length: table.columns }, () => ""));
+        table.rowHeights.push(TABLE_ROW_HEIGHT);
+        table.cellStyles.push(Array.from({ length: table.columns }, () => null));
+        table.rows += 1;
+        node.table = normalizeTableData(table);
+        expandTableNodeToFit(node);
+        setSelection(node.id, "node");
+        renderAll();
+        syncEmbeddedState();
+        focusTableCell(node.id, table.rows - 1, 0);
+      }
+
+      function addTableColumn(nodeId) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const table = normalizeTableData(node.table);
+        if (table.columns >= MAX_TABLE_COLUMNS) {
+          return;
+        }
+
+        table.cells.forEach((row) => row.push(""));
+        table.cellStyles.forEach((row) => row.push(null));
+        table.columnWidths.push(TABLE_CELL_WIDTH);
+        table.columns += 1;
+        node.table = normalizeTableData(table);
+        expandTableNodeToFit(node);
+        setSelection(node.id, "node");
+        renderAll();
+        syncEmbeddedState();
+        focusTableCell(node.id, 0, table.columns - 1);
+      }
+
+      function fitTableNodeToPreferredSize(node) {
+        if (!node || node.type !== "table") {
+          return false;
+        }
+
+        const preferredSize = getTablePreferredNodeSize(node.table);
+        const changed = Math.abs(preferredSize.width - node.width) > 1 || Math.abs(preferredSize.height - node.height) > 1;
+        node.width = preferredSize.width;
+        node.height = preferredSize.height;
+        return changed;
+      }
+
+      function removeTableRow(nodeId) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const table = normalizeTableData(node.table);
+        if (table.rows <= 1) {
+          return;
+        }
+
+        table.cells.pop();
+        table.rowHeights.pop();
+        table.cellStyles.pop();
+        table.rows -= 1;
+        node.table = normalizeTableData(table);
+        fitTableNodeToPreferredSize(node);
+        setSelection(node.id, "node");
+        renderAll();
+        syncEmbeddedState();
+        focusTableCell(node.id, Math.max(0, table.rows - 1), 0);
+      }
+
+      function removeTableColumn(nodeId) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const table = normalizeTableData(node.table);
+        if (table.columns <= 1) {
+          return;
+        }
+
+        table.cells.forEach((row) => row.pop());
+        table.cellStyles.forEach((row) => row.pop());
+        table.columnWidths.pop();
+        table.columns -= 1;
+        node.table = normalizeTableData(table);
+        fitTableNodeToPreferredSize(node);
+        setSelection(node.id, "node");
+        renderAll();
+        syncEmbeddedState();
+        focusTableCell(node.id, 0, Math.max(0, table.columns - 1));
       }
 
       function getCanvasLinkWorldPosition(link) {
@@ -6018,7 +7349,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
               }
               focusWorkspaceSurface();
               setSelection(link.id, "named-link");
-              hideContextMenu();
               closeLinkEditor();
               closeLinkDropMenu();
               applySelectionState();
@@ -6058,7 +7388,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
                 focusWorkspaceSurface();
                 setSelection(nextLink.id, "named-link");
-                hideContextMenu();
                 applySelectionState();
               });
 
@@ -6075,12 +7404,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
                   focusWorkspaceSurface();
                   setSelection(nextLink.id, "named-link");
                   closeLinkDropMenu();
-                  hideContextMenu();
                   applySelectionState();
                   openCanvasLink(nextLink.url);
                   return;
                 }
-                hideContextMenu();
               });
             }
           }
@@ -6106,14 +7433,59 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         return selectionId ? findNode(selectionId) : null;
       }
 
+      function setActiveTableCellStyleTarget(nodeId, rowIndex, columnIndex) {
+        activeTableCellStyleTarget = {
+          nodeId: nodeId,
+          rowIndex: rowIndex,
+          columnIndex: columnIndex
+        };
+      }
+
+      function getActiveTableCellStyleTarget() {
+        if (!activeTableCellStyleTarget || selectionKind !== "node") {
+          return null;
+        }
+
+        const node = findNode(activeTableCellStyleTarget.nodeId);
+        if (!node || node.type !== "table" || selectionId !== node.id) {
+          activeTableCellStyleTarget = null;
+          return null;
+        }
+
+        const rowIndex = activeTableCellStyleTarget.rowIndex;
+        const columnIndex = activeTableCellStyleTarget.columnIndex;
+        const style = ensureTableCellTextStyle(node, rowIndex, columnIndex);
+        if (!style) {
+          activeTableCellStyleTarget = null;
+          return null;
+        }
+
+        return {
+          kind: "table-cell",
+          record: style,
+          node: node,
+          rowIndex: rowIndex,
+          columnIndex: columnIndex
+        };
+      }
+
+      function isTextStyledNode(node) {
+        return Boolean(node && node.type === "text");
+      }
+
       function getTextStyleTarget() {
+        const activeTableCell = getActiveTableCellStyleTarget();
+        if (activeTableCell) {
+          return activeTableCell;
+        }
+
         const selectedLink = getSelectedCanvasLink();
         if (selectedLink) {
           return { kind: "named-link", record: selectedLink };
         }
 
         const selectedNode = getSelectedNode();
-        if (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch") {
+        if (isTextStyledNode(selectedNode) && selectionKind !== "branch") {
           return { kind: "node", record: selectedNode };
         }
 
@@ -6121,25 +7493,30 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function getTextControlsDisplayTarget() {
+        const activeTableCell = getActiveTableCellStyleTarget();
+        if (activeTableCell) {
+          return activeTableCell;
+        }
+
         const selectedLink = getSelectedCanvasLink();
         if (selectedLink) {
           return { kind: "named-link", record: selectedLink };
         }
 
         const selectedNode = getSelectedNode();
-        if (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch") {
+        if (isTextStyledNode(selectedNode) && selectionKind !== "branch") {
           lastTextControlsNodeId = selectedNode.id;
           return { kind: "node", record: selectedNode };
         }
 
         const editingNode = editingNodeId ? findNode(editingNodeId) : null;
-        if (editingNode && editingNode.type !== "image") {
+        if (editingNode && editingNode.type === "text") {
           lastTextControlsNodeId = editingNode.id;
           return { kind: "node", record: editingNode };
         }
 
         const lastNode = lastTextControlsNodeId ? findNode(lastTextControlsNodeId) : null;
-        if (lastNode && lastNode.type !== "image") {
+        if (isTextStyledNode(lastNode)) {
           return { kind: "node", record: lastNode };
         }
 
@@ -6166,14 +7543,16 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const target = getTextControlsDisplayTarget();
         const targetRecord = target ? target.record : null;
         const isNamedLinkTarget = Boolean(target && target.kind === "named-link");
+        const isTableCellTarget = Boolean(target && target.kind === "table-cell");
         const canEditTextStyle =
           !isSharedView() &&
           Boolean(
             selectedLink ||
-            (selectedNode && selectedNode.type !== "image" && selectionKind !== "branch")
+            isTableCellTarget ||
+            (isTextStyledNode(selectedNode) && selectionKind !== "branch")
           );
         const canEditColorAndAlignment =
-          !isSharedView() && Boolean(selectedNode && selectedNode.type !== "image" && selectionKind !== "branch");
+          !isSharedView() && Boolean(isTableCellTarget || (isTextStyledNode(selectedNode) && selectionKind !== "branch"));
         fontFamilySelect.disabled = !canEditTextStyle;
         fontSizeSelect.disabled = !canEditTextStyle;
         fontSizeTrigger.disabled = !canEditTextStyle;
@@ -6198,7 +7577,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           return;
         }
 
-        const isRootNodeTarget = Boolean(target && target.kind === "node" && targetRecord.parentId === null);
+        const isRootNodeTarget = Boolean(target && target.kind === "node" && targetRecord.type === "text" && targetRecord.parentId === null);
         fontFamilySelect.value = normalizeFontFamily(targetRecord.fontFamily);
         ensureSelectHasOption(
           fontSizeSelect,
@@ -6253,20 +7632,20 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if ("fontSize" in normalizedUpdates) {
           normalizedUpdates.fontSize = normalizeFontSize(
             normalizedUpdates.fontSize,
-            target.kind === "node" && target.record.parentId === null
+            target.kind === "node" && target.record.type === "text" && target.record.parentId === null
           );
         }
-        if ("textColor" in normalizedUpdates && target.kind === "node") {
+        if ("textColor" in normalizedUpdates && (target.kind === "node" || target.kind === "table-cell")) {
           normalizedUpdates.textColor = normalizeTextColor(normalizedUpdates.textColor);
         } else {
           delete normalizedUpdates.textColor;
         }
-        if ("textAlign" in normalizedUpdates && target.kind === "node") {
+        if ("textAlign" in normalizedUpdates && (target.kind === "node" || target.kind === "table-cell")) {
           normalizedUpdates.textAlign = normalizeTextAlign(normalizedUpdates.textAlign);
         } else {
           delete normalizedUpdates.textAlign;
         }
-        if ("textVAlign" in normalizedUpdates && target.kind === "node") {
+        if ("textVAlign" in normalizedUpdates && (target.kind === "node" || target.kind === "table-cell")) {
           normalizedUpdates.textVAlign = normalizeTextVAlign(normalizedUpdates.textVAlign);
         } else {
           delete normalizedUpdates.textVAlign;
@@ -6274,14 +7653,23 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         Object.assign(target.record, normalizedUpdates);
 
-        if (target.kind === "node") {
+        if (target.kind === "table-cell") {
+          focusAfterRenderTableCell = {
+            nodeId: target.node.id,
+            rowIndex: target.rowIndex,
+            columnIndex: target.columnIndex
+          };
+          renderAll();
+        } else if (target.kind === "node") {
           const node = target.record;
-          const editor = nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor');
-          if (editor) {
+          const editor = node.type === "text" ? nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor') : null;
+          if (node.type === "text" && editor) {
             applyNodeTextStyles(editor, node);
             if (fitTextNodeHeightToContent(node, editor)) {
               renderAll();
             }
+          } else {
+            renderAll();
           }
         } else {
           renderAll();
@@ -6292,7 +7680,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function fitTextNodeHeightToContent(node, editor) {
-        if (!node || node.type === "image" || !editor) {
+        if (!node || node.type !== "text" || !editor) {
           return false;
         }
 
@@ -6316,7 +7704,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
       function syncTextNodeHeightToRenderedContent(nodeId) {
         const node = findNode(nodeId);
-        if (!node || node.type === "image") {
+        if (!node || node.type !== "text") {
           return false;
         }
 
@@ -6362,6 +7750,19 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         syncNodeTextPreview(textWrap, editor, preview, node);
         updateEditorVerticalAlignment(editor, node);
+      }
+
+      function applyTableCellTextStyles(input, style) {
+        if (!input || !style) {
+          return;
+        }
+
+        input.style.fontFamily = normalizeFontFamily(style.fontFamily);
+        input.style.fontWeight = normalizeFontWeight(style.fontWeight);
+        input.style.fontStyle = normalizeFontStyle(style.fontStyle);
+        input.style.fontSize = normalizeFontSize(style.fontSize, false) + "px";
+        input.style.color = normalizeTextColor(style.textColor);
+        input.style.textAlign = normalizeTextAlign(style.textAlign);
       }
 
       function applyCanvasLinkTextStyles(linkEl, link) {
@@ -6419,7 +7820,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function updateEditorVerticalAlignment(editor, node) {
-        if (!editor || !node || node.type === "image") {
+        if (!editor || !node || node.type !== "text") {
           return;
         }
 
@@ -6515,6 +7916,53 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         referenceMenu.hidden = true;
         referenceButton.classList.remove("is-open");
+      }
+
+      function normalizeTableDimensionInput(input, fallback, max) {
+        const rawValue = input && typeof input.value === "string" ? input.value.trim() : "";
+        const value = rawValue ? Number(rawValue) : fallback;
+        return clamp(Math.round(Number.isFinite(value) ? value : fallback), 1, max);
+      }
+
+      function openTableMenu() {
+        if (isSharedView() || !tableMenu || !tableButton || !tableRowsInput || !tableColumnsInput) {
+          return;
+        }
+
+        tableRowsInput.value = String(DEFAULT_TABLE_ROWS);
+        tableColumnsInput.value = String(DEFAULT_TABLE_COLUMNS);
+        tableMenu.hidden = false;
+        tableButton.classList.add("is-open");
+        requestAnimationFrame(() => {
+          if (tableMenu.hidden) {
+            return;
+          }
+          tableRowsInput.focus();
+          tableRowsInput.select();
+        });
+      }
+
+      function closeTableMenu() {
+        if (!tableMenu || !tableButton) {
+          return;
+        }
+        tableMenu.hidden = true;
+        tableButton.classList.remove("is-open");
+      }
+
+      function commitTableMenu() {
+        if (isSharedView()) {
+          closeTableMenu();
+          return;
+        }
+
+        const rows = normalizeTableDimensionInput(tableRowsInput, DEFAULT_TABLE_ROWS, MAX_TABLE_ROWS);
+        const columns = normalizeTableDimensionInput(tableColumnsInput, DEFAULT_TABLE_COLUMNS, MAX_TABLE_COLUMNS);
+        closeTableMenu();
+        const node = createTableNodeFromToolbar(rows, columns);
+        if (node) {
+          focusTableCell(node.id, 0, 0);
+        }
       }
 
       function openLinkEditor() {
@@ -6787,7 +8235,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function syncNodeTextPreview(textWrap, editor, preview, node) {
-        if (!textWrap || !editor || !preview || !node || node.type === "image") {
+        if (!textWrap || !editor || !preview || !node || node.type !== "text") {
           return false;
         }
 
@@ -6823,7 +8271,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       function getAttachmentTargetNodeIdFromElement(target) {
         const nodeElement = target && typeof target.closest === "function" ? target.closest(".node") : null;
         const nodeId = nodeElement ? nodeElement.dataset.nodeId : null;
-        return nodeId && findNode(nodeId) ? nodeId : null;
+        const node = nodeId ? findNode(nodeId) : null;
+        return node && node.type !== "table" ? node.id : null;
       }
 
       function updateAttachmentDropTarget(nodeId) {
@@ -7441,40 +8890,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         textLayoutButton.classList.remove("is-open");
       }
 
-      function showContextMenu(kind, nodeId, clientX, clientY) {
-        if (isSharedView() || !contextMenu || !contextDeleteButton) {
-          return;
-        }
-
-        contextMenuTarget = { kind: kind, id: nodeId };
-        const node = findNode(nodeId);
-        const label =
-          kind === "branch"
-            ? "Delete link"
-            : kind === "named-link"
-              ? "Delete link"
-            : node && node.type === "image"
-                ? "Delete image"
-              : "Delete node";
-        contextDeleteButton.textContent = label;
-        contextMenu.hidden = false;
-
-        const point = toViewportPoint(clientX, clientY);
-        const menuWidth = contextMenu.offsetWidth || 160;
-        const menuHeight = contextMenu.offsetHeight || 48;
-        contextMenu.style.left = clamp(point.x, 12, Math.max(12, workspace.clientWidth - menuWidth - 12)) + "px";
-        contextMenu.style.top = clamp(point.y, 12, Math.max(12, workspace.clientHeight - menuHeight - 12)) + "px";
-      }
-
-      function hideContextMenu() {
-        if (!contextMenu) {
-          contextMenuTarget = null;
-          return;
-        }
-        contextMenu.hidden = true;
-        contextMenuTarget = null;
-      }
-
       function openImageLightbox(dataUrl) {
         if (!dataUrl) {
           return;
@@ -7569,7 +8984,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         state.viewport.y = round(workspace.clientHeight / 2 - (position.y + node.height / 2) * scale);
         setSelection(node.id, "node");
         attachTargetId = null;
-        hideContextMenu();
         renderAll();
         syncEmbeddedState();
       }
@@ -7672,7 +9086,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
 
         const node = findNode(nodeId);
-        if (!node || node.type === "image") {
+        if (!node || node.type !== "text") {
           return;
         }
 
@@ -7689,8 +9103,47 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         });
       }
 
+      function getTableCellInput(nodeId, rowIndex, columnIndex) {
+        return nodeLayer.querySelector(
+          '[data-node-id="' +
+            nodeId +
+            '"] .node-table-cell[data-row="' +
+            rowIndex +
+            '"][data-column="' +
+            columnIndex +
+            '"]'
+        );
+      }
+
+      function focusTableCell(nodeId, rowIndex, columnIndex) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "table") {
+          return;
+        }
+
+        const input = getTableCellInput(nodeId, rowIndex, columnIndex);
+        if (!input) {
+          focusAfterRenderTableCell = { nodeId: nodeId, rowIndex: rowIndex, columnIndex: columnIndex };
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          input.focus();
+        });
+      }
+
       function normalizeNodeType(value, imageData) {
-        return value === "image" && normalizeImageData(imageData) ? "image" : "text";
+        if (value === "image" && normalizeImageData(imageData)) {
+          return "image";
+        }
+        if (value === "table") {
+          return "table";
+        }
+        return "text";
       }
 
       function normalizeImageData(value) {
@@ -7705,6 +9158,15 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             minHeight: MIN_IMAGE_NODE_HEIGHT,
             maxWidth: MAX_IMAGE_NODE_WIDTH,
             maxHeight: MAX_IMAGE_NODE_HEIGHT
+          };
+        }
+
+        if (nodeType === "table") {
+          return {
+            minWidth: MIN_TABLE_NODE_WIDTH,
+            minHeight: MIN_TABLE_NODE_HEIGHT,
+            maxWidth: MAX_TABLE_NODE_WIDTH,
+            maxHeight: MAX_TABLE_NODE_HEIGHT
           };
         }
 
@@ -8315,6 +9777,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         const previousSelectionKind = selectionKind;
         hideSaveMenu();
         hideReferenceMenu();
+        closeTableMenu();
         closeLinkEditor();
         closeLinkDropMenu();
         hideTextColorMenu();
@@ -8324,7 +9787,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         closeReferenceEditor();
         state.mode = exportMode;
         applyViewMode();
-        hideContextMenu();
         if (exportMode === "shared") {
           clearSelection();
         }
@@ -8368,7 +9830,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         closeReferenceEditor();
         state.mode = exportMode;
         applyViewMode();
-        hideContextMenu();
         if (exportMode === "shared") {
           clearSelection();
         }
@@ -8533,7 +9994,14 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
       }
 
       function getPackageNodeLabel(node) {
-        const rawText = node && node.type === "image" ? "Image node" : node && typeof node.text === "string" ? node.text : "";
+        const rawText =
+          node && node.type === "image"
+            ? "Image node"
+            : node && node.type === "table"
+              ? "Table node"
+              : node && typeof node.text === "string"
+                ? node.text
+                : "";
         const text = rawText.replace(/\s+/g, " ").trim();
         return text ? text.slice(0, 48) : "node";
       }
@@ -8768,7 +10236,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         closeImageLightbox();
         closeAttachmentPanel();
         closeReferenceEditor();
-        hideContextMenu();
 
         if (attachmentFileInput) {
           attachmentFileInput.value = "";
@@ -8785,7 +10252,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         lastWorkspacePointer = null;
         focusAfterRenderId = null;
         focusAfterRenderSelection = null;
-        contextMenuTarget = null;
+        focusAfterRenderTableCell = null;
         referenceEditorNodeId = null;
         attachmentPanelNodeId = null;
         attachmentFileTargetNodeId = null;
@@ -8859,7 +10326,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         closeImageLightbox();
         closeAttachmentPanel();
         closeReferenceEditor();
-        hideContextMenu();
 
         const previousSelectionId = selectionId;
         const previousSelectionKind = selectionKind;
@@ -9008,6 +10474,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           ".node { pointer-events: none !important; }",
           ".canvas-link { pointer-events: none !important; }",
           ".node-editor { overflow: hidden !important; resize: none !important; user-select: none !important; pointer-events: none !important; }",
+          ".node-table-cell { resize: none !important; user-select: none !important; pointer-events: none !important; }",
+          ".node-table-add, .node-table-resize-handle { display: none !important; }",
           "#reference-menu, #attachment-panel, #image-lightbox { display: none !important; }"
         ].join("\n");
       }
@@ -9231,6 +10699,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         [
           "#add-root-button",
+          "#table-controls",
           "#link-controls",
           "#clear-button",
           "#save-controls",
@@ -9333,6 +10802,8 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           ".node { pointer-events: none !important; }",
           ".canvas-link { pointer-events: none !important; }",
           ".node-editor { overflow: hidden !important; resize: none !important; user-select: none !important; pointer-events: none !important; }",
+          ".node-table-cell { resize: none !important; user-select: none !important; pointer-events: none !important; }",
+          ".node-table-add, .node-table-resize-handle { display: none !important; }",
           "#reference-menu, #attachment-panel, #image-lightbox { display: none !important; }"
         ].join("\n");
         clone.querySelector("head").appendChild(style);
@@ -9357,13 +10828,13 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
 
         [
           "#add-root-button",
+          "#table-controls",
           "#link-controls",
           "#clear-button",
           "#save-controls",
           "#help-toggle-button",
           "#text-style-controls",
           "#empty-state",
-          "#context-menu",
           "#link-drop-menu",
           "#reference-editor",
           "#attachment-panel-add",
@@ -9375,7 +10846,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           }
         });
 
-        root.querySelectorAll(".node-add, .node-resize, .node-pin").forEach((element) => {
+        root.querySelectorAll(".node-add, .node-resize, .node-pin, .node-table-add, .node-table-resize-handle").forEach((element) => {
           element.remove();
         });
 
@@ -9397,7 +10868,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         [
           ".toolbar",
           "#empty-state",
-          "#context-menu",
           "#link-drop-menu",
           "#reference-editor",
           "#attachment-panel",
@@ -9409,7 +10879,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           });
         });
 
-        root.querySelectorAll(".node-add, .node-resize, .node-pin").forEach((element) => {
+        root.querySelectorAll(".node-add, .node-resize, .node-pin, .node-table-add, .node-table-resize-handle").forEach((element) => {
           element.remove();
         });
 
@@ -9689,7 +11159,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         state.links.push(link);
         setSelection(link.id, "named-link");
         attachTargetId = null;
-        hideContextMenu();
         closeLinkDropMenu();
         renderAll();
         syncEmbeddedState();
@@ -9732,7 +11201,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         state.nodes.push(node);
         setSelection(node.id, "node");
         attachTargetId = null;
-        hideContextMenu();
         renderAll();
         syncTextNodeHeightToRenderedContent(node.id);
         syncEmbeddedState();
@@ -9780,7 +11248,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         state.nodes.push(node);
         setSelection(node.id, "node");
         attachTargetId = null;
-        hideContextMenu();
         renderAll();
         syncEmbeddedState();
         return node;
@@ -9805,9 +11272,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         }
         if (interaction && interaction.id === linkId) {
           interaction = null;
-        }
-        if (contextMenuTarget && contextMenuTarget.id === linkId) {
-          hideContextMenu();
         }
         if (pendingLinkDrop && pendingLinkDrop.linkId === linkId) {
           closeLinkDropMenu();
@@ -9840,7 +11304,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         setSelection(link.id, "named-link");
         attachTargetId = null;
         closeLinkDropMenu();
-        hideContextMenu();
         renderAll();
         syncEmbeddedState();
       }
@@ -9867,7 +11330,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         node.offsetY = 0;
         setSelection(node.id, "node");
         attachTargetId = null;
-        hideContextMenu();
         renderAll();
         syncEmbeddedState();
       }
@@ -9894,7 +11356,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
           !node ||
           !parent ||
           node.id === parent.id ||
-          parent.type === "image" ||
+          parent.type !== "text" ||
           isNodeInsideSubtree(node.id, parent.id)
         ) {
           return;
@@ -9908,7 +11370,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         node.offsetY = 0;
         setSelection(node.id, "node");
         attachTargetId = null;
-        hideContextMenu();
         renderAll();
         syncEmbeddedState();
       }
@@ -9939,40 +11400,48 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
             y: round(state.viewport.y),
             scale: normalizeScale(state.viewport.scale)
           },
-          nodes: state.nodes.map((node) => ({
-            id: node.id,
-            type: node.type === "image" ? "image" : "text",
-            parentId: node.parentId,
-            detached: Boolean(node.detached),
-            text: node.text,
-            imageData: node.type === "image" ? normalizeImageData(node.imageData) : "",
-            attachments: getNodeAttachments(node).map((attachment) => ({
-              id: attachment.id,
-              kind: attachment.kind === "url" ? "url" : "file",
-              name: attachment.name,
-              type: attachment.type,
-              data: attachment.data,
-              size: Number.isFinite(attachment.size) ? attachment.size : 0,
-              url: attachment.kind === "url" ? normalizeLinkUrl(attachment.url) : ""
-            })),
-            width: round(node.width),
-            height: round(node.height),
-            fontFamily: normalizeFontFamily(node.fontFamily),
-            fontWeight: normalizeFontWeight(node.fontWeight),
-            fontStyle: normalizeFontStyle(node.fontStyle),
-            fontSize: normalizeFontSize(node.fontSize, node.parentId === null),
-            textColor: normalizeTextColor(node.textColor),
-            textAlign: normalizeTextAlign(node.textAlign),
-            textVAlign: normalizeTextVAlign(node.textVAlign),
-            referenceText: typeof node.referenceText === "string" ? node.referenceText : "",
-            referenceOrder: Number.isFinite(node.referenceOrder) ? node.referenceOrder : null,
-            collapsed: Boolean(node.collapsed),
-            order: node.order,
-            x: round(node.x),
-            y: round(node.y),
-            offsetX: round(node.offsetX),
-            offsetY: round(node.offsetY)
-          })),
+          nodes: state.nodes.map((node) => {
+            const serializedNode = {
+              id: node.id,
+              type: node.type === "image" ? "image" : node.type === "table" ? "table" : "text",
+              parentId: node.parentId,
+              detached: Boolean(node.detached),
+              text: node.text,
+              imageData: node.type === "image" ? normalizeImageData(node.imageData) : "",
+              attachments: getNodeAttachments(node).map((attachment) => ({
+                id: attachment.id,
+                kind: attachment.kind === "url" ? "url" : "file",
+                name: attachment.name,
+                type: attachment.type,
+                data: attachment.data,
+                size: Number.isFinite(attachment.size) ? attachment.size : 0,
+                url: attachment.kind === "url" ? normalizeLinkUrl(attachment.url) : ""
+              })),
+              width: round(node.width),
+              height: round(node.height),
+              fontFamily: normalizeFontFamily(node.fontFamily),
+              fontWeight: normalizeFontWeight(node.fontWeight),
+              fontStyle: normalizeFontStyle(node.fontStyle),
+              fontSize: normalizeFontSize(node.fontSize, node.type === "text" && node.parentId === null),
+              textColor: normalizeTextColor(node.textColor),
+              textAlign: normalizeTextAlign(node.textAlign),
+              textVAlign: normalizeTextVAlign(node.textVAlign),
+              referenceText: typeof node.referenceText === "string" ? node.referenceText : "",
+              referenceOrder: Number.isFinite(node.referenceOrder) ? node.referenceOrder : null,
+              collapsed: Boolean(node.collapsed),
+              order: node.order,
+              x: round(node.x),
+              y: round(node.y),
+              offsetX: round(node.offsetX),
+              offsetY: round(node.offsetY)
+            };
+
+            if (node.type === "table") {
+              serializedNode.table = normalizeTableData(node.table);
+            }
+
+            return serializedNode;
+          }),
           links: state.links.map((link) => ({
             id: link.id,
             url: normalizeLinkUrl(link.url),
@@ -10154,7 +11623,7 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         for (const candidate of state.nodes) {
           if (
             candidate.id === node.id ||
-            candidate.type === "image" ||
+            candidate.type !== "text" ||
             isNodeInsideSubtree(node.id, candidate.id)
           ) {
             continue;
@@ -10198,6 +11667,10 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         let matchDistance = Infinity;
 
         for (const candidate of state.nodes) {
+          if (candidate.type === "table") {
+            continue;
+          }
+
           const position = currentLayout.positions.get(candidate.id);
           if (!position) {
             continue;
@@ -10296,6 +11769,9 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         if (addRootButton) {
           addRootButton.disabled = isSharedView();
         }
+        if (tableButton) {
+          tableButton.disabled = isSharedView();
+        }
         if (linkButton) {
           linkButton.disabled = isSharedView();
         }
@@ -10319,29 +11795,6 @@ const DEFAULT_TEXT_FONT_FAMILY = "Optima, Candara, sans-serif";
         updateReferenceMenu();
       }
 
-      if (contextDeleteButton) {
-        contextDeleteButton.addEventListener("click", () => {
-          if (isSharedView()) {
-            return;
-          }
-
-          if (!contextMenuTarget) {
-            return;
-          }
-
-          if (contextMenuTarget.kind === "branch") {
-            detachNodeFromParent(contextMenuTarget.id);
-            return;
-          }
-
-          if (contextMenuTarget.kind === "named-link") {
-            deleteCanvasLink(contextMenuTarget.id);
-            return;
-          }
-
-          deleteNodeTree(contextMenuTarget.id);
-        });
-      }
     })();
   </script>
 </body>
