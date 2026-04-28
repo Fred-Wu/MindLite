@@ -2,6 +2,21 @@
 
 All notable changes to MindLite are documented in this file.
 
+## [0.3.1] - 2026-04-28
+
+### Added
+
+- Added double-click autofit support to text node resize handles, matching table resize handle behavior.
+
+### Changed
+
+- Changed text node editor, preview, and placeholder word spacing to normal browser spacing.
+- Changed text node boxes from pill-like side arches to rounded-corner rectangles.
+
+### Fixed
+
+- Fixed text node and table autofit so trailing empty lines are removed while internal empty lines before later text are preserved.
+
 ## [0.3.0] - 2026-04-28
 
 ### Added

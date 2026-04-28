@@ -1351,7 +1351,7 @@
       min-width: 104px;
       min-height: 48px;
       border: 2px solid color-mix(in srgb, var(--branch-color) 38%, rgba(58, 50, 43, 0.18));
-      border-radius: 22px;
+      border-radius: 10px;
       background: transparent;
       box-shadow: var(--shadow);
       cursor: grab;
@@ -1375,7 +1375,7 @@
       top: 10px;
       bottom: 10px;
       width: 4px;
-      border-radius: 999px;
+      border-radius: 4px;
       background: var(--branch-color);
     }
 
@@ -1432,7 +1432,7 @@
       font-weight: 700;
       line-height: 1.28;
       letter-spacing: 0.01em;
-      word-spacing: 0.12em;
+      word-spacing: normal;
       text-align: center;
       color: rgba(31, 26, 21, 0.14);
       pointer-events: none;
@@ -1458,7 +1458,7 @@
       font-weight: 400;
       font-style: normal;
       letter-spacing: -0.02em;
-      word-spacing: -0.12em;
+      word-spacing: normal;
       color: var(--ink);
       word-break: break-word;
       overflow-wrap: anywhere;
@@ -1727,7 +1727,7 @@
       font-weight: 400;
       font-style: normal;
       letter-spacing: -0.02em;
-      word-spacing: -0.12em;
+      word-spacing: normal;
       color: var(--ink);
       white-space: pre-wrap;
       word-break: break-word;
@@ -3071,7 +3071,7 @@
           <section class="help-panel-section">
             <h3>Move, Resize, Fold</h3>
             <p>
-              Drag a node to move its branch. Drag the lower-right handle to resize it. Use
+              Drag a node to move its branch. Drag the lower-right handle to resize it, or double-click the handle to autofit a text node to its content. Use
               <span class="help-inline-node-button help-inline-node-fold" aria-hidden="true">
                 ▸
               </span>
@@ -3139,7 +3139,7 @@
     (() => {
       "use strict";
 
-      const APP_VERSION = "0.3.0";
+      const APP_VERSION = "0.3.1";
       const MIN_NODE_WIDTH = 104;
       const MIN_NODE_HEIGHT = 48;
       const MAX_NODE_WIDTH = 420;
@@ -6283,7 +6283,11 @@
           if (!isSharedView()) {
             resizeHandle = document.createElement("div");
             resizeHandle.className = "node-resize";
-            resizeHandle.title = isImageNode ? "Resize image" : isTableNode ? "Resize table" : "Resize node";
+            resizeHandle.title = isImageNode
+              ? "Resize image"
+              : isTableNode
+                ? "Resize table; double-click to autofit"
+                : "Resize node; double-click to autofit";
           }
 
           nodeEl.appendChild(shell);
@@ -6448,7 +6452,7 @@
               };
             });
 
-            if (isTableNode) {
+            if (isTableNode || isTextNode) {
               resizeHandle.addEventListener("dblclick", (event) => {
                 if (isSharedView()) {
                   return;
@@ -6456,7 +6460,11 @@
 
                 event.preventDefault();
                 event.stopPropagation();
-                autoFitTableNode(node.id);
+                if (isTableNode) {
+                  autoFitTableNode(node.id);
+                } else {
+                  autoFitTextNode(node.id);
+                }
               });
             }
           }
@@ -6879,12 +6887,16 @@
         input.scrollTop = 0;
       }
 
+      function normalizeAutoFitText(value) {
+        const lines = String(value || "").replace(/\r\n?/g, "\n").split("\n");
+        while (lines.length && !lines[lines.length - 1].trim()) {
+          lines.pop();
+        }
+        return lines.join("\n");
+      }
+
       function normalizeTableCellAutoFitText(value) {
-        return String(value || "")
-          .replace(/\r\n?/g, "\n")
-          .split("\n")
-          .filter((line) => line.trim())
-          .join("\n");
+        return normalizeAutoFitText(value);
       }
 
       function resetTableCellVerticalPadding(input) {
@@ -7700,6 +7712,119 @@
           nodeElement.style.height = nextHeight + "px";
         }
         return true;
+      }
+
+      function getTextNodeHorizontalInset(editor) {
+        const nodeElement = editor ? editor.closest(".node") : null;
+        const textWrap = editor ? editor.closest(".node-text-wrap") : null;
+        if (nodeElement && textWrap) {
+          const renderedInset = nodeElement.offsetWidth - textWrap.clientWidth;
+          if (Number.isFinite(renderedInset) && renderedInset > 0) {
+            return renderedInset;
+          }
+        }
+
+        if (!nodeElement) {
+          return 0;
+        }
+
+        const styles = window.getComputedStyle(nodeElement);
+        const left = parseFloat(styles.getPropertyValue("--node-pad-left")) || parseFloat(styles.paddingLeft) || 0;
+        const right = parseFloat(styles.getPropertyValue("--node-pad-right")) || parseFloat(styles.paddingRight) || 0;
+        return Math.max(0, left + right);
+      }
+
+      function measureTextNodeEditorContent(editor, width, mode) {
+        if (!editor) {
+          return 0;
+        }
+
+        const styles = window.getComputedStyle(editor);
+        const measure = document.createElement("div");
+        measure.style.position = "fixed";
+        measure.style.left = "-10000px";
+        measure.style.top = "-10000px";
+        measure.style.visibility = "hidden";
+        measure.style.pointerEvents = "none";
+        measure.style.boxSizing = "border-box";
+        measure.style.display = mode === "width" ? "inline-block" : "block";
+        measure.style.width = mode === "height" ? Math.max(1, Number(width) || 1) + "px" : "auto";
+        measure.style.maxWidth = "none";
+        measure.style.minHeight = "0";
+        measure.style.margin = "0";
+        measure.style.padding = "0";
+        measure.style.border = "0";
+        measure.style.fontFamily = styles.fontFamily;
+        measure.style.fontWeight = styles.fontWeight;
+        measure.style.fontStyle = styles.fontStyle;
+        measure.style.fontSize = styles.fontSize;
+        measure.style.lineHeight = styles.lineHeight;
+        measure.style.letterSpacing = styles.letterSpacing;
+        measure.style.wordSpacing = styles.wordSpacing;
+        measure.style.textTransform = styles.textTransform;
+        measure.style.whiteSpace = mode === "width" ? "pre" : "pre-wrap";
+        measure.style.overflowWrap = mode === "width" ? "normal" : "anywhere";
+        measure.style.wordBreak = mode === "width" ? "normal" : "break-word";
+        const value = editor.value || "";
+        measure.textContent = value ? value + (value.endsWith("\n") ? " " : "") : " ";
+        document.body.appendChild(measure);
+        const size = mode === "width"
+          ? Math.ceil(measure.scrollWidth + 2)
+          : Math.ceil(measure.scrollHeight + 1);
+        measure.remove();
+        if (mode === "height") {
+          const minHeight = parseFloat(styles.minHeight) || 0;
+          return Math.max(size, Math.ceil(minHeight));
+        }
+        return size;
+      }
+
+      function autoFitTextNode(nodeId) {
+        if (isSharedView()) {
+          return;
+        }
+
+        const node = findNode(nodeId);
+        if (!node || node.type !== "text") {
+          return;
+        }
+
+        const editor = nodeLayer.querySelector('[data-node-id="' + node.id + '"] .node-editor');
+        if (!editor) {
+          return;
+        }
+
+        const normalizedText = normalizeAutoFitText(editor.value);
+        node.text = normalizedText;
+        if (editor.value !== normalizedText) {
+          editor.value = normalizedText;
+        }
+        const textWrap = editor.closest(".node-text-wrap");
+        const preview = textWrap ? textWrap.querySelector(".node-preview") : null;
+        syncNodeTextPreview(textWrap, editor, preview, node);
+
+        const limits = getNodeSizeLimits(node);
+        const horizontalInset = getTextNodeHorizontalInset(editor);
+        const preferredWidth = measureTextNodeEditorContent(editor, 0, "width") + horizontalInset;
+        const nextWidth = clamp(preferredWidth, limits.minWidth, limits.maxWidth);
+        const contentWidth = Math.max(1, nextWidth - horizontalInset);
+        const editorHeight = measureTextNodeEditorContent(editor, contentWidth, "height");
+
+        const nodeElement = editor.closest(".node");
+        const previousWidth = nodeElement ? nodeElement.style.width : "";
+        if (nodeElement) {
+          nodeElement.style.width = nextWidth + "px";
+        }
+        const previewHeight = measurePreviewContentHeight(preview);
+        if (nodeElement) {
+          nodeElement.style.width = previousWidth;
+        }
+
+        node.width = nextWidth;
+        node.height = clamp(Math.max(editorHeight, previewHeight), limits.minHeight, limits.maxHeight);
+        setSelection(node.id, "node");
+        renderAll();
+        syncEmbeddedState();
       }
 
       function syncTextNodeHeightToRenderedContent(nodeId) {

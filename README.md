@@ -4,7 +4,7 @@ MindLite is a self-contained browser-based mind mapping app distributed as a sin
 
 The project currently ships as [`MindLite.html`](./MindLite.html) with no build step, no package manager, and no external runtime dependencies. Open the file in a modern desktop browser and start working.
 
-Current release: `v0.3.0`
+Current release: `v0.3.1`
 
 ## Core Features
 
