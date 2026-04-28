@@ -1526,6 +1526,64 @@
       outline-offset: 2px;
     }
 
+    .node.is-image .node-fold {
+      display: none;
+    }
+
+    .node.is-image.selected .node-fold {
+      display: grid;
+    }
+
+    .node-visibility {
+      appearance: none;
+      position: absolute;
+      z-index: 3;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(73, 70, 66, 0.62);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background 120ms ease, transform 120ms ease;
+      box-shadow: 0 4px 10px rgba(31, 26, 21, 0.12);
+    }
+
+    .node-visibility:hover {
+      background: rgba(73, 70, 66, 0.78);
+      transform: scale(1.04);
+    }
+
+    .node-visibility:focus-visible {
+      outline: 2px solid var(--selection);
+      outline-offset: 2px;
+    }
+
+    .node-visibility-icon {
+      width: 14px;
+      height: 14px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .node.is-image .node-visibility {
+      display: none;
+    }
+
+    .node.is-image.selected .node-visibility {
+      display: grid;
+    }
+
     .node-pin {
       appearance: none;
       position: absolute;
@@ -1573,9 +1631,9 @@
       position: absolute;
       z-index: 2;
       left: 50%;
-      top: -26px;
-      width: 26px;
-      height: 26px;
+      top: -22px;
+      width: 22px;
+      height: 22px;
       padding: 0;
       border: 0;
       border-radius: 999px;
@@ -1605,8 +1663,8 @@
     }
 
     .node-attachment-icon {
-      width: 18px;
-      height: 18px;
+      width: 15px;
+      height: 15px;
       overflow: visible;
       fill: none;
       stroke: currentColor;
@@ -1619,10 +1677,10 @@
 
     .node-attachment-count {
       position: absolute;
-      right: -4px;
-      top: -4px;
-      min-width: 13px;
-      height: 13px;
+      right: -3px;
+      top: -3px;
+      min-width: 11px;
+      height: 11px;
       padding: 0 2px;
       border-radius: 999px;
       background: #79a8ff;
@@ -1631,7 +1689,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.72rem;
+      font-size: 0.62rem;
       font-weight: 700;
       line-height: 1;
       font-variant-numeric: tabular-nums;
@@ -1754,13 +1812,26 @@
     }
 
     .node.is-image {
-      --node-pad-top: 12px;
-      --node-pad-right: 12px;
-      --node-pad-bottom: 12px;
-      --node-pad-left: 12px;
+      --node-pad-top: 0px;
+      --node-pad-right: 0px;
+      --node-pad-bottom: 0px;
+      --node-pad-left: 0px;
       padding: var(--node-pad-top) var(--node-pad-right) var(--node-pad-bottom) var(--node-pad-left);
       min-width: 140px;
       min-height: 100px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .node.is-image::before {
+      display: none;
+    }
+
+    .node.is-image.selected {
+      box-shadow: 0 0 0 8px color-mix(in srgb, var(--branch-color) 20%, transparent);
+      border-color: transparent;
     }
 
     .node.is-table {
@@ -1951,18 +2022,16 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      border-radius: 16px;
-      background:
-        linear-gradient(135deg, rgba(31, 26, 21, 0.08), rgba(31, 26, 21, 0.02)),
-        rgba(250, 247, 241, 0.94);
-      box-shadow: inset 0 0 0 1px rgba(58, 50, 43, 0.08);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .node-image {
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       pointer-events: none;
       user-select: none;
       -webkit-user-drag: none;
@@ -1970,17 +2039,17 @@
 
     .node-add {
       position: absolute;
-      right: -12px;
+      right: -10px;
       top: 50%;
       transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       border: 0;
       border-radius: 999px;
       background: var(--branch-color);
       color: #ffffff;
       font: inherit;
-      font-size: 1.02rem;
+      font-size: 0.9rem;
       font-weight: 700;
       line-height: 1;
       cursor: pointer;
@@ -1989,6 +2058,15 @@
 
     .node-add:hover {
       transform: translateY(-50%) scale(1.04);
+    }
+
+    .node.is-image .node-add {
+      display: none;
+    }
+
+    .node.is-image.selected .node-add {
+      display: inline-grid;
+      place-items: center;
     }
 
     .node-resize {
@@ -2010,6 +2088,29 @@
       height: 42px;
       padding: 0;
       line-height: 1;
+    }
+
+    .toolbar-visibility-button {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      color: var(--ink) !important;
+    }
+
+    .toolbar-visibility-button.is-hidden-active {
+      border-color: rgba(58, 50, 43, 0.32);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .toolbar-visibility-icon {
+      width: 22px;
+      height: 22px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .toolbar-help-glyph {
@@ -2170,6 +2271,11 @@
       stroke-width: 1.65;
     }
 
+    .help-inline-node-visibility svg {
+      width: 14px;
+      height: 14px;
+    }
+
     .help-inline-node-fold {
       font-size: 0.78rem;
       font-weight: 700;
@@ -2210,10 +2316,10 @@
     .reference-editor {
       position: absolute;
       z-index: 4;
-      width: 172px;
-      padding: 6px;
+      width: 150px;
+      padding: 5px;
       border: 1px solid rgba(58, 50, 43, 0.12);
-      border-radius: 12px;
+      border-radius: 10px;
       background: rgba(255, 250, 240, 0.97);
       box-shadow: 0 12px 28px rgba(69, 52, 33, 0.16);
       backdrop-filter: blur(10px);
@@ -2226,8 +2332,8 @@
 
     .reference-editor-label {
       display: block;
-      margin-bottom: 4px;
-      font-size: 0.64rem;
+      margin-bottom: 3px;
+      font-size: 0.58rem;
       font-weight: 700;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -2238,12 +2344,12 @@
       width: 100%;
       appearance: none;
       border: 1px solid rgba(58, 50, 43, 0.14);
-      border-radius: 7px;
+      border-radius: 6px;
       background: rgba(255, 255, 255, 0.9);
       color: var(--ink);
-      padding: 4px 6px;
+      padding: 3px 5px;
       font: inherit;
-      font-size: 0.74rem;
+      font-size: 0.68rem;
       line-height: 1.2;
       outline: none;
     }
@@ -2256,8 +2362,8 @@
     .reference-editor-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 4px;
-      margin-top: 5px;
+      gap: 3px;
+      margin-top: 4px;
     }
 
     .reference-editor-actions button {
@@ -2266,9 +2372,9 @@
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.84);
       color: var(--ink);
-      padding: 3px 8px;
+      padding: 2px 6px;
       font: inherit;
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -2728,9 +2834,15 @@
         </button>
         <div id="reference-menu" class="toolbar-reference-menu" hidden>
           <div id="reference-list" class="toolbar-reference-list"></div>
-          <div id="reference-empty" class="toolbar-reference-empty" hidden>No pinned maps yet</div>
+          <div id="reference-empty" class="toolbar-reference-empty" hidden>No pinned mind maps yet</div>
         </div>
       </div>
+      <button id="visibility-toggle-button" class="toolbar-icon-button toolbar-visibility-button" type="button" aria-label="All child nodes visible" title="All child nodes visible">
+        <svg class="toolbar-visibility-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M2.8 12 C5.35 7.7 8.45 5.55 12 5.55 C15.55 5.55 18.65 7.7 21.2 12 C18.65 16.3 15.55 18.45 12 18.45 C8.45 18.45 5.35 16.3 2.8 12 Z"></path>
+          <circle cx="12" cy="12" r="3.1"></circle>
+        </svg>
+      </button>
       <button id="help-toggle-button" class="toolbar-icon-button toolbar-help-button" type="button" aria-label="Quick guide" title="Quick guide">
         <span class="toolbar-help-glyph" aria-hidden="true">?</span>
       </button>
@@ -2928,7 +3040,7 @@
         </div>
       </div>
       <div id="reference-editor" class="reference-editor" hidden>
-        <label class="reference-editor-label" for="reference-editor-input">Pinned map</label>
+        <label class="reference-editor-label" for="reference-editor-input">Create Pin</label>
         <input id="reference-editor-input" class="reference-editor-input" type="text" autocomplete="off" spellcheck="false">
         <div class="reference-editor-actions">
           <button id="reference-editor-clear" type="button">Clear</button>
@@ -3030,7 +3142,7 @@
             </p>
           </section>
           <section class="help-panel-section">
-            <h3>Pin Maps</h3>
+            <h3>Create Pins</h3>
             <p>
               Click
               <span class="help-inline-node-button help-inline-node-pin" aria-hidden="true">
@@ -3040,7 +3152,7 @@
                   <ellipse cx="12" cy="19.55" rx="4.95" ry="1.2"></ellipse>
                 </svg>
               </span>
-              on a central node to pin that map. Use
+              on a central node to create a pin for the mind map. Use
               <span class="help-inline-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 4.6 C 8.9 4.6 6.45 6.95 6.45 10 C 6.45 13.65 10.19 16.68 11.48 17.79 C 11.78 18.05 12.22 18.05 12.52 17.79 C 13.81 16.68 17.55 13.65 17.55 10 C 17.55 6.95 15.1 4.6 12 4.6 Z"></path>
@@ -3049,6 +3161,27 @@
                 </svg>
               </span>
               in the toolbar to jump back to it later.
+            </p>
+          </section>
+          <section class="help-panel-section">
+            <h3>Show and Hide</h3>
+            <p>
+              Click a node
+              <span class="help-inline-node-button help-inline-node-visibility" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M2.8 12 C5.35 7.7 8.45 5.55 12 5.55 C15.55 5.55 18.65 7.7 21.2 12 C18.65 16.3 15.55 18.45 12 18.45 C8.45 18.45 5.35 16.3 2.8 12 Z"></path>
+                  <circle cx="12" cy="12" r="3.1"></circle>
+                </svg>
+              </span>
+              to hide that node and its branch temporarily. Use
+              <span class="help-inline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M2.8 12 C5.35 7.7 8.45 5.55 12 5.55 C15.55 5.55 18.65 7.7 21.2 12 C18.65 16.3 15.55 18.45 12 18.45 C8.45 18.45 5.35 16.3 2.8 12 Z"></path>
+                  <circle cx="12" cy="12" r="3.1"></circle>
+                  <path d="M4.4 20 L19.6 4" stroke-width="2.5"></path>
+                </svg>
+              </span>
+              in the toolbar to show hidden nodes again. Saved and shared copies open with all nodes visible by default.
             </p>
           </section>
           <section class="help-panel-section">
@@ -3283,6 +3416,7 @@
       const referenceMenu = document.getElementById("reference-menu");
       const referenceList = document.getElementById("reference-list");
       const referenceEmpty = document.getElementById("reference-empty");
+      const visibilityToggleButton = document.getElementById("visibility-toggle-button");
       const helpToggleButton = document.getElementById("help-toggle-button");
       const textStyleControls = document.getElementById("text-style-controls");
       const zoomOutButton = document.getElementById("zoom-out-button");
@@ -3362,6 +3496,7 @@
       let attachmentPanelNodeId = null;
       let attachmentFileTargetNodeId = null;
       let pendingLinkDrop = null;
+      let lastImageNodeClick = null;
       let suppressCanvasLinkClickId = null;
       let activeNodeDragPointerId = null;
       let helpPanelOpen = !isSharedView();
@@ -3627,6 +3762,20 @@
           const nextHidden = !referenceMenu.hidden;
           referenceMenu.hidden = nextHidden;
           referenceButton.classList.toggle("is-open", !nextHidden);
+        });
+      }
+
+      if (visibilityToggleButton) {
+        visibilityToggleButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          hideSaveMenu();
+          hideReferenceMenu();
+          hideTextColorMenu();
+          hideTextLayoutMenu();
+          closeTableMenu();
+          closeLinkEditor();
+          closeLinkDropMenu();
+          revealHiddenNodes();
         });
       }
 
@@ -4105,6 +4254,14 @@
         }
 
         if (interaction.type === "move-branch") {
+          if (!interaction.moved && Math.hypot(dx, dy) > 1) {
+            interaction.moved = true;
+          }
+
+          if (!interaction.moved) {
+            return;
+          }
+
           if (node.parentId === null) {
             node.x = interaction.origin.x + dx;
             node.y = interaction.origin.y + dy;
@@ -4219,6 +4376,21 @@
           return;
         }
 
+        if (completedInteraction.type === "move-branch" && !completedInteraction.moved) {
+          attachTargetId = null;
+          if (node.type === "image") {
+            handleImageNodePointerClick(node, event);
+          } else {
+            lastImageNodeClick = null;
+          }
+          applySelectionState();
+          return;
+        }
+
+        if (completedInteraction.type === "move-branch" && node.type === "image") {
+          lastImageNodeClick = null;
+        }
+
         if (
           completedInteraction.type === "move-branch" &&
           node.parentId === null &&
@@ -4246,6 +4418,7 @@
         const hadInteraction = Boolean(interaction);
         interaction = null;
         attachTargetId = null;
+        lastImageNodeClick = null;
         workspace.classList.remove("is-panning");
         clearNodeDragLock();
         if (hadInteraction) {
@@ -4513,6 +4686,9 @@
         if (textStyleControls) {
           textStyleControls.hidden = isSharedView();
         }
+        if (visibilityToggleButton) {
+          visibilityToggleButton.hidden = encryptedStateLocked;
+        }
         hideSaveMenu();
         hideReferenceMenu();
         closeTableMenu();
@@ -4575,6 +4751,7 @@
           referenceText: typeof node.referenceText === "string" ? node.referenceText : "",
           referenceOrder: Number.isFinite(node.referenceOrder) ? node.referenceOrder : null,
           collapsed: Boolean(node.collapsed),
+          hidden: !(parentId === null && nodeType === "text" && !Boolean(node.detached)) && Boolean(node.hidden),
           order: Number.isFinite(node.order) ? node.order : index,
           x: Number.isFinite(node.x) ? node.x : 56,
           y: Number.isFinite(node.y) ? node.y : 160,
@@ -5431,6 +5608,9 @@
         let total = getNodeAttachments(node).length;
         for (const child of state.nodes) {
           if (child.parentId === nodeId) {
+            if (isNodeHidden(child)) {
+              continue;
+            }
             total += getSubtreeAttachmentCount(child.id);
           }
         }
@@ -5444,7 +5624,7 @@
         }
 
         const directCount = getNodeAttachments(node).length;
-        const hasChildren = state.nodes.some((child) => child.parentId === nodeId);
+        const hasChildren = hasVisibleChildNodes(nodeId);
         if (!hasChildren || !node.collapsed) {
           return directCount;
         }
@@ -5458,6 +5638,9 @@
         function walk(parentId) {
           for (const child of state.nodes) {
             if (child.parentId !== parentId) {
+              continue;
+            }
+            if (isNodeHidden(child)) {
               continue;
             }
 
@@ -5480,6 +5663,68 @@
 
       function isCentralNodeRecord(node) {
         return Boolean(node && node.parentId === null && node.type === "text" && !node.detached);
+      }
+
+      function canToggleNodeVisibility(node) {
+        return Boolean(node && !isCentralNodeRecord(node));
+      }
+
+      function isNodeHidden(node) {
+        return Boolean(canToggleNodeVisibility(node) && node.hidden);
+      }
+
+      function hasHiddenNodes() {
+        return state.nodes.some((node) => isNodeHidden(node));
+      }
+
+      function hasVisibleChildNodes(nodeId) {
+        return state.nodes.some((child) => child.parentId === nodeId && !isNodeHidden(child));
+      }
+
+      function getNodeLevelDepth(node) {
+        if (!node) {
+          return -1;
+        }
+
+        let depth = 0;
+        let cursor = node;
+        const visited = new Set();
+        while (cursor && cursor.parentId) {
+          if (visited.has(cursor.id)) {
+            break;
+          }
+          visited.add(cursor.id);
+          const parent = findNode(cursor.parentId);
+          if (!parent) {
+            break;
+          }
+          depth += 1;
+          cursor = parent;
+        }
+
+        return depth;
+      }
+
+      function getVisibilityControlDepths() {
+        const depths = new Set();
+        state.nodes.forEach((node) => {
+          if (!canToggleNodeVisibility(node) || isNodeHidden(node)) {
+            return;
+          }
+          if (hasVisibleChildNodes(node.id)) {
+            depths.add(getNodeLevelDepth(node));
+          }
+        });
+        return depths;
+      }
+
+      function shouldShowNodeVisibilityControl(node, visibilityControlDepths) {
+        if (!canToggleNodeVisibility(node) || isNodeHidden(node)) {
+          return false;
+        }
+
+        const depths = visibilityControlDepths || getVisibilityControlDepths();
+        return depths.has(getNodeLevelDepth(node));
       }
 
       function setSelection(nodeId, kind) {
@@ -5596,6 +5841,7 @@
           type: "move-branch",
           id: nextNode.id,
           startPoint: toWorldPoint(event.clientX, event.clientY),
+          moved: false,
           origin: nextNode.parentId === null
             ? { x: nextNode.x, y: nextNode.y }
             : { offsetX: nextNode.offsetX, offsetY: nextNode.offsetY }
@@ -5630,6 +5876,7 @@
           referenceText: "",
           referenceOrder: null,
           collapsed: false,
+          hidden: false,
           order: getNextSiblingOrder(null),
           x: Math.round((56 - state.viewport.x) / scale) + rootIndex * 180,
           y: Math.round((workspace.clientHeight / 2 - (initialHeight * scale) / 2 - state.viewport.y) / scale) + rootIndex * 72,
@@ -5678,6 +5925,7 @@
           referenceText: "",
           referenceOrder: null,
           collapsed: false,
+          hidden: false,
           order: getNextSiblingOrder(parentId),
           x: 0,
           y: 0,
@@ -5741,6 +5989,7 @@
           referenceText: "",
           referenceOrder: null,
           collapsed: false,
+          hidden: false,
           order: getNextSiblingOrder(hasParent ? parent.id : null),
           x: hasParent ? 0 : round(point.x - preferredSize.width / 2),
           y: hasParent ? 0 : round(point.y - preferredSize.height / 2),
@@ -5794,6 +6043,95 @@
         closeLinkDropMenu();
         renderAll();
         syncEmbeddedState();
+      }
+
+      function hideNodeFromView(nodeId) {
+        const node = findNode(nodeId);
+        if (!canToggleNodeVisibility(node)) {
+          return;
+        }
+
+        const hiddenIds = new Set();
+        collectSubtreeIds(node.id, hiddenIds);
+        node.hidden = true;
+        blurActiveNodeEditor();
+        if (selectionId && hiddenIds.has(selectionId)) {
+          clearSelection();
+        }
+        if (activeTableCellStyleTarget && hiddenIds.has(activeTableCellStyleTarget.nodeId)) {
+          activeTableCellStyleTarget = null;
+        }
+        if (attachTargetId && hiddenIds.has(attachTargetId)) {
+          attachTargetId = null;
+        }
+        if (attachmentDropTargetId && hiddenIds.has(attachmentDropTargetId)) {
+          attachmentDropTargetId = null;
+        }
+        if (attachmentPanelNodeId && hiddenIds.has(attachmentPanelNodeId)) {
+          closeAttachmentPanel();
+        }
+        if (pendingLinkDrop && hiddenIds.has(pendingLinkDrop.nodeId)) {
+          closeLinkDropMenu();
+        }
+        if (selectionKind === "named-link") {
+          const selectedLink = findCanvasLink(selectionId);
+          if (selectedLink && selectedLink.hostNodeId && hiddenIds.has(selectedLink.hostNodeId)) {
+            clearSelection();
+          }
+        }
+
+        renderAll();
+        syncEmbeddedState();
+      }
+
+      function revealHiddenNodes() {
+        const hiddenNodeIds = state.nodes
+          .filter((node) => isNodeHidden(node))
+          .map((node) => node.id);
+        if (!hiddenNodeIds.length) {
+          updateToolbar();
+          return;
+        }
+
+        hiddenNodeIds.forEach((nodeId) => {
+          const node = findNode(nodeId);
+          if (!node) {
+            return;
+          }
+          node.hidden = false;
+          let cursor = node;
+          while (cursor && cursor.parentId) {
+            const parent = findNode(cursor.parentId);
+            if (!parent) {
+              break;
+            }
+            parent.collapsed = false;
+            cursor = parent;
+          }
+        });
+
+        renderAll();
+        syncEmbeddedState();
+      }
+
+      function createNodeHiddenSnapshot() {
+        return state.nodes.map((node) => ({
+          id: node.id,
+          hidden: Boolean(node.hidden)
+        }));
+      }
+
+      function showAllNodesForExport() {
+        state.nodes.forEach((node) => {
+          node.hidden = false;
+        });
+      }
+
+      function restoreNodeHiddenSnapshot(snapshot) {
+        const hiddenByNodeId = new Map((snapshot || []).map((entry) => [entry.id, entry.hidden]));
+        state.nodes.forEach((node) => {
+          node.hidden = Boolean(hiddenByNodeId.get(node.id));
+        });
       }
 
       function removeBlankLeafTextNode(nodeId) {
@@ -5860,6 +6198,9 @@
 
         for (const node of state.nodes) {
           nodeMap.set(node.id, node);
+          if (isNodeHidden(node)) {
+            continue;
+          }
           const parentKey = node.parentId === null ? ROOT_KEY : node.parentId;
           if (!childrenByParent.has(parentKey)) {
             childrenByParent.set(parentKey, []);
@@ -5938,7 +6279,7 @@
           children.forEach((child, index) => {
             const childSubtreeHeight = getSubtreeHeight(child.id);
             const childCenterY = cursor + childSubtreeHeight / 2;
-            const childColor = node.parentId === null ? BRANCH_COLORS[index % BRANCH_COLORS.length] : branchColor;
+            const childColor = node.parentId === null ? getDerivedNodeBranchColor(child.id) : branchColor;
             layoutNode(child.id, childOriginX, childCenterY, childColor);
             cursor += childSubtreeHeight + VERTICAL_GAP;
           });
@@ -6105,6 +6446,7 @@
         }
 
         const scale = normalizeScale(state.viewport.scale);
+        const visibilityControlDepths = getVisibilityControlDepths();
 
         const orderedNodes = state.nodes.slice().sort((left, right) => {
           const leftPosition = currentLayout.positions.get(left.id);
@@ -6125,7 +6467,7 @@
           }
 
           const branchColor = currentLayout.colors.get(node.id) || ROOT_COLOR;
-          const hasChildren = state.nodes.some((childNode) => childNode.parentId === node.id);
+          const hasChildren = hasVisibleChildNodes(node.id);
           const attachmentCount = getAttachmentBadgeCount(node.id);
           const isImageNode = node.type === "image";
           const isTableNode = node.type === "table";
@@ -6158,6 +6500,17 @@
 
           const shell = document.createElement("div");
           shell.className = "node-shell";
+
+          let visibilityButton = null;
+          const showVisibilityButton = shouldShowNodeVisibilityControl(node, visibilityControlDepths);
+          if (showVisibilityButton) {
+            visibilityButton = document.createElement("button");
+            visibilityButton.type = "button";
+            visibilityButton.className = "node-visibility";
+            visibilityButton.title = "Hide node";
+            visibilityButton.setAttribute("aria-label", "Hide node");
+            visibilityButton.appendChild(createVisibilityIconSvg(false, "node-visibility-icon"));
+          }
 
           let pinButton = null;
           if (!isSharedView() && isCentralNodeRecord(node) && isTextNode) {
@@ -6249,7 +6602,7 @@
           }
 
           let addButton = null;
-          if (!isSharedView() && isTextNode) {
+          if (!isSharedView() && (isTextNode || isImageNode)) {
             addButton = document.createElement("button");
             addButton.type = "button";
             addButton.className = "node-add";
@@ -6258,7 +6611,7 @@
           }
 
           let attachmentButton = null;
-          if (!isTableNode && (!isSharedView() || attachmentCount)) {
+          if (!isTableNode && !isImageNode && (!isSharedView() || attachmentCount)) {
             attachmentButton = document.createElement("button");
             attachmentButton.type = "button";
             attachmentButton.className = "node-attachment" + (attachmentCount ? "" : " is-empty");
@@ -6280,17 +6633,18 @@
           }
 
           let resizeHandle = null;
-          if (!isSharedView()) {
+          if (!isSharedView() && !isImageNode) {
             resizeHandle = document.createElement("div");
             resizeHandle.className = "node-resize";
-            resizeHandle.title = isImageNode
-              ? "Resize image"
-              : isTableNode
-                ? "Resize table; double-click to autofit"
-                : "Resize node; double-click to autofit";
+            resizeHandle.title = isTableNode
+              ? "Resize table; double-click to autofit"
+              : "Resize node; double-click to autofit";
           }
 
           nodeEl.appendChild(shell);
+          if (visibilityButton) {
+            nodeEl.appendChild(visibilityButton);
+          }
           if (pinButton) {
             nodeEl.appendChild(pinButton);
           }
@@ -6316,6 +6670,7 @@
               event.target === resizeHandle ||
               event.target === addButton ||
               event.target === attachmentButton ||
+              event.target === visibilityButton ||
               event.target === pinButton ||
               event.target === foldButton ||
               (tableWrap && tableWrap.contains(event.target)) ||
@@ -6325,6 +6680,10 @@
             }
 
             if (isSharedView()) {
+              if (isImageNode && showVisibilityButton) {
+                setSelection(node.id, "node");
+                applySelectionState();
+              }
               return;
             }
 
@@ -6339,6 +6698,19 @@
             event.preventDefault();
             event.stopPropagation();
           });
+
+          if (visibilityButton) {
+            visibilityButton.addEventListener("pointerdown", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            });
+
+            visibilityButton.addEventListener("click", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              hideNodeFromView(node.id);
+            });
+          }
 
           if (foldButton) {
             foldButton.addEventListener("pointerdown", (event) => {
@@ -8870,8 +9242,8 @@
         }
 
         const scale = normalizeScale(state.viewport.scale);
-        const editorWidth = (referenceEditor.offsetWidth || 172) * scale;
-        const editorHeight = (referenceEditor.offsetHeight || 78) * scale;
+        const editorWidth = (referenceEditor.offsetWidth || 150) * scale;
+        const editorHeight = (referenceEditor.offsetHeight || 68) * scale;
         const left = round(position.x * scale + state.viewport.x + 4 * scale);
         const top = round(position.y * scale + state.viewport.y + 26 * scale);
         referenceEditor.style.left = clamp(left, 12, Math.max(12, workspace.clientWidth - editorWidth - 12)) + "px";
@@ -8960,7 +9332,7 @@
         const referenceNodes = getReferenceNodes();
         referenceList.innerHTML = "";
         referenceButton.disabled = false;
-        referenceEmpty.textContent = isSharedView() ? "No pinned maps" : "No pinned maps yet";
+        referenceEmpty.textContent = "No pinned mind maps yet";
         referenceMenu.classList.toggle("is-empty", !referenceNodes.length);
 
         if (!referenceNodes.length) {
@@ -9013,6 +9385,38 @@
         }
         textLayoutMenu.hidden = true;
         textLayoutButton.classList.remove("is-open");
+      }
+
+      function handleImageNodePointerClick(node, event) {
+        if (!node || node.type !== "image" || !node.imageData) {
+          lastImageNodeClick = null;
+          return;
+        }
+
+        const now = window.performance && typeof window.performance.now === "function"
+          ? window.performance.now()
+          : Date.now();
+        const x = event && Number.isFinite(event.clientX) ? event.clientX : 0;
+        const y = event && Number.isFinite(event.clientY) ? event.clientY : 0;
+        const previousClick = lastImageNodeClick;
+        const isDoubleClick =
+          previousClick &&
+          previousClick.nodeId === node.id &&
+          now - previousClick.time <= 450 &&
+          Math.hypot(x - previousClick.x, y - previousClick.y) <= 8;
+
+        if (isDoubleClick) {
+          lastImageNodeClick = null;
+          openImageLightbox(node.imageData);
+          return;
+        }
+
+        lastImageNodeClick = {
+          nodeId: node.id,
+          time: now,
+          x: x,
+          y: y
+        };
       }
 
       function openImageLightbox(dataUrl) {
@@ -9900,6 +10304,7 @@
         const previousMode = state.mode;
         const previousSelectionId = selectionId;
         const previousSelectionKind = selectionKind;
+        const hiddenSnapshot = createNodeHiddenSnapshot();
         hideSaveMenu();
         hideReferenceMenu();
         closeTableMenu();
@@ -9911,23 +10316,25 @@
         closeAttachmentPanel();
         closeReferenceEditor();
         state.mode = exportMode;
+        showAllNodesForExport();
         applyViewMode();
         if (exportMode === "shared") {
           clearSelection();
         }
-        renderAll();
-        syncEmbeddedState();
 
-        const html = createExportHtml(exportMode);
-
-        state.mode = previousMode;
-        applyViewMode();
-        selectionId = previousSelectionId;
-        selectionKind = previousSelectionId ? previousSelectionKind : null;
-        renderAll();
-        syncEmbeddedState();
-
-        return html;
+        try {
+          renderAll();
+          syncEmbeddedState();
+          return createExportHtml(exportMode);
+        } finally {
+          state.mode = previousMode;
+          restoreNodeHiddenSnapshot(hiddenSnapshot);
+          applyViewMode();
+          selectionId = previousSelectionId;
+          selectionKind = previousSelectionId ? previousSelectionKind : null;
+          renderAll();
+          syncEmbeddedState();
+        }
       }
 
       async function createEncryptedHtmlExportSnapshot(targetMode, password) {
@@ -9944,6 +10351,7 @@
         const previousMode = state.mode;
         const previousSelectionId = selectionId;
         const previousSelectionKind = selectionKind;
+        const hiddenSnapshot = createNodeHiddenSnapshot();
         hideSaveMenu();
         hideReferenceMenu();
         closeLinkEditor();
@@ -9954,6 +10362,7 @@
         closeAttachmentPanel();
         closeReferenceEditor();
         state.mode = exportMode;
+        showAllNodesForExport();
         applyViewMode();
         if (exportMode === "shared") {
           clearSelection();
@@ -9966,6 +10375,7 @@
           return createExportHtml(exportMode, encryptedPayload);
         } finally {
           state.mode = previousMode;
+          restoreNodeHiddenSnapshot(hiddenSnapshot);
           applyViewMode();
           selectionId = previousSelectionId;
           selectionKind = previousSelectionId ? previousSelectionKind : null;
@@ -10463,10 +10873,12 @@
           id: node.id,
           collapsed: Boolean(node.collapsed)
         }));
+        const hiddenSnapshot = createNodeHiddenSnapshot();
 
         state.nodes.forEach((node) => {
           node.collapsed = false;
         });
+        showAllNodesForExport();
         clearSelection();
         applySelectionState();
         renderAll();
@@ -10495,6 +10907,7 @@
               node.collapsed = entry.collapsed;
             }
           });
+          restoreNodeHiddenSnapshot(hiddenSnapshot);
           state.viewport.x = previousViewport.x;
           state.viewport.y = previousViewport.y;
           state.viewport.scale = previousViewport.scale;
@@ -10543,7 +10956,7 @@
           textarea.setAttribute("tabindex", "-1");
         });
 
-        workspaceClone.querySelectorAll(".branch-hit, .node-fold").forEach((element) => {
+        workspaceClone.querySelectorAll(".branch-hit, .node-fold, .node-visibility").forEach((element) => {
           element.remove();
         });
 
@@ -10827,6 +11240,7 @@
           "#table-controls",
           "#link-controls",
           "#clear-button",
+          "#visibility-toggle-button",
           "#save-controls",
           "#help-toggle-button",
           "#text-style-controls"
@@ -10908,7 +11322,7 @@
           textarea.setAttribute("tabindex", "-1");
         });
 
-        clone.querySelectorAll(".branch-hit, .node-fold").forEach((element) => {
+        clone.querySelectorAll(".branch-hit, .node-fold, .node-visibility").forEach((element) => {
           element.remove();
         });
 
@@ -11004,7 +11418,7 @@
           });
         });
 
-        root.querySelectorAll(".node-add, .node-resize, .node-pin, .node-table-add, .node-table-resize-handle").forEach((element) => {
+        root.querySelectorAll(".node-add, .node-resize, .node-pin, .node-visibility, .node-table-add, .node-table-resize-handle").forEach((element) => {
           element.remove();
         });
 
@@ -11316,6 +11730,7 @@
           referenceText: "",
           referenceOrder: null,
           collapsed: false,
+          hidden: false,
           order: getNextSiblingOrder(null),
           x: round(worldPoint.x - DEFAULT_CHILD_NODE_WIDTH / 2),
           y: round(worldPoint.y - initialHeight / 2),
@@ -11363,6 +11778,7 @@
           referenceText: "",
           referenceOrder: null,
           collapsed: false,
+          hidden: false,
           order: getNextSiblingOrder(null),
           x: round(worldPoint.x - size.width / 2),
           y: round(worldPoint.y - size.height / 2),
@@ -11554,6 +11970,7 @@
               referenceText: typeof node.referenceText === "string" ? node.referenceText : "",
               referenceOrder: Number.isFinite(node.referenceOrder) ? node.referenceOrder : null,
               collapsed: Boolean(node.collapsed),
+              hidden: isNodeHidden(node),
               order: node.order,
               x: round(node.x),
               y: round(node.y),
@@ -11641,6 +12058,34 @@
           line.setAttribute("d", linePath);
           svg.appendChild(line);
         });
+
+        return svg;
+      }
+
+      function createVisibilityIconSvg(isHidden, className) {
+        const svg = createSvgElement("svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("aria-hidden", "true");
+        if (className) {
+          svg.setAttribute("class", className);
+        }
+
+        const eye = createSvgElement("path");
+        eye.setAttribute("d", "M2.8 12 C5.35 7.7 8.45 5.55 12 5.55 C15.55 5.55 18.65 7.7 21.2 12 C18.65 16.3 15.55 18.45 12 18.45 C8.45 18.45 5.35 16.3 2.8 12 Z");
+        svg.appendChild(eye);
+
+        const pupil = createSvgElement("circle");
+        pupil.setAttribute("cx", "12");
+        pupil.setAttribute("cy", "12");
+        pupil.setAttribute("r", "3.1");
+        svg.appendChild(pupil);
+
+        if (isHidden) {
+          const slash = createSvgElement("path");
+          slash.setAttribute("d", "M4.4 20 L19.6 4");
+          slash.setAttribute("stroke-width", "2.5");
+          svg.appendChild(slash);
+        }
 
         return svg;
       }
@@ -11890,6 +12335,19 @@
         return Math.round(value * 100) / 100;
       }
 
+      function updateVisibilityToggleButton() {
+        if (!visibilityToggleButton) {
+          return;
+        }
+
+        const hiddenActive = hasHiddenNodes();
+        visibilityToggleButton.classList.toggle("is-hidden-active", hiddenActive);
+        visibilityToggleButton.title = hiddenActive ? "Show hidden nodes" : "All child nodes visible";
+        visibilityToggleButton.setAttribute("aria-label", hiddenActive ? "Show hidden nodes" : "All child nodes visible");
+        visibilityToggleButton.setAttribute("aria-pressed", hiddenActive ? "true" : "false");
+        visibilityToggleButton.replaceChildren(createVisibilityIconSvg(hiddenActive, "toolbar-visibility-icon"));
+      }
+
       function updateToolbar() {
         if (addRootButton) {
           addRootButton.disabled = isSharedView();
@@ -11917,6 +12375,7 @@
           shareHtmlPasswordButton.disabled = isSharedView();
           shareHtmlPasswordButton.title = "Export encrypted read-only HTML";
         }
+        updateVisibilityToggleButton();
         updateReferenceMenu();
       }
 

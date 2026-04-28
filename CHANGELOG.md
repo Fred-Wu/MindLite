@@ -7,14 +7,21 @@ All notable changes to MindLite are documented in this file.
 ### Added
 
 - Added double-click autofit support to text node resize handles, matching table resize handle behavior.
+- Added child-node visibility controls with level-based eye buttons and a toolbar show-hidden toggle, preserved in shared HTML and stripped from static PDF exports.
 
 ### Changed
 
+- Changed image nodes to show child-node creation and fold/unfold buttons only while the image node is selected.
+- Changed the pin Quick guide section and popover wording to use "Create Pin" language.
+- Changed the pinned-map toolbar empty message to "No pinned mind maps yet".
+- Changed the Quick guide to describe the eye visibility controls.
+- Changed node file and child-node creation buttons to a smaller size.
 - Changed text node editor, preview, and placeholder word spacing to normal browser spacing.
 - Changed text node boxes from pill-like side arches to rounded-corner rectangles.
 
 ### Fixed
 
+- Fixed pasted image and screenshot nodes so the image itself is the visible node, without the generic node frame, document button, or resize handle, and double-click opens the enlarged image again.
 - Fixed text node and table autofit so trailing empty lines are removed while internal empty lines before later text are preserved.
 
 ## [0.3.0] - 2026-04-28
